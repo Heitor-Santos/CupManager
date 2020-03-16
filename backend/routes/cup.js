@@ -31,7 +31,10 @@ routes.delete('/cup/:cupNome', async (request, response)=>{
 });
 routes.post('/cup', async (request,response)=>{
     const {nome, idPartidas} = request.body;
-    const idTreat = idPartidas.split(' ')
+    console.log(nome)
+    console.log(idPartidas)
+    const idTreat = idPartidas == '' ? [] : idPartidas.split(' ')
+    console.log(idTreat)
     if(await Cup.findOne({nome})== null){
         cup = await Cup.create({
             nome,

@@ -31,11 +31,13 @@ routes.delete('/partida/:partidaNome', async (request, response)=>{
 
 routes.post('/partida', async (request,response)=>{
     const {nome, idPlayersA, idPlayersB} = request.body;
-    const idTreatA = idPlayersA.split(' ')
-    const idTreatB = idPlayersB.split(' ')
+    const idTreatA = idPlayersA == '' ? [] : idPlayersA.split(' ')
+    const idTreatB = idPlayersB == '' ? [] : idPlayersB.split(' ')
+    const vencedor = null;
     if(await Partida.findOne({nome})== null){
         part = await Partida.create({
             nome,
+            vencedor,
             idPlayersA: idTreatA,
             idPlayersB: idTreatB
         })
@@ -46,50 +48,54 @@ routes.post('/partida', async (request,response)=>{
 
 routes.put('/partida/:partidaNome', async (request, response) => {
     const nome = request.params.partidaNome;
-    const {nomeNovo, addJogadorA, addJogadorB, rmvJogadorA, rmvJogadorB} = request.body;
+    const {nomeNovo, addJogadorA, addJogadorB, rmvJogadorA, rmvJogadorB, vencedor} = request.body;
     let listaA=[];
     let listaB=[];
+    let vencedorReal;
     const copa = await Partida.findOne({nome: nome});
     let resp;
     if(copa!=null){
         listaA = copa.idPlayersA;
         listaB = copa.idPlayersB;
         if(addJogadorA!= '') {
-            if (listaA.find(addJogadorA)) {
-                return response.status(400).send({message:"Jogador já cadastrado"})
+            if (listaA.some(id => id == addJogadorA)) {
+                return response.status(400).send({message:"Jogador A já cadastrado"})
             } else {
                 listaA.push(addJogadorA); 
             }
         }
         if(addJogadorB!= '') {
-            if (listaB.find(addJogadorB)) {
-                return response.status(400).send({message:"Jogador já cadastrado"})
+            if (listaB.some(id => id == addJogadorB)) {
+                return response.status(400).send({message:"Jogador B já cadastrado"})
             } else {
                 listaB.push(addJogadorB); 
             }
         } 
-        if(remvJogadorA != '') {
-            if (listaA.find(rmvJogadorA)) {
+        if(rmvJogadorA != '') {
+            if (listaA.some(id => id == rmvJogadorA)) {
                 listaA = listaA.filter(id => id!=rmvJogadorA);
             } else {
-                return response.status(404).send({message:"Jogador não existente"})
+                return response.status(404).send({message:"Jogador A não existente"})
             } 
             
         }
-        if(remvJogadorB != '') { 
-            if (listaB.find(rmvJogadorB)) {
+        if(rmvJogadorB != '') { 
+            if (listaB.some(id => id == rmvJogadorB)) {
                 listaB = listaB.filter(id => id!=rmvJogadorB);
             } else {
-                return response.status(404).send({message:"Jogador não existente"})
+                return response.status(404).send({message:"Jogador B não existente"})
             } 
-        } 
+        }
+        if (vencedor != '') {
+            vencedorReal = vencedor
+        }
         if (nomeNovo != '') {
             resp = await Partida.updateOne( {nome: {$eq: nome} }, 
                 { $set: {nome: nomeNovo,
-                idPlayersA: listaA, idPlayersB: listaB}})
+                idPlayersA: listaA, idPlayersB: listaB, vencedor: vencedorReal}})
         } else {
             resp = await Partida.updateOne( {nome: {$eq: nome} }, 
-                { $set: {idPlayersA: listaA, idPlayersB: listaB}})
+                { $set: {idPlayersA: listaA, idPlayersB: listaB, vencedor: vencedorReal}})
         }
         return response.json(resp)
     } else {
