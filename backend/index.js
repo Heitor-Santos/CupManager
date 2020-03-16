@@ -11,12 +11,12 @@ mongoose.connect('mongodb+srv://fut:futfutfut@cluster0-sbqni.mongodb.net/test?re
 })
 
 const cup = require("./routes/cup.js")
-//const perRoutes = require("./routes/pessoa.js")
+const partida = require("./routes/partida.js")
 
 app.use(express.json());
 app.use(bodyParser.json())
 app.use("/", cup)
-//app.use("/", perRoutes)
+app.use("/", partida)
 
 
 const PORT = 3333

@@ -5,13 +5,16 @@ const Cup = require('../models/Cup')
 
 routes.get('/cupAll', async (request, response)=>{    
     let resp = await Cup.find();
-    return response.json(resp);
+    if(resp!=null)
+        return response.json(resp);
+    else 
+        return response.status(404).send({message: "essa cup não existe"})
 });
 routes.get('/cup', async (request, response)=>{
     nome = request.query.nome;
-    console.log(nome);
     let cup = await Cup.findOne({nome});
-    return response.json(cup)
+    if (cup!=null)return response.json(cup)
+    else return response.status(404).send({message: "Campeonato não encontrado"})
 });
 routes.delete('/cup/:cupNome', async (request, response)=>{
     nome = request.params.cupNome;
@@ -29,7 +32,7 @@ routes.delete('/cup/:cupNome', async (request, response)=>{
 routes.post('/cup', async (request,response)=>{
     const {nome, idPartidas} = request.body;
     const idTreat = idPartidas.split(' ')
-    if(await findOne(nome)==null){
+    if(await Cup.findOne({nome})== null){
         cup = await Cup.create({
             nome,
             idPartidas: idTreat
@@ -48,19 +51,29 @@ routes.put('/cup/:nomeCamp', async (request, response) => {
     if(copa!=null){
         lista = copa.idPartidas;
         if(addPartida != '') {
-            lista.push(addPartida); 
+            if (lista.indexOf(addPartida)!=-1) {
+                return(response.status(400).send({message: "Partida já cadastrada!"}))
+            } else {
+                lista.push(addPartida); 
+            }
         } if(remvPartida != '') { 
-            lista = lista.filter(id => id!=remvPartida);
+            if (lista.indexOf(remvPartida)!=-1) {
+                lista = lista.filter(id => id!=remvPartida);
+            } else {
+                return(response.status(400).send({message: "Partida não cadastrada!"}))
+            }
+            
         } if (nomeNovo != '') {
-            resp = await Cup.update( {nome: {$eq: nomeCamp} }, 
+            resp = await Cup.updateOne( {nome: {$eq: nomeCamp} }, 
                 { $set: {nome: nomeNovo,
                 idPartidas: lista}})
         } else {
-            resp = await Cup.update({idPartidas: lista})
+            resp = await Cup.updateOne({nome: {$eq: nomeCamp} }, 
+                { $set: {idPartidas: lista}})
         }
         return response.json(resp)
     } else {
-        return(response.status(500).send({message: "Campeonato não encontrado"}))
+        return(response.status(404).send({message: "Campeonato não encontrado"}))
     }
 });
 

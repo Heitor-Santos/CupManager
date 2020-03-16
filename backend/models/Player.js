@@ -6,7 +6,7 @@ const PlayerSchema = new mongoose.Schema({
         assist: Number,
         golsContra: Number,
         golsTomados: Number,
-        goleiro: Number
+        goleiro: Boolean
     }]
 });
 module.exports = mongoose.model('Player', PlayerSchema)
