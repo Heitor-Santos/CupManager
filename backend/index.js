@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require("body-parser")
-
+const cors = require('cors')
 app = express()
 
 mongoose.connect('mongodb+srv://fut:futfutfut@cluster0-sbqni.mongodb.net/test?retryWrites=true&w=majority',
@@ -12,7 +12,7 @@ mongoose.connect('mongodb+srv://fut:futfutfut@cluster0-sbqni.mongodb.net/test?re
 
 const cup = require("./routes/cup.js")
 const partida = require("./routes/partida.js")
-
+app.use(cors())
 app.use(express.json());
 app.use(bodyParser.json())
 app.use("/", cup)
