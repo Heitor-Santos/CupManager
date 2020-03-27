@@ -10,7 +10,7 @@
     "football",
     "soccer"
   ],
-  "author": "Heitor Santos",
+  "author": "Antônio Barros & Heitor Santos",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

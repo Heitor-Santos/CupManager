@@ -2,12 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Cup from './Cup';
 import * as serviceWorker from './serviceWorker';
-
+import {Route, BrowserRouter, Switch} from 'react-router-dom';
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+    <BrowserRouter>
+        <Switch>
+          <Route path="/" exact={true} component={App}/>
+          <Route path="/:nameCup" component={Cup}/>
+        </Switch>
+    </BrowserRouter>,
   document.getElementById('root')
 );
 

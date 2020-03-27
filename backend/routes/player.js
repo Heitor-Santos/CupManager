@@ -36,7 +36,14 @@ routes.post('/player', async (request,response)=>{
     const {nome} = request.body;
     if(await Player.findOne({nome})== null){
         player = await Player.create({
-            nome
+            nome,
+            estatsPartidas: [{
+                golsFavor: Number,
+                assist: Number,
+                golsContra: Number,
+                golsTomados: Number,
+                goleiro: Boolean
+            }]
         })
         return response.json(player)
     }
@@ -46,14 +53,16 @@ routes.post('/player', async (request,response)=>{
 routes.put('/player/:nomeCamp', async (request, response) => {
     const nomeCamp = request.params.nomeCamp;
     const {nomeNovo, golsFavor, assist, golsContra, golsTomados,goleiro} = request.body;
-    let lista=[] ;
-    lista = await Player.findOne({nome: nomeCamp});
+    let lista = [];
+    player = await Player.findOne({nome: nomeCamp});
     const estat = lista[-1];
-    if(copa!=null){
+    if(player!=null){
         if(golsFavor!='')
             estat.golsFavor= golsFavor;
         if(assist!='')
             estat.assist= assist;
+        if (golsContra)
+            estat.golsContra = golsContra;
         if(golsTomados!='')
             estat.golsTomados= golsTomados;
         if(goleiro!='')

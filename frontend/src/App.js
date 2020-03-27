@@ -5,6 +5,7 @@ import './estilos/busca.css';
 import './estilos/geral.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Redirect } from 'react-router-dom';
 function InBusca(props) {
   return (
     <input type="text" class="form-control" id="inBusca"
@@ -62,6 +63,7 @@ class Busca extends React.Component {
     this.state = {
       nameCup: "",
       codeRes: false,
+      cadastrado: false,
     }
   }
   handleChange(newName) {
@@ -82,6 +84,9 @@ class Busca extends React.Component {
     }
   }
   render() {
+    if(this.state.cadastrado){
+      return <Redirect to ={`/${this.state.nameCup}`}></Redirect>
+    }
     return (
       <div>
         <div id="geral"><img src={require('./media/symbol.jpg')} width="50%" /></div>
@@ -92,6 +97,7 @@ class Busca extends React.Component {
         {this.state.codeRes ?
           <div id="geral">
             <ResSub codeRes={this.state.codeRes} />
+            {setTimeout(()=>{this.setState({cadastrado:true})},3000)}
           </div>
           : null
         }
@@ -102,14 +108,4 @@ class Busca extends React.Component {
   }
 
 }
-function App() {
-  return (
-    <div>
-
-      <Busca />
-
-    </div>
-  );
-}
-
 export default Busca;
