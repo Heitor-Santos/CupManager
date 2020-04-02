@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import Cup from './Cup';
+import Partida from './Partida';
 import * as serviceWorker from './serviceWorker';
 import {Route, BrowserRouter, Switch} from 'react-router-dom';
 ReactDOM.render(
     <BrowserRouter>
         <Switch>
           <Route path="/" exact={true} component={App}/>
-          <Route path="/:nameCup" component={Cup}/>
+          <Route path="/:nameCup" exact={true} component={Cup}/>
+          <Route path="/:nameCup/:namePartida" component={Partida}/>
         </Switch>
     </BrowserRouter>,
   document.getElementById('root')
