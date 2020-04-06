@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import Cup from './Cup';
-import Partida from './Partida';
+import App from './App/App';
+import Cup from './Cup/Cup';
+import Partida from './Partida/Partida';
 import * as serviceWorker from './serviceWorker';
 import {Route, BrowserRouter, Switch} from 'react-router-dom';
 ReactDOM.render(

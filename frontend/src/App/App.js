@@ -1,8 +1,8 @@
 import React from 'react';
-import './App.css';
-import api from './util/api';
-import './estilos/busca.css';
-import './estilos/geral.css';
+import '../estilos/App.css';
+import api from '../util/api';
+import '../estilos/busca.css';
+import '../estilos/geral.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Redirect } from 'react-router-dom';
@@ -89,7 +89,7 @@ class Busca extends React.Component {
     }
     return (
       <div>
-        <div id="geral"><img src={require('./media/symbol.jpg')} width="50%" /></div>
+        <div id="geral"><img src={require('../media/symbol.jpg')} width="50%" /></div>
         <div class="input-group mb-3" id="busca">
           <InBusca onChange={() => this.handleChange(document.getElementById('inBusca').value)} />
           <ButCadast onClick={() => this.handleCLick()} />

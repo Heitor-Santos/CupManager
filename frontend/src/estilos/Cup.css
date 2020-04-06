@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
-h1, p, div, a, h3{
+h1, p, div, h3{
     font-family: 'Noto Sans', sans-serif;
 }
 #uiuiui{
@@ -10,5 +10,12 @@ h1, p, div, a, h3{
     margin: 0.5rem;
     /*margin-right: 0.5rem;
     /*background-color: #eee;*/
+    display: block;
+}
+.block-exampleHalf{
+    width: 80%;
+    align-content: right;
+    /*margin-right: 0.5rem;*/
+    background-color: #eee;
     display: block;
 }
