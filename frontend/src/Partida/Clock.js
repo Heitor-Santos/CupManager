@@ -20,7 +20,7 @@ function PQPNÂOAGUENTOMAIS(props) {
             startImmediately={false}
             onStart={
                 props.estadoPartida != "iniciada" ?
-                    () => console.log('onStart hook') : undefined
+                    () =>  props.onClick(): undefined
             }
             onStop={
                 props.estadoPartida == "iniciada" ?
@@ -66,11 +66,6 @@ class Clock extends React.Component {
             minutos: 60,
             clicked: false
         }
-        // this.Timer = this.Timer.bind(this)
-        PQPNÂOAGUENTOMAIS = PQPNÂOAGUENTOMAIS.bind(this);
-    }
-    forceUpdateHandler() {
-        this.forceUpdate();
     }
     async onChange(e) {
         const newMinutos = parseInt(e.target.value);
@@ -78,12 +73,9 @@ class Clock extends React.Component {
         console.log("-----------------")
         await this.setState({ minutos: newMinutos })///why the fuck isso n tá funcionando sem o await???? 
         console.log(this.state.minutos)
-        await this.setState({clicked:false})
+        await this.setState({clicked:false})//essas duas linhas mais cagadas q eu já fiz na vida
         await this.setState({clicked:true})
         //this.forceUpdateHandler()
-    }
-    toggleClicked(){
-        this.setState({clicked:!this.state.clicked})
     }
     render() {
         if (this.state.estadoPartida != "encerrada") {
@@ -95,7 +87,7 @@ class Clock extends React.Component {
                             <input type="text" class="form-control" onChange={(e) => this.onChange(e)} placeholder="Digite quantos minutos a partida tem" />
                             {this.state.clicked?
                                 <PQPNÂOAGUENTOMAIS estadoPartida ={this.state.estadoPartida}
-                                minutos ={this.state.minutos} />: null
+                                minutos ={this.state.minutos} onClick={this.props.onClick} />: null
                             }
                         </div>
                         <div class="col"></div>
