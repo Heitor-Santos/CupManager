@@ -31,8 +31,8 @@ routes.delete('/partida/:partidaNome', async (request, response)=>{
 
 routes.post('/partida', async (request,response)=>{
     const {nome, idPlayersA, idPlayersB} = request.body;
-    const idTreatA = idPlayersA == '' ? [] : idPlayersA.split(' ')
-    const idTreatB = idPlayersB == '' ? [] : idPlayersB.split(' ')
+    const idTreatA = idPlayersA == undefined ? [] : idPlayersA
+    const idTreatB = idPlayersB == undefined ? [] : idPlayersB
     const vencedor = null;
     if(await Partida.findOne({nome})== null){
         part = await Partida.create({
@@ -48,7 +48,7 @@ routes.post('/partida', async (request,response)=>{
 
 routes.put('/partida/:partidaNome', async (request, response) => {
     const nome = request.params.partidaNome;
-    const {nomeNovo, addJogadorA, addJogadorB, rmvJogadorA, rmvJogadorB, vencedor} = request.body;
+    const {nomeNovo, addJogadorA, addJogadorB, rmvJogadorA, rmvJogadorB, vencedor, golsA, golsB} = request.body;
     let listaA=[];
     let listaB=[];
     let vencedorReal;
@@ -57,21 +57,21 @@ routes.put('/partida/:partidaNome', async (request, response) => {
     if(copa!=null){
         listaA = copa.idPlayersA;
         listaB = copa.idPlayersB;
-        if(addJogadorA!= '') {
+        if(addJogadorA!= null) {
             if (listaA.some(id => id == addJogadorA)) {
                 return response.status(400).send({message:"Jogador A já cadastrado"})
             } else {
                 listaA.push(addJogadorA); 
             }
         }
-        if(addJogadorB!= '') {
+        if(addJogadorB!= null) {
             if (listaB.some(id => id == addJogadorB)) {
                 return response.status(400).send({message:"Jogador B já cadastrado"})
             } else {
                 listaB.push(addJogadorB); 
             }
         } 
-        if(rmvJogadorA != '') {
+        if(rmvJogadorA != null) {
             if (listaA.some(id => id == rmvJogadorA)) {
                 listaA = listaA.filter(id => id!=rmvJogadorA);
             } else {
@@ -79,17 +79,21 @@ routes.put('/partida/:partidaNome', async (request, response) => {
             } 
             
         }
-        if(rmvJogadorB != '') { 
+        if(rmvJogadorB != null) { 
             if (listaB.some(id => id == rmvJogadorB)) {
                 listaB = listaB.filter(id => id!=rmvJogadorB);
             } else {
                 return response.status(404).send({message:"Jogador B não existente"})
             } 
         }
-        if (vencedor != '') {
+        if (vencedor != null) {
             vencedorReal = vencedor
         }
-        if (nomeNovo != '') {
+        if(golsA!=null & golsB!=null){
+            resp = await Partida.updateOne( {nome: {$eq: nome} }, 
+                { $set: {golsA, golsB}})
+        }
+        if (nomeNovo != null) {
             resp = await Partida.updateOne( {nome: {$eq: nome} }, 
                 { $set: {nome: nomeNovo,
                 idPlayersA: listaA, idPlayersB: listaB, vencedor: vencedorReal}})

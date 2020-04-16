@@ -77,7 +77,7 @@ routes.put('/player/:nomeCamp', async (request, response) => {
             estat.defesas = defesas;
         lista.pop()
         lista.push(estat)
-        if (nomeNovo != '')
+        if (nomeNovo != null)
             resp = await Player.updateOne(
                 { nome: { $eq: nomeCamp } },
                 {

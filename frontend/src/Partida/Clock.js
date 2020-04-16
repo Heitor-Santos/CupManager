@@ -12,6 +12,12 @@ import TimerMachine from 'react-timer-machine'
 import Timer from 'react-compound-timer'
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
+let estado;
+async function help(postPartida, loadTime){
+    postPartida();
+    loadTime();
+    estado = "iniciada";
+}
 function PQPNÂOAGUENTOMAIS(props) {
     console.log(props)
     return (
@@ -19,18 +25,18 @@ function PQPNÂOAGUENTOMAIS(props) {
             direction="backward"
             startImmediately={false}
             onStart={
-                props.estadoPartida != "iniciada" ?
-                    () =>  props.onClick(): undefined
+                estado != "iniciada" ?
+                    () => help(props.postPartida, props.loadTime): null
             }
             onStop={
-                props.estadoPartida == "iniciada" ?
-                    () => console.log('onStop hook') : undefined
+                estado == "iniciada" ?
+                    () => props.editPartida() : null
             }
             checkpoints={[{
                 time: 0,
                 callback:
-                    props.estadoPartida == "iniciada" ?
-                        () => console.log('onStop hook') : undefined
+                    estado == "iniciada" ?
+                        () => console.log("buabua"): null
             }]}
             initialTime={props.minutos * 60*1000}
         >
@@ -87,7 +93,10 @@ class Clock extends React.Component {
                             <input type="text" class="form-control" onChange={(e) => this.onChange(e)} placeholder="Digite quantos minutos a partida tem" />
                             {this.state.clicked?
                                 <PQPNÂOAGUENTOMAIS estadoPartida ={this.state.estadoPartida}
-                                minutos ={this.state.minutos} onClick={this.props.onClick} />: null
+                                minutos ={this.state.minutos} 
+                                loadTime={this.props.loadTime}
+                                postPartida={this.props.postPartida}
+                                editPartida = {this.props.editPartida} />: null
                             }
                         </div>
                         <div class="col"></div>

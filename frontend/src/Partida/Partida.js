@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import Time from './Time'
 import Clock from './Clock'
 import apiCalls from '../util/apiCalls';
+import { max } from 'moment';
 
 class Times extends React.Component {
     constructor(props) {
@@ -31,8 +32,10 @@ class Times extends React.Component {
         this.handleLoad();
     }
     async handleLoad() {
+        let nomeCup = this.props.match.params.nameCup
+        let nomePartida= this.props.match.params.namePartida
         const load = new apiCalls
-        const response = await load.handleLoadPartida();
+        const response = await load.handleLoadPartida(`${nomeCup}-${nomePartida}`);
         this.setState({
             vencedor: response.vencedor,
             idPlayers: response.idPlayers,
@@ -41,7 +44,7 @@ class Times extends React.Component {
             estadoPartida: response.notFound ? "não-iniciada" : response.vencedor ? "encerrada" : "iniciada"
         })
         let temp = this.state.estadoPartida
-        if (temp != "não-iniciada") {
+        if (temp != "não-iniciada") {//isso é pra carregar os jogadores e tals no caso da partida estar rolando ou já tiver acabado
             await this.loadTime();
             this.setState({
                 estadoPartida: temp // essa redundancia pq o loadTime tbm altera o estadoPartida
@@ -60,6 +63,7 @@ class Times extends React.Component {
             this.setState({ idPlayers: times })
         }
         else{
+            let edit = new apiCalls;
             console.log(e.target)
             console.log("im gonna give you my love")
             const field = e.target.name;
@@ -81,6 +85,7 @@ class Times extends React.Component {
                 gols[pos]++;
                 let adv = pos?0:1
                 times[adv][goleiros[adv]].estatsPartida["golsTomados"]++;
+                const response = await edit.handleEditPlayer(nomeCup+times[adv][goleiros[adv]].nome,times[adv][goleiros[adv]].estatsPartida)
                 this.setState({gols:gols})
             }
             if(field=="golsContra"){
@@ -88,16 +93,36 @@ class Times extends React.Component {
                 let gols = this.state.gols;
                 gols[adv]++;
                 times[pos][goleiros[pos]].estatsPartida["golsTomados"]++;
+                const response = await edit.handleEditPlayer(nomeCup+times[pos][goleiros[pos]].nome,times[pos][goleiros[pos]].estatsPartida)
                 this.setState({gols:gols})
             }
             this.setState({idPlayers:times})
-            let edit = new apiCalls;
             const response = await edit.handleEditPlayer(nomeCup+times[pos][index].nome,times[pos][index].estatsPartida)
             if(response==false) this.setState({ok:false})
         }
         /*Aqui é o que eu falei sobre ligar um elemento html a uma função, esse "e.target" é o
         input do nome do jogador, o value é o texto do input e o id é onde eu coloquei o index ,
         o pos é pra eu saber qual o time */
+    }
+    async postPartida(){
+        let nomeCup = this.props.match.params.nameCup
+        let nomePartida= this.props.match.params.namePartida
+        let idPlayersA = this.state.idPlayers[0]
+        let idPlayersB = this.state.idPlayers[1]
+        const post = new apiCalls;
+        const response = await post.handlePostPartida(`${nomeCup}-${nomePartida}`,idPlayersA,idPlayersB)
+        if(response.status!=200)
+            this.setState({ok:false})
+    }
+    async editPartida(){
+        let nomeCup = this.props.match.params.nameCup
+        let nomePartida= this.props.match.params.namePartida
+        let gols = this.state.gols
+        let vencedor = gols[0]!=gols[1]?max(gols[0],gols[1]):null
+        const edit = new apiCalls;
+        const response = await edit.handleEditPartida(`${nomeCup}-${nomePartida}`,vencedor)
+        if(response.status!=200)
+            this.setState({ok:false})
     }
     handleTime(pos) {
         let times = this.state.idPlayers;
@@ -142,6 +167,9 @@ class Times extends React.Component {
                         <h1 class="display-4" style={{ textAlign: "center" }}>
                             {this.state.nome}
                         </h1>
+                        <h2 class="display-4" style={{ textAlign: "center" }}>
+                            {this.state.gols[0]}x{this.state.gols[1]}
+                        </h2>
                         <div class="row">
                             {/**Sendo row, ele considera que todos os elementos estão na mesma linha,
                              * por isso os dois times ficam do lado um do outro 
@@ -160,7 +188,10 @@ class Times extends React.Component {
                             que você está chamando a função e não a referenciando, a msm coisa
                             acontece com a função onChange */}
                         </div>
-                        <Clock onClick={()=>this.loadTime()}estadoPartida={this.state.estadoPartida}/>
+                        <Clock loadTime={()=>this.loadTime()}
+                        postPartida={()=>this.postPartida()}
+                        editPartida = {()=>this.editPartida()}
+                        estadoPartida={this.state.estadoPartida}/>
                     </div> : null
                     //Se houve um problema não carrega nada, mas dps vamos fazer um componente de erro
                 }

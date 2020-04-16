@@ -29,8 +29,49 @@ class apiCalls {
         }
         return resp;
     }
-
-
+    async handlePostPartida(nome, idPlayersA, idPlayersB){
+        let resp={status:null};
+        try{
+            resp = await api.post('/partida',{
+                nome,
+                idPlayersA,
+                idPlayersB
+            })
+            resp.status=200;
+        }
+        catch(error){
+            if (error.response) {
+                resp.status = error.response.status
+            }
+            else if (error.request) {
+                resp.status = error.request.status
+            }
+            else resp.status = -1;
+        }
+        return resp
+    }
+    async handleEditPartida(nome,vencedor, golsA, golsB){
+        let resp;
+        try{
+            resp = await api.put(`/partida${nome}`,{
+                vencedor,
+                golsA: golsA,
+                golsB: golsB
+            })
+            resp.status=200;
+        }
+        catch(error){
+            if (error.response) {
+                resp.status = error.response.status
+            }
+            else if (error.request) {
+                resp.status = error.request.status
+            }
+            else resp.status = -1;
+        }
+        return resp
+    }
+    
     async handlePostPlayer(nome) {
         let resp = {
             status : null,
