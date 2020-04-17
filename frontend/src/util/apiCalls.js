@@ -53,7 +53,7 @@ class apiCalls {
     async handleEditPartida(nome,vencedor, golsA, golsB){
         let resp;
         try{
-            resp = await api.put(`/partida${nome}`,{
+            resp = await api.put(`/partida/${nome}`,{
                 vencedor,
                 golsA: golsA,
                 golsB: golsB

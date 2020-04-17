@@ -1,7 +1,8 @@
-class Timer {
+
+export default class Clock{
     constructor(minutes) {
         this.minutesOrig = minutes;
-        this.timeLeft = 1000 * 60 * minutes
+        this.timeLeft = 1000  * minutes
         let begin = new Date(this.timeLeft);
         this.minutes = begin.getMinutes();
         this.seconds = begin.getSeconds();
@@ -29,7 +30,7 @@ class Timer {
         this.running = false
     }
     reset() {
-        this.timeLeft = 1000 * 60 * this.minutesOrig
+        this.timeLeft = 1000 * this.minutesOrig
         this.start()
     }
     isOver() {

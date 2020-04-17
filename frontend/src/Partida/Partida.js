@@ -9,6 +9,7 @@ import Time from './Time'
 import Clock from './Clock'
 import apiCalls from '../util/apiCalls';
 import { max } from 'moment';
+import Timer from './Timer';
 
 class Times extends React.Component {
     constructor(props) {
@@ -103,7 +104,7 @@ class Times extends React.Component {
         /*Aqui é o que eu falei sobre ligar um elemento html a uma função, esse "e.target" é o
         input do nome do jogador, o value é o texto do input e o id é onde eu coloquei o index ,
         o pos é pra eu saber qual o time */
-    }
+    }  
     async postPartida(){
         let nomeCup = this.props.match.params.nameCup
         let nomePartida= this.props.match.params.namePartida
@@ -118,11 +119,18 @@ class Times extends React.Component {
         let nomeCup = this.props.match.params.nameCup
         let nomePartida= this.props.match.params.namePartida
         let gols = this.state.gols
-        let vencedor = gols[0]!=gols[1]?max(gols[0],gols[1]):null
+        let vencedor
+        console.log(gols[0])
+        console.log(gols[1])
+        if(gols[0]!=gols[1])
+            vencedor =  gols[0]>gols[1]?0:1 
+        else vencedor =null
         const edit = new apiCalls;
         const response = await edit.handleEditPartida(`${nomeCup}-${nomePartida}`,vencedor)
+        console.log("nnnnn")
         if(response.status!=200)
             this.setState({ok:false})
+        console.log(response)
     }
     handleTime(pos) {
         let times = this.state.idPlayers;
@@ -188,7 +196,7 @@ class Times extends React.Component {
                             que você está chamando a função e não a referenciando, a msm coisa
                             acontece com a função onChange */}
                         </div>
-                        <Clock loadTime={()=>this.loadTime()}
+                        <Timer loadTime={()=>this.loadTime()}
                         postPartida={()=>this.postPartida()}
                         editPartida = {()=>this.editPartida()}
                         estadoPartida={this.state.estadoPartida}/>
