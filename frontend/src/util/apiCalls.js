@@ -58,6 +58,7 @@ class apiCalls {
                 golsA: golsA,
                 golsB: golsB
             })
+            console.log(resp)
             resp.status=200;
         }
         catch(error){
@@ -71,7 +72,6 @@ class apiCalls {
         }
         return resp
     }
-    
     async handlePostPlayer(nome) {
         let resp = {
             status : null,
@@ -167,23 +167,38 @@ class apiCalls {
         }
         return resp;
     }
-
-
+    async handleEditCup(nomeCup, nomePartida){
+        let resp
+        try{
+            resp = await api.put(`/cup/${nomeCup}`,{
+                addPartida: nomePartida
+            })
+        }
+        catch(error){
+            resp={status:-1}
+        }
+        console.log(resp)
+        return resp;
+    }
     async handleLoadPartida(nome) {
         let resp;
         console.log("oiioi");
         console.log("jnjbjbjbj");
         try {
             const response = await api.get(`/partida?nome=${nome}`);
+            console.log(response)
             let times = []
-            times[0] = response.data.idPlayerA;
-            times[1] = response.data.idPlayerB;
+            times[0] = response.data.idPlayersA;
+            times[1] = response.data.idPlayersB;
+            let golsA = response.data.golsA;
+            let golsB = response.data.golsB;
             console.log(times)
             resp = {
                 vencedor: response.data.vencedor,
                 idPlayers: times,
                 notFound: false,
                 ok: true,
+                gols:[golsA,golsB]
             }
             return resp;
         }

@@ -34,12 +34,15 @@ routes.post('/partida', async (request,response)=>{
     const idTreatA = idPlayersA == undefined ? [] : idPlayersA
     const idTreatB = idPlayersB == undefined ? [] : idPlayersB
     const vencedor = null;
+    const help =0;
     if(await Partida.findOne({nome})== null){
         part = await Partida.create({
             nome,
             vencedor,
             idPlayersA: idTreatA,
-            idPlayersB: idTreatB
+            idPlayersB: idTreatB,
+            golsA:help,
+            golsB:help
         })
         return response.json(part)
     }
@@ -47,12 +50,14 @@ routes.post('/partida', async (request,response)=>{
 });
 
 routes.put('/partida/:partidaNome', async (request, response) => {
+    console.log("olaolaoala")
     const nome = request.params.partidaNome;
     const {nomeNovo, addJogadorA, addJogadorB, rmvJogadorA, rmvJogadorB, vencedor, golsA, golsB} = request.body;
     let listaA=[];
     let listaB=[];
     let vencedorReal;
     const copa = await Partida.findOne({nome: nome});
+    console.log("bahahbahbahabhab")
     let resp;
     if(copa!=null){
         listaA = copa.idPlayersA;
@@ -91,7 +96,8 @@ routes.put('/partida/:partidaNome', async (request, response) => {
         }
         if(golsA!=null & golsB!=null){
             resp = await Partida.updateOne( {nome: {$eq: nome} }, 
-                { $set: {golsA, golsB}})
+                { $set: {golsA:golsA, golsB:golsB}})
+            console.log(resp)
         }
         if (nomeNovo != null) {
             resp = await Partida.updateOne( {nome: {$eq: nome} }, 
@@ -101,6 +107,7 @@ routes.put('/partida/:partidaNome', async (request, response) => {
             resp = await Partida.updateOne( {nome: {$eq: nome} }, 
                 { $set: {idPlayersA: listaA, idPlayersB: listaB, vencedor: vencedorReal}})
         }
+        console.log("buabua")
         return response.json(resp)
     } else {
         return(response.status(404).send({message: "Partida não encontrada"}))

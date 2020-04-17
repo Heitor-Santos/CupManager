@@ -37,18 +37,23 @@ class Times extends React.Component {
         let nomePartida= this.props.match.params.namePartida
         const load = new apiCalls
         const response = await load.handleLoadPartida(`${nomeCup}-${nomePartida}`);
+        console.log(response)
         this.setState({
             vencedor: response.vencedor,
             idPlayers: response.idPlayers,
             notFound: response.notFound,
-            ok: response.ok,
-            estadoPartida: response.notFound ? "não-iniciada" : response.vencedor ? "encerrada" : "iniciada"
+            gols: response.notFound ? [0,0]:response.gols,
+            estadoPartida: response.notFound ? "não-iniciada" : response.vencedor!==null ? "encerrada" : "iniciada"
         })
+        console.log("booo")
+        console.log(this.state.estadoPartida)
+        console.log(this.state.idPlayers)
         let temp = this.state.estadoPartida
         if (temp != "não-iniciada") {//isso é pra carregar os jogadores e tals no caso da partida estar rolando ou já tiver acabado
             await this.loadTime();
             this.setState({
-                estadoPartida: temp // essa redundancia pq o loadTime tbm altera o estadoPartida
+                estadoPartida: temp, // essa redundancia pq o loadTime tbm altera o estadoPartida
+                ok: response.ok
             })
         }
         /*O notFound e o ok servem pra gente carregar uma página especial se acontecer um 404
@@ -112,6 +117,8 @@ class Times extends React.Component {
         let idPlayersB = this.state.idPlayers[1]
         const post = new apiCalls;
         const response = await post.handlePostPartida(`${nomeCup}-${nomePartida}`,idPlayersA,idPlayersB)
+        const resp = await post.handleEditCup(nomeCup, nomePartida)
+        if (resp.status!=200)this.setState({ok:false})
         if(response.status!=200)
             this.setState({ok:false})
     }
@@ -126,10 +133,11 @@ class Times extends React.Component {
             vencedor =  gols[0]>gols[1]?0:1 
         else vencedor =null
         const edit = new apiCalls;
-        const response = await edit.handleEditPartida(`${nomeCup}-${nomePartida}`,vencedor)
+        const response = await edit.handleEditPartida(`${nomeCup}-${nomePartida}`,vencedor,gols[0],gols[1])
         console.log("nnnnn")
         if(response.status!=200)
             this.setState({ok:false})
+        this.setState({estadoPartida:"encerrada"})    
         console.log(response)
     }
     handleTime(pos) {
@@ -196,10 +204,12 @@ class Times extends React.Component {
                             que você está chamando a função e não a referenciando, a msm coisa
                             acontece com a função onChange */}
                         </div>
-                        <Timer loadTime={()=>this.loadTime()}
-                        postPartida={()=>this.postPartida()}
-                        editPartida = {()=>this.editPartida()}
-                        estadoPartida={this.state.estadoPartida}/>
+                        {this.state.estadoPartida!="encerrada"?
+                            <Timer loadTime={()=>this.loadTime()}
+                            postPartida={()=>this.postPartida()}
+                            editPartida = {()=>this.editPartida()}
+                            estadoPartida={this.state.estadoPartida}/>:null
+                        }
                     </div> : null
                     //Se houve um problema não carrega nada, mas dps vamos fazer um componente de erro
                 }

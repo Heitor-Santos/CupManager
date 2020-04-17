@@ -41,7 +41,7 @@ routes.post('/cup', async (request,response)=>{
             idPartidas: idTreat
         })
         return response.json(cup)
-    }
+    } 
     return (response.status(400).send({message: "Já existe uma cup com esse nome"}))
 })
 
@@ -53,20 +53,21 @@ routes.put('/cup/:nomeCamp', async (request, response) => {
     let resp;
     if(copa!=null){
         lista = copa.idPartidas;
-        if(addPartida != '') {
+        if(addPartida != null) {
             if (lista.indexOf(addPartida)!=-1) {
                 return(response.status(400).send({message: "Partida já cadastrada!"}))
             } else {
                 lista.push(addPartida); 
+                console.log("hdbhdhdh")
             }
-        } if(remvPartida != '') { 
+        } if(remvPartida != null) { 
             if (lista.indexOf(remvPartida)!=-1) {
                 lista = lista.filter(id => id!=remvPartida);
             } else {
                 return(response.status(400).send({message: "Partida não cadastrada!"}))
             }
             
-        } if (nomeNovo != '') {
+        } if (nomeNovo != null) {
             resp = await Cup.updateOne( {nome: {$eq: nomeCamp} }, 
                 { $set: {nome: nomeNovo,
                 idPartidas: lista}})
