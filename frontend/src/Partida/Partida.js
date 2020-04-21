@@ -6,10 +6,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Add from '@material-ui/icons/Add.js';
 import { Link } from 'react-router-dom'
 import Time from './Time'
-import Clock from './Clock'
 import apiCalls from '../util/apiCalls';
-import { max } from 'moment';
 import Timer from './Timer';
+import Estats from './Estats';
 
 class Times extends React.Component {
     constructor(props) {
@@ -56,6 +55,7 @@ class Times extends React.Component {
                 ok: response.ok
             })
         }
+        console.log(this.state.idPlayers)
         /*O notFound e o ok servem pra gente carregar uma página especial se acontecer um 404
         ou qualquer outro erro*/
     }
@@ -154,7 +154,7 @@ class Times extends React.Component {
         for (let i = 0; i < times.length; i++) {
             for (let j = 0; j < times[i].length; j++) {
                 let nomePlayer = nomeCup + times[i][j];
-                let indexPartida = parseInt(this.state.nome) - 1;
+                let indexPartida = parseInt(this.state.nome) - 1;//tem q criar um index da partida no model do player
                 const response = await load.handleLoadPlayer(nomePlayer);
                 if (response.ok == false)
                     this.setState({ ok: false })
@@ -209,6 +209,9 @@ class Times extends React.Component {
                             postPartida={()=>this.postPartida()}
                             editPartida = {()=>this.editPartida()}
                             estadoPartida={this.state.estadoPartida}/>:null
+                        }
+                        {this.state.estadoPartida!="não-iniciada"&&this.state.idPlayers[0][0].estatsPartida?
+                            <Estats times={this.state.idPlayers}/>:null
                         }
                     </div> : null
                     //Se houve um problema não carrega nada, mas dps vamos fazer um componente de erro
