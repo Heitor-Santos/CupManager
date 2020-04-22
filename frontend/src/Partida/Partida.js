@@ -61,6 +61,7 @@ class Times extends React.Component {
     }
     async changePlayer(pos, e) {
         let nomeCup = this.props.match.params.nameCup;
+        let indexPartida = parseInt(this.state.nome) - 1
         if (this.state.estadoPartida == "não-iniciada") {
             const newNome = e.target.value;
             const index = e.target.id;
@@ -78,7 +79,7 @@ class Times extends React.Component {
             let times = this.state.idPlayers;
             let goleiros = this.state.goleiros
             let currGoleiro = this.state.goleiros[pos]
-            if(field=="goleiro"){
+            if(field=="goleiro"){ 
                 if(currGoleiro!=null)
                     times[pos][currGoleiro].estatsPartida[field]=!times[pos][currGoleiro].estatsPartida[field]
                 times[pos][index].estatsPartida[field]=!times[pos][index].estatsPartida[field]
@@ -97,7 +98,7 @@ class Times extends React.Component {
             if(field=="golsContra"){
                 let adv = pos?0:1
                 let gols = this.state.gols;
-                gols[adv]++;
+                gols[adv]++; 
                 times[pos][goleiros[pos]].estatsPartida["golsTomados"]++;
                 const response = await edit.handleEditPlayer(nomeCup+times[pos][goleiros[pos]].nome,times[pos][goleiros[pos]].estatsPartida)
                 this.setState({gols:gols})
@@ -105,6 +106,7 @@ class Times extends React.Component {
             this.setState({idPlayers:times})
             const response = await edit.handleEditPlayer(nomeCup+times[pos][index].nome,times[pos][index].estatsPartida)
             if(response==false) this.setState({ok:false})
+            console.log(this.state.idPlayers)
         }
         /*Aqui é o que eu falei sobre ligar um elemento html a uma função, esse "e.target" é o
         input do nome do jogador, o value é o texto do input e o id é onde eu coloquei o index ,

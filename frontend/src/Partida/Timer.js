@@ -23,7 +23,6 @@ class Timer extends React.Component {
     }
     handleChange(evt){
         let time= evt.target.value
-        console.log(time)
         this.setState({time: time})
     }
     createClock(){
@@ -43,7 +42,6 @@ class Timer extends React.Component {
         console.log("ggggg")
         let repetecoID= setInterval(()=>{
             this.setState({time: `${this.cron.minutes}:${this.cron.seconds}`})
-            console.log(this.state.time)
             if(!this.state.running) clearInterval(repetecoID)
             if(this.cron.isOver()){
                 this.props.editPartida()
