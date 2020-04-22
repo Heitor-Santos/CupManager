@@ -21,7 +21,8 @@ class Times extends React.Component {
             gols:[0,0],
             notFound: false,
             ok: true,
-            estadoPartida: "não-iniciada"
+            estadoPartida: "não-iniciada",
+            timesReady: false
         }
         //Muito cuidado com idPlayers, qualquer coisa com array dá undefined, multidimensional só piora
         this.changePlayer = this.changePlayer.bind(this);
@@ -54,7 +55,7 @@ class Times extends React.Component {
                 estadoPartida: temp, // essa redundancia pq o loadTime tbm altera o estadoPartida
                 ok: response.ok
             })
-        }
+        } else this.setState({timesReady:true})
         console.log(this.state.idPlayers)
         /*O notFound e o ok servem pra gente carregar uma página especial se acontecer um 404
         ou qualquer outro erro*/
@@ -162,8 +163,8 @@ class Times extends React.Component {
             for (let j = 0; j < times[i].length; j++) {
                 let nomePlayer = nomeCup + times[i][j];
                 let words =  this.state.nome.toString().split(' ')
-        console.log(words)
-        let indexPartida = parseInt(words[1])-1//tem q criar um index da partida no model do player
+                console.log(words)
+                let indexPartida = parseInt(words[1])-1
                 const response = await load.handleLoadPlayer(nomePlayer);
                 if (response.ok == false)
                     this.setState({ ok: false })
@@ -180,14 +181,14 @@ class Times extends React.Component {
                 }
             }
         }
-        this.setState({ idPlayers: times, estadoPartida: "iniciada" })
+        this.setState({ idPlayers: times, estadoPartida: "iniciada" , timesReady: true})
     }
     render() {
         console.log(this.state.idPlayers)
         return (
             <div>
                 {/*Se não houve problema ou o único problema é o 404 a página renderiza */}
-                {this.state.ok ?
+                {this.state.ok && this.state.timesReady?
                     <div>
                         <h1 class="display-4" style={{ textAlign: "center" }}>
                             {this.state.nome}
