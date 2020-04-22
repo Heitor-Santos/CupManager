@@ -61,7 +61,12 @@ class Times extends React.Component {
     }
     async changePlayer(pos, e) {
         let nomeCup = this.props.match.params.nameCup;
-        let indexPartida = parseInt(this.state.nome) - 1
+        console.log("baby")
+        console.log(this.state.nome)
+        let words =  this.state.nome.toString().split(' ')
+        console.log(words)
+        let indexPartida = parseInt(words[1])-1
+        console.log(indexPartida)
         if (this.state.estadoPartida == "não-iniciada") {
             const newNome = e.target.value;
             const index = e.target.id;
@@ -92,7 +97,7 @@ class Times extends React.Component {
                 gols[pos]++;
                 let adv = pos?0:1
                 times[adv][goleiros[adv]].estatsPartida["golsTomados"]++;
-                const response = await edit.handleEditPlayer(nomeCup+times[adv][goleiros[adv]].nome,times[adv][goleiros[adv]].estatsPartida)
+                const response = await edit.handleEditPlayer(nomeCup+times[adv][goleiros[adv]].nome,times[adv][goleiros[adv]].estatsPartida, indexPartida)
                 this.setState({gols:gols})
             }
             if(field=="golsContra"){
@@ -100,11 +105,11 @@ class Times extends React.Component {
                 let gols = this.state.gols;
                 gols[adv]++; 
                 times[pos][goleiros[pos]].estatsPartida["golsTomados"]++;
-                const response = await edit.handleEditPlayer(nomeCup+times[pos][goleiros[pos]].nome,times[pos][goleiros[pos]].estatsPartida)
+                const response = await edit.handleEditPlayer(nomeCup+times[pos][goleiros[pos]].nome,times[pos][goleiros[pos]].estatsPartida, indexPartida)
                 this.setState({gols:gols})
             }
             this.setState({idPlayers:times})
-            const response = await edit.handleEditPlayer(nomeCup+times[pos][index].nome,times[pos][index].estatsPartida)
+            const response = await edit.handleEditPlayer(nomeCup+times[pos][index].nome,times[pos][index].estatsPartida, indexPartida)
             if(response==false) this.setState({ok:false})
             console.log(this.state.idPlayers)
         }
@@ -156,7 +161,9 @@ class Times extends React.Component {
         for (let i = 0; i < times.length; i++) {
             for (let j = 0; j < times[i].length; j++) {
                 let nomePlayer = nomeCup + times[i][j];
-                let indexPartida = parseInt(this.state.nome) - 1;//tem q criar um index da partida no model do player
+                let words =  this.state.nome.toString().split(' ')
+        console.log(words)
+        let indexPartida = parseInt(words[1])-1//tem q criar um index da partida no model do player
                 const response = await load.handleLoadPlayer(nomePlayer);
                 if (response.ok == false)
                     this.setState({ ok: false })

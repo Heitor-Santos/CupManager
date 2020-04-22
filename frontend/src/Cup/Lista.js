@@ -20,7 +20,7 @@ function Lista(props) {
         <div class="list-group">
             {lista}
             <div>Crie uma nova partida clicando aqui
-                <Link to={`${nomeCup}/Partida${lista.length +1}`}><Add/></Link>
+                <Link to={`${nomeCup}/Partida ${lista.length +1}`}><Add/></Link>
                 {/**
                  * Muitas coisas precisam ser notadas aqui: primeiro que o link pra uma nova partida
                  * tem o index de lista.length, o que significa que se uma lista tem 3 partidas, a 

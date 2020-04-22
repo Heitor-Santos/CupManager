@@ -46,7 +46,7 @@ routes.post('/player', async (request, response) => {
 
 routes.put('/player/:nomeCamp', async (request, response) => {
     const nomeCamp = request.params.nomeCamp;
-    const { nomeNovo, golsFavor, assist, golsContra, golsTomados, goleiro, defesas } = request.body;
+    const { nomeNovo, golsFavor, assist, golsContra, golsTomados, goleiro, defesas, indexPartida } = request.body;
     player = await Player.findOne({ nome: nomeCamp });
     if (player != null) {
         let lista = player.estatsPartidas;
@@ -75,8 +75,9 @@ routes.put('/player/:nomeCamp', async (request, response) => {
             estat.goleiro = goleiro;
         if (defesas != '')
             estat.defesas = defesas;
-        lista.pop()
-        lista.push(estat)
+        lista[indexPartida]=estat;
+        console.log(indexPartida+" hoooo")
+        console.log(lista)
         if (nomeNovo != null)
             resp = await Player.updateOne(
                 { nome: { $eq: nomeCamp } },

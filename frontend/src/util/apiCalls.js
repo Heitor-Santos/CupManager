@@ -122,7 +122,7 @@ class apiCalls {
         }
         return resp;
     }
-    async handleEditPlayer(nome, estatsPartidas){
+    async handleEditPlayer(nome, estatsPartidas,  indexPartida){
         let response;
         try{
             response = await api.put(`/player/${nome}`,{
@@ -132,6 +132,7 @@ class apiCalls {
                 golsTomados: estatsPartidas.golsTomados,
                 goleiro: estatsPartidas.goleiro,
                 defesas: estatsPartidas.defesas,
+                indexPartida: indexPartida
             })
             console.log(response)
         }
