@@ -10,10 +10,10 @@ class EstatsHelp extends React.Component{
     }
     componentDidMount(){
         console.log("OOOOO")
-        this.setupData(this.props.times);
+        let chartData = this.setupData(this.props.times, this.props.title)
     }
-    setupData(times){
-        let chartData=[["Nome","Gols"]];
+    setupData(times, title){
+        let chartData=[["Nome",title]];
         console.log(times)
         console.log(this.props.times)
         for(let time in times){
@@ -21,7 +21,7 @@ class EstatsHelp extends React.Component{
                 chartData.push([jogador.nome, jogador.estatsPartida.golsFavor])
             })
         }
-        this.setState({chartData:chartData})
+        return chartData
         console.log(chartData)
     }
     render(){
@@ -29,21 +29,21 @@ class EstatsHelp extends React.Component{
             <Chart 
                 width='1000px'
                 height= '800px'
-                chartType ='PieChart'
+                chartType ='BarChart'
                 data = {this.state.chartData}
                 options = {{
-                title: "Pizza Toppings Survey",
+                title: this.props.title,
                 is3d: true
             }}/>
         )
     }
     static getDerivedStateFromProps(newProps){
-        let chartData=[["Nome","Gols"]];
+        let chartData=[["Nome",newProps.title]];
         let times = newProps.times;
         console.log(newProps.times)
         for(let time in times){
             times[time].map((jogador)=>{
-                chartData.push([jogador.nome, jogador.estatsPartida.golsFavor])
+                chartData.push([jogador.nome, jogador.estatsPartida[newProps.opcao]])
             })
         }
         return({
@@ -51,16 +51,56 @@ class EstatsHelp extends React.Component{
         })
     }
 }
+function ListaOpcoes(props){
+    const opcoes=[
+        ["golsFavor","Gols"],
+        ["assist","Assistências"],
+        ["golsContra","Gols Contras"],
+        ["golsTomados","Gols Tomados"]
+    ]
+    opcoes.map(opcao=>console.log(opcao))
+    const lista = opcoes.map(opcao=>
+        <a class="dropdown-item" href="#"
+            onClick={(evt)=>props.onClick(evt)}
+            id={opcao[0]}
+            name={opcao[1]}>{opcao[1]}
+        </a>
+    )
+    return lista;
+}
 class Estats  extends React.Component{
     constructor(props){
         super(props);
-        this.state={chartData:null}
+        this.state={
+            chartData:null,
+            show: false,
+            title: "Gols",
+            opcao: "golsFavor"
+        } 
+        this.handleClick = this.handleClick.bind(this)
         console.log("AAAAA")
     }
+    toggleClass = () => this.setState({ show: !this.state.show })
+    handleClick(evt){
+        let opcao = evt.target.id
+        let title = evt.target.name
+        this.setState({opcao:opcao, title:title})
+    }
     render(){
-        console.log("can you hear me?")
+        const classMenu = `dropdown-menu${this.state.show ? " show" : ""}`
+        console.log("can you hear me?") 
         return(
-            <EstatsHelp times = {this.props.times} />
+            <section>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                    data-toggle="dropdown" aria-haspopup="false"
+                    aria-expanded="false" onClick={this.toggleClass}>Opções</button>
+                    <div class={classMenu}>
+                        <ListaOpcoes onClick={(evt)=>this.handleClick(evt)} />
+                    </div>
+                </div>
+                <EstatsHelp times = {this.props.times} title={this.state.title} opcao={this.state.opcao} />
+            </section>
         )
     }
 }
