@@ -3,6 +3,7 @@ import '../estilos/Cup.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Lista from './Lista'
+import Estats from './EstatCup'
 import apiCalls from '../util/apiCalls'
 
 function Error(props) {
@@ -17,6 +18,7 @@ class Copa extends React.Component {
             ok: true,
             notFound: false,
             lista: [],
+            listaPlayers:[],
         }
         this.handleLoad()
     }
@@ -35,8 +37,31 @@ class Copa extends React.Component {
         this.setState({
             ok: response.ok,
             notFound: response.notFound,
-            lista: response.lista
+            lista: response.lista,
+            listaPlayers: response.idPlayers
         })
+        let idPlayers = this.state.listaPlayers
+        for (let i = 0; i < idPlayers.length; i++) {
+            let nomePlayer = this.state.nome + idPlayers[i];
+            let nome = idPlayers[i]
+            const load = new apiCalls
+            const response = await load.handleLoadPlayer(nomePlayer);
+            console.log(response)
+            if (response.ok == false)
+                return({ ok: false })
+            else {
+                idPlayers[i] = response.estatsPartidas.reduce(function(previousValue, currentValue) {
+                    return {
+                      golsFavor: previousValue.golsFavor + currentValue.golsFavor,
+                      golsContra: previousValue.golsContra + currentValue.golsContra,
+                      golsTomados: previousValue.golsTomados + currentValue.golsTomados,
+                      assist: previousValue.assist + currentValue.assist
+                    }
+                });
+                idPlayers[i][nome]=nome
+            }
+        }
+        this.setState({listaPlayers:idPlayers})
     }
     render() {
         return (
@@ -61,11 +86,8 @@ class Copa extends React.Component {
                                      */}
                                 </span>
                             </div>
-                            <div class="col-sm-8" style={{ backgroundColor: "red" }}>
-                                AQUI VAI SER AS ESTATÍSTICAS
-                                {/**
-                                 * A gente tem que aprender a usar o google chart e colocar as estatísticas bem aqui
-                                 */}
+                            <div class="col-sm-8" >
+                                <Estats idPlayers={this.state.listaPlayers} nomeCup={this.state.nome} />
                             </div>
                         </div>
                     </div> : <Error />}

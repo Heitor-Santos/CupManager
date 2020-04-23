@@ -123,9 +123,11 @@ class Times extends React.Component {
         let nomePartida= this.props.match.params.namePartida
         let idPlayersA = this.state.idPlayers[0]
         let idPlayersB = this.state.idPlayers[1]
+        let idPlayers = this.state.idPlayers.flat()
+        console.log(idPlayers)
         const post = new apiCalls;
         const response = await post.handlePostPartida(`${nomeCup}-${nomePartida}`,idPlayersA,idPlayersB)
-        const resp = await post.handleEditCup(nomeCup, nomePartida)
+        const resp = await post.handleEditCup(nomeCup, nomePartida, idPlayers)
         if (resp.status!=200)this.setState({ok:false})
         if(response.status!=200)
             this.setState({ok:false})

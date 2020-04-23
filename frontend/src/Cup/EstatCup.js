@@ -3,37 +3,35 @@ import '../estilos/Cup.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Chart from 'react-google-charts'
+import apiCalls from '../util/apiCalls'
 class EstatsHelp extends React.Component{
     constructor(props){
         super(props);
-        this.state={chartData: null}
+        this.state={
+            chartData: null,
+            idPlayers:null
+        }
     }
     componentDidMount(){
         console.log("OOOOO")
-        let chartData = this.setupData(this.props.times, this.props.title)
+        let chartData = this.setupData(this.props.idPlayers, this.props.title)
     }
-    setupData(times, title){
-        let chartData=[["Nome",title]];
-        console.log(times)
-        console.log(this.props.times)
+    setupData(Players, title){ 
+        let chartData = [["Nome",title]]
         let temp=[]
-        for(let time in times){
-            times[time].map((jogador)=>{
-                let aux = jogador.estatsPartida[this.props.opcao]
-                temp.push([jogador.nome, aux?aux:0])
-            })
-        }
-        temp.sort().reverse();
-        temp.map(el=>chartData.push(el))
-        console.log(chartData)
+        Players.map((player)=>{
+            let aux = player[this.props.opcao]
+            chartData.push([player.nome, aux?aux:0])
+        })
+        this.setState({chartData:chartData})
         return chartData
-        console.log(chartData)
     }
     render(){
+        console.log(this.state.chartData)
         return(
             <Chart 
-                width='1000px'
-                height= '800px'
+                width='100%'
+                height= '300px'
                 chartType ='ColumnChart'
                 data = {this.state.chartData}
                 options = {{
@@ -43,22 +41,13 @@ class EstatsHelp extends React.Component{
         )
     }
     static getDerivedStateFromProps(newProps){
-        let chartData=[["Nome",newProps.title]];
-        let times = newProps.times;
-        let temp = []
-        console.log(newProps.times)
-        for(let time in times){
-            times[time].map((jogador)=>{
-                let aux = jogador.estatsPartida[newProps.opcao]
-                temp.push([jogador.nome, aux?aux:0])
-            })
-        }
-        temp.sort().reverse();
-        temp.map(el=>chartData.push(el))
-        console.log(chartData)
-        return({
-            chartData:chartData
+        let chartData = [["Nome",newProps.title]]
+        let temp=[]
+        newProps.idPlayers.map((player)=>{
+            let aux = player[newProps.opcao]
+            chartData.push([player.nome, aux?aux:0])
         })
+        return ({chartData:chartData})
     }
 }
 function ListaOpcoes(props){
@@ -109,7 +98,7 @@ class Estats  extends React.Component{
                         <ListaOpcoes onClick={(evt)=>this.handleClick(evt)} />
                     </div>
                 </div>
-                <EstatsHelp times = {this.props.times} title={this.state.title} opcao={this.state.opcao} />
+                <EstatsHelp idPlayers = {this.props.idPlayers} title={this.state.title} opcao={this.state.opcao} nomeCup={this.props.nomeCup} />
             </section>
         )
     }

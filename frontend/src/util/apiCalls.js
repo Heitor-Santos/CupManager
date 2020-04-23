@@ -145,12 +145,14 @@ class apiCalls {
     async handleLoadCup(nome) {
         let resp = {
             lista: [],
+            idPlayers:[],
             notFound: null,
             ok: null
         };
         try {
             let response = await api.get(`/cup?nome=${nome}`);
             resp.lista = response.data.idPartidas;
+            resp.idPlayers = response.data.idPlayers;
             resp.notFound = false
             resp.ok = true
         }
@@ -160,6 +162,7 @@ class apiCalls {
                 console.log(response)
                 if (response.status == 200) {
                     resp.lista = response.idPartidas;
+                    resp.idPlayers=[]
                     resp.notFound = false;
                     resp.ok = true;
                 }
@@ -168,11 +171,12 @@ class apiCalls {
         }
         return resp;
     }
-    async handleEditCup(nomeCup, nomePartida){
+    async handleEditCup(nomeCup, nomePartida, idPlayers){
         let resp
         try{
             resp = await api.put(`/cup/${nomeCup}`,{
-                addPartida: nomePartida
+                addPartida: nomePartida,
+                idPlayers:idPlayers,
             })
         }
         catch(error){

@@ -47,7 +47,7 @@ routes.post('/cup', async (request,response)=>{
 
 routes.put('/cup/:nomeCamp', async (request, response) => {
     const nomeCamp = request.params.nomeCamp;
-    const {nomeNovo, addPartida, remvPartida} = request.body;
+    const {nomeNovo, addPartida, remvPartida, idPlayers} = request.body;
     let lista=[];
     const copa = await Cup.findOne({nome: nomeCamp});
     let resp;
@@ -67,13 +67,26 @@ routes.put('/cup/:nomeCamp', async (request, response) => {
                 return(response.status(400).send({message: "Partida não cadastrada!"}))
             }
             
-        } if (nomeNovo != null) {
+        }
+        let players = []
+        if (copa.idPlayers!=null) players= copa.idPlayers
+        for(let i in idPlayers){
+            if(players!=null){
+                console.log("merda viu")
+                if(!players.includes(idPlayers[i]))
+                    console.log("merda msm")
+                    players.push(idPlayers[i])
+            }
+        }
+        if (nomeNovo != null) {
             resp = await Cup.updateOne( {nome: {$eq: nomeCamp} }, 
                 { $set: {nome: nomeNovo,
-                idPartidas: lista}})
+                idPartidas: lista,
+                idPlayers: players}})
         } else {
             resp = await Cup.updateOne({nome: {$eq: nomeCamp} }, 
-                { $set: {idPartidas: lista}})
+                { $set: {idPartidas: lista,
+                idPlayers: players}})
         }
         return response.json(resp)
     } else {
