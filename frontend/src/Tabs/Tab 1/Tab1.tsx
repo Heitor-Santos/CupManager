@@ -7,7 +7,7 @@ function Tab1(props: any) {
         <IonPage>
             <IonContent>
                 <IonIcon icon={arrowForwardCircle} />
-                <p>Tab 1 fi da puta</p>
+                
             </IonContent>
         </IonPage>
     )

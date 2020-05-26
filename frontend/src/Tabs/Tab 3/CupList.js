@@ -1,7 +1,7 @@
 import React from 'react'
 import HandleStorage from '../../util/handleStorage'
 import { IonItem, IonList, IonLabel } from '@ionic/react';
-
+import ListIsEmpty from './listIsEmpty'
 const store = new HandleStorage();
 
 class CupList extends React.Component {
@@ -28,9 +28,10 @@ class CupList extends React.Component {
     }
     render() {
         const recentCups = this.state.cupList
-        return (
+        const response = recentCups?
             <IonList>{recentCups}</IonList>
-        )
+            :<ListIsEmpty/>
+        return (response)
     }
 }
 export default CupList
