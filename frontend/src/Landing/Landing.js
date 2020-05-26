@@ -15,11 +15,14 @@ class Landing extends React.Component {
         this.setState({ cupName: evt.target.value })
     }
     async handleClick(cupName, onClick) {
-        const isFirstTime = await store.isFirstTime()
-        if (isFirstTime === true) {
-            await store.setLastCup(cupName)
-            onClick()
+        if (cupName != "") {
+            const isFirstTime = await store.isFirstTime()
+            if (isFirstTime === false) {
+                await store.setLastCup(cupName)
+                onClick()
+            }
         }
+        
     }
     render() {
         return (
