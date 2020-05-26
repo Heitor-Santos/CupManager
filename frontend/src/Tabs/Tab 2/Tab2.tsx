@@ -1,13 +1,11 @@
 import React from 'react'
-import { IonPage, IonContent, IonItem, IonIcon } from '@ionic/react'
-import { arrowForwardCircle, people } from 'ionicons/icons'
-
+import { IonPage, IonContent} from '@ionic/react'
+import Landing from '../../Landing/Landing'
 function Tab2(props: any){
     return(
         <IonPage>
             <IonContent>
-                <IonIcon icon={people}/>
-                <p>Tab 2 GOSTOSA</p>
+                <Landing/>
             </IonContent>
         </IonPage>
     )

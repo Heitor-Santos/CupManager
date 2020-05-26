@@ -1,12 +1,14 @@
 import React from 'react'
-import { IonPage, IonContent, IonItem, IonIcon } from '@ionic/react'
-import { arrowForwardCircle, arrowUndo } from 'ionicons/icons'
+import { IonPage, IonContent} from '@ionic/react'
+import ToolBar from './ToolBar'
+import CupList from './CupList'
 
 function Tab3(props: any){
     return(
         <IonPage>
+            <ToolBar/>
             <IonContent>
-                <IonIcon icon={arrowUndo}/>
+                <CupList />
             </IonContent>
         </IonPage>
     )
