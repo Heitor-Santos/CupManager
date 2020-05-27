@@ -4,7 +4,7 @@ const { Storage } = Plugins;
 class HandleStorage {
     async isFirstTime() {
         const { value } = await Storage.get({ key: 'lastCup' });
-        if (value === undefined) return true
+        if (value == undefined) return true
         return false
     }
     async setLastCup(lastCup){

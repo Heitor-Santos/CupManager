@@ -17,7 +17,7 @@ class Landing extends React.Component {
     async handleClick(cupName, onClick) {
         if (cupName != "") {
             const isFirstTime = await store.isFirstTime()
-            if (isFirstTime === false) {
+            if (isFirstTime == true) {
                 await store.setLastCup(cupName)
                 onClick()
             }
