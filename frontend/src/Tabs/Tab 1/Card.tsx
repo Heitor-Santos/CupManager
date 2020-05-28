@@ -1,10 +1,7 @@
 import React, { Props } from 'react'
 import { IonPage, IonContent, IonItem, IonIcon, IonHeader, IonToolbar, IonTitle, IonButton, IonFab, IonFabButton, IonLabel, IonList, IonListHeader, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, } from '@ionic/react'
 import { add } from 'ionicons/icons'
-import firebase from "../../firebase/firestore";
 import "./Tab1.css"
-
-
 
 
 const Card: React.FC = ()=> {
