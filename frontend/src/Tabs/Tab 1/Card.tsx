@@ -1,106 +1,35 @@
-import React, { Props } from 'react'
-import { IonPage, IonContent, IonItem, IonIcon, IonHeader, IonToolbar, IonTitle, IonButton, IonFab, IonFabButton, IonLabel, IonList, IonListHeader, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, } from '@ionic/react'
-import { add } from 'ionicons/icons'
+import React, { useState, useEffect, Props } from 'react'
+import { IonItem, IonButton, IonLabel, IonList, IonItemSliding, IonItemOption, IonItemOptions, IonIcon, } from '@ionic/react'
 import "./Tab1.css"
+import { construct, trash } from 'ionicons/icons'
 
+interface ListPartida {
+  list: any[],
+}
 
-const Card: React.FC = ()=> {
+const Card: React.FC<ListPartida> = ({list}) => {
+  
+  
+  const List = list.map((elem)=>(
+    <IonItemSliding key = {elem.idPartida}>
+      <IonItem>
+        <IonLabel> Partida {elem.idPartida} </IonLabel>
+        <IonIcon icon={trash}></IonIcon>
+      </IonItem>
+      <IonItemOptions side = "end">
+        <IonItemOption onClick={() => alert('pressed delete')}>
+          Apagar Partida?
+        </IonItemOption>
+      </IonItemOptions>
+    </IonItemSliding>
+   ))
+
     return(
-        <IonList>
-              <IonItem>
-                <IonButton>
-                <IonLabel>Pokémon Yellow</IonLabel>
-                </IonButton>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Mega Man X</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>The Legend of Zelda</IonLabel>
-              </IonItem>
-              <IonItem>
-                 <IonLabel>Pac-Man</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Super Mario World</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Pokémon Yellow</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Mega Man X</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>The Legend of Zelda</IonLabel>
-              </IonItem>
-              <IonItem>
-                 <IonLabel>Pac-Man</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Super Mario World</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Pokémon Yellow</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Mega Man X</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>The Legend of Zelda</IonLabel>
-              </IonItem>
-              <IonItem>
-                 <IonLabel>Pac-Man</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Super Mario World</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Pokémon Yellow</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Mega Man X</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>The Legend of Zelda</IonLabel>
-              </IonItem>
-              <IonItem>
-                 <IonLabel>Pac-Man</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Super Mario World</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Pokémon Yellow</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Mega Man X</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>The Legend of Zelda</IonLabel>
-              </IonItem>
-              <IonItem>
-                 <IonLabel>Pac-Man</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Super Mario World</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Pokémon Yellow</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Mega Man X</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>The Legend of Zelda</IonLabel>
-              </IonItem>
-              <IonItem>
-                 <IonLabel>Coco</IonLabel>
-              </IonItem>
-              <IonItem>
-                <IonLabel>Super Mario World</IonLabel>
-              </IonItem>
-            </IonList>
+      <div>
+        {List}
+      </div>
     )
+      
 }
 
 export default Card

@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import { useState } from 'react';
 
 var firebaseConfig = {
     apiKey: "AIzaSyBUVobQ91KDm5Fv0wTbAsAy4arysw31Mgs",
@@ -23,25 +24,24 @@ var firebaseConfig = {
     return true;
   }
 
-  export async function postCup(cupName:string) {
+  export async function postCup(cupName) {
     const res = await getCup(cupName)
     if (res) return false;
+    console.log(res)
     await db.collection('Cup').add({
       idPartidas: [],
       idPlayer: [],
       nome: cupName
     })
+    return true
   }
 
-  export async function getCup(cupName:string) {
+  export async function getCup(cupName) {
     var result = false;
     await db.collection('Cup').get()
         .then(snapshot=> {
           snapshot.forEach(doc => {
             const data = doc.data()
-            console.log(data.nome == cupName)
-            console.log(data.nome)
-            console.log(cupName)
             if (data.nome == cupName) {
               result = true
             }
@@ -50,14 +50,24 @@ var firebaseConfig = {
     return result
   }
 
+  
+
   export async function getPartida() {
-    var list = []
-    await db.collection('Cup').get()
+    const list =[]
+    await db.collection('Partida').orderBy("idPartida", "asc").get()
         .then(snapshot=> {
           snapshot.forEach(doc => {
-            const data = doc.data()
-            console.log(data)
+            const {goalsA,goalsB,idPartida,idPlayersA,idPlayersB,vencedor} = doc.data()
+            list.push({
+              goalsB,
+              goalsA,
+              idPartida,
+              idPlayersA,
+              idPlayersB,
+              vencedor
+            })
           })
         })
-    return true
+    console.log(list)
+    return list
   }

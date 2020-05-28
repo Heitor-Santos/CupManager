@@ -1,58 +1,78 @@
 import React, { Props, Component, useState, useEffect } from 'react'
-import { IonPage, IonContent, IonItem, IonIcon, IonHeader, IonToolbar, IonTitle, IonButton, IonFab, IonFabButton, IonLabel, IonList, IonListHeader, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonLoading, } from '@ionic/react'
-import { add } from 'ionicons/icons'
+import { IonPage, IonContent, IonItem, IonIcon, IonHeader, IonToolbar, IonTitle, IonButton, IonFab, IonFabButton, IonLabel, IonList, IonListHeader, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonLoading, IonText, } from '@ionic/react'
+import { add, list, key } from 'ionicons/icons'
 import {login,getPartida,postCup} from "../../firebase/firestore";
 import "./Tab1.css"
 import Card from './Card';
 import HandleStorage from '../../util/handleStorage';
 
-//<IonButton expand = "block" onClick = {aaaa}></IonButton>
-
-//interface Tab1Props {
- // firstPage: true
-//}
-//{Title,Image,Body})
-
-
 const Tab1: React.FC = ()=> {
       
+  // loja que armazena ultimos dados  
   const store = new HandleStorage()
 
-    // variaveis controladores de estado da TAB
-    const [ firstPage, setPage ] = useState(true);
-    const [ colorFirstPage, setColorButtonFirst] = useState("dark");
-    const [ colorSecondPage, setColorButtonSecond ] = useState("light");
-    const [ busy, setBusy ] = useState<boolean>(true);
-    const [ cup, setCup ] = useState("");
-    
-    // variaveis de conteudo
-    const cardContent = firstPage ? <Card /> : <p>Estatística foda!!</p>
+  // variaveis controladores de estado da TAB
+  
+  const [ firstPage, setPage ] = useState(true);
+  const [ colorFirstPage, setColorButtonFirst] = useState("dark");
+  const [ colorSecondPage, setColorButtonSecond ] = useState("light");
+  const [ busy, setBusy ] = useState<boolean>(true);
+  const [ cup, setCup ] = useState("");
+  const [list, setList] = useState< any []>([])
 
-    // inicia os dados essencias da aplicação
-    const initPage = async () => {
-      const loginResp = await login() // Faz a autenticação do firebase
+  // variaveis de conteudo
+  const cardContent = () => { // qual conteudo vai ser disponivel
+    if (firstPage && busy) {
+      return <div></div>
+    } else if (firstPage && !busy) {
+        return listPartidas
+    } else {
+        return <p>estatistica foda</p>
+    }
+  }
+  
+  const subtitleCard = firstPage? "Lista de todas partidas da competição." 
+    : "Dados estatícos sobre os jogadores."
+  const listPartidas = busy ? <p></p> : <Card list={list}/>
+
+  // equivalente ao CompeneuntDeMount
+  useEffect(() => {
+    initPage()
+  }, []);
+
+  // inicia os dados essencias da aplicação
+  const initPage = async () => {
+    const loginResp = await login()
+    if(loginResp) {
       //getPartidaResp = await getPartida()
       const keyCup = await store.getLastCup() // pega qual copa foi
       if (keyCup !== null) {
-        await postCup(keyCup) // ve se a copa ja esta cadastrada se não cadastra
-        setCup(keyCup) // escreve na card o nome do campeonato
+        const res2 = await postCup(keyCup)
+        console.log(res2)
+        const res = await getUpdate()
+        if (res != false) {
+          console.log(res)
+          setCup(keyCup) // escreve na card o nome do campeonato
+          setBusy(false)
+        }
       }
-     // console.log(loginResp + " "  + getPartidaResp)
-      setBusy(false)
     }
-    
-    // equivalente ao CompeneuntDeMount
-    useEffect(() => {
-      initPage()
-    }, []);
+  }
+
+  const getUpdate = async () => { // carrega a lista de partidas para poder ser renderizado
+    const res = await getPartida()
+    if (res != null) {
+      setList(res)
+      return true
+    }
+    return false
+  }
     
     const handleClick = (whichButton : boolean) => {
       setPage(whichButton)
       whichButton ? setColorButtonFirst("dark") : setColorButtonFirst("light")
       whichButton ? setColorButtonSecond("light") : setColorButtonSecond("dark")
     }
-    
-
 
     return (
       <IonPage>
@@ -62,15 +82,17 @@ const Tab1: React.FC = ()=> {
               <IonIcon icon = {add}></IonIcon>
             </IonFabButton>
         </IonFab>
-        <IonLoading message="Carregando Torneio..." duration={10000} 
+        <IonLoading message="Carregando Torneio..." duration={0} 
         isOpen={busy} />
             <IonCard>
             <IonContent>
               <IonCardHeader>
-                <IonCardTitle>{cup}</IonCardTitle>
-                <IonCardSubtitle>Lista de todas partidas da competição.</IonCardSubtitle>
+                <IonCardTitle>{cup.toUpperCase()}</IonCardTitle>
+                <IonCardSubtitle>{subtitleCard}</IonCardSubtitle>
               </IonCardHeader>
-                {cardContent}
+              <IonList>
+                {cardContent()}
+              </IonList>
             </IonContent>  
             </IonCard>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
@@ -83,19 +105,5 @@ const Tab1: React.FC = ()=> {
       </IonPage>
     );
   };
-
-
-
-//function aaaa(props: any) {
-   // console.log('oi?')
-    //const db = firebase.firestore();
-    //db.settings({
-    //    timestampsInSnapshots: true
-    //});
-      //  db.collection('Partida')
-      //  .add({
-      //  nome: "Ramaonzin"
-      //  })
-//}
 
 export default Tab1
