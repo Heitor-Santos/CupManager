@@ -15,34 +15,55 @@ var firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
   firebase.analytics();
   const db = firebase.firestore();
+  const userCollection = "users/cCRmcIVZKs0ru6yREORe/Cup/"
+  const cupCollection = db.collection(userCollection)
 
-  export async function login() {
-    await firebase.auth().signInAnonymously().catch(function(error) {
-      console.log(error.message)
-      return false;
-    });
-    return true;
+  export async function loginUser() {
+    const isUserLogin = await getUserLogin()
+    var res = []
+    var aux = 1
+    if (!isUserLogin) {
+      await firebase.auth().signInAnonymously().catch(function(error) {
+        const _error = error.message
+        console.log(_error)
+        res.push({'Error': _error})
+        aux = 0
+      });
+      var user = firebase.auth().currentUser
+      console.log('UID --> '+ user.uid)
+    }
+    return res
+  }
+
+  export async function getUserLogin() {
+    var user = firebase.auth().currentUser;
+    if (user == null) {
+      return false
+    } else {
+      return true
+    }
   }
 
   export async function postCup(cupName) {
+    cupName = cupName.replace("/", "")
     const res = await getCup(cupName)
     if (res) return false;
-    console.log(res)
-    await db.collection('Cup').add({
-      idPartidas: [],
-      idPlayer: [],
-      nome: cupName
+    await cupCollection.doc(cupName).set({
+      idMatches: [],
+      idPlayers: [],
+      name: cupName
     })
     return true
   }
 
   export async function getCup(cupName) {
     var result = false;
-    await db.collection('Cup').get()
+    await db.collection(userCollection).get()
         .then(snapshot=> {
           snapshot.forEach(doc => {
             const data = doc.data()
-            if (data.nome == cupName) {
+            console.log(data)
+            if (data.name == cupName) {
               result = true
             }
           })
@@ -50,21 +71,19 @@ var firebaseConfig = {
     return result
   }
 
-  
-
-  export async function getPartida() {
+  export async function getMatches(keyCup) {
     const list =[]
-    await db.collection('Partida').orderBy("idPartida", "asc").get()
+    await db.collection(userCollection+keyCup+"/Match").orderBy("idPartida", "asc").get()
         .then(snapshot=> {
           snapshot.forEach(doc => {
-            const {goalsA,goalsB,idPartida,idPlayersA,idPlayersB,vencedor} = doc.data()
+            const {goalsA,goalsB,idPartida,idPlayersA,idPlayersB,winner} = doc.data()
             list.push({
               goalsB,
               goalsA,
               idPartida,
               idPlayersA,
               idPlayersB,
-              vencedor
+              winner
             })
           })
         })

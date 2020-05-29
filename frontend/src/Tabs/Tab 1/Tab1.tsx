@@ -1,7 +1,7 @@
 import React, { Props, Component, useState, useEffect } from 'react'
 import { IonPage, IonContent, IonItem, IonIcon, IonHeader, IonToolbar, IonTitle, IonButton, IonFab, IonFabButton, IonLabel, IonList, IonListHeader, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonLoading, IonText, } from '@ionic/react'
 import { add, list, key } from 'ionicons/icons'
-import {login,getPartida,postCup} from "../../firebase/firestore";
+import {loginUser,getMatches,postCup} from "../../firebase/firestore";
 import "./Tab1.css"
 import Card from './Card';
 import HandleStorage from '../../util/handleStorage';
@@ -19,6 +19,11 @@ const Tab1: React.FC = ()=> {
   const [ busy, setBusy ] = useState<boolean>(true);
   const [ cup, setCup ] = useState("");
   const [list, setList] = useState< any []>([])
+  
+
+  const subtitleCard = firstPage? "Lista de todas partidas da competição." 
+  : "Dados estatícos sobre os jogadores."
+  const listPartidas = busy ? <p></p> : <Card list={list}/>
 
   // variaveis de conteudo
   const cardContent = () => { // qual conteudo vai ser disponivel
@@ -31,9 +36,7 @@ const Tab1: React.FC = ()=> {
     }
   }
   
-  const subtitleCard = firstPage? "Lista de todas partidas da competição." 
-    : "Dados estatícos sobre os jogadores."
-  const listPartidas = busy ? <p></p> : <Card list={list}/>
+
 
   // equivalente ao CompeneuntDeMount
   useEffect(() => {
@@ -42,28 +45,30 @@ const Tab1: React.FC = ()=> {
 
   // inicia os dados essencias da aplicação
   const initPage = async () => {
-    const loginResp = await login()
-    if(loginResp) {
-      //getPartidaResp = await getPartida()
-      const keyCup = await store.getLastCup() // pega qual copa foi
+    const loginResp = await loginUser()
+    if(loginResp.length === 0) {
+      console.log('-- Usuário está logado com o Firebase --')
+      const keyCup = await store.getLastCup()
       if (keyCup !== null) {
-        const res2 = await postCup(keyCup)
-        console.log(res2)
-        const res = await getUpdate()
+       setCup(keyCup) // escreve na card o nome do campeonato
+       const res2 = await postCup(keyCup)
+       console.log('Cadastrou a copa? ' + res2)
+        const res = await getUpdate(keyCup)
+        console.log(res)
         if (res != false) {
-          console.log(res)
-          setCup(keyCup) // escreve na card o nome do campeonato
           setBusy(false)
         }
       }
     }
   }
 
-  const getUpdate = async () => { // carrega a lista de partidas para poder ser renderizado
-    const res = await getPartida()
+  const getUpdate = async (keyCup : any) => { 
+    // carrega a lista de partidas para poder ser renderizado
+    console.log("Pegando lista de partidas --> " + keyCup)
+    const res = await getMatches(keyCup)
     if (res != null) {
-      setList(res)
-      return true
+        setList(res)
+       return true
     }
     return false
   }
