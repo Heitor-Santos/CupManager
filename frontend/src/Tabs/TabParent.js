@@ -10,11 +10,12 @@ import {
     IonTabs
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle, home, library, search } from 'ionicons/icons';
+import { ellipse, square, triangle, home, library, search, key } from 'ionicons/icons';
 import Tab1 from './Tab 1/Tab1';
 import Tab2 from './Tab 2/Tab2';
 import Tab3 from './Tab 3/Tab3';
-
+import Match from '../Pages/Match/Match'
+import ListIsEmpty from './Tab 3/listIsEmpty'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -41,6 +42,8 @@ function TabParent(props) {
                         <Route path="/tab1" component={Tab1} exact={true} />
                         <Route path="/tab2" component={Tab2} exact={true} />
                         <Route path="/tab3" component={Tab3} exact={true}/>
+                        <Route path="/match" component={Match} exact={true}/>
+                        <Route path="/card" component={ListIsEmpty} exact={true}/>
                         <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
                     </IonRouterOutlet>
                     <IonTabBar slot="bottom">
@@ -54,7 +57,7 @@ function TabParent(props) {
                         </IonTabButton>
                         <IonTabButton tab="tab3" href="/tab3">
                             <IonIcon icon={library} />
-                            <IonLabel>Biblioteca</IonLabel>
+                            <IonLabel>Recentes</IonLabel>
                         </IonTabButton>
                     </IonTabBar>
                 </IonTabs>

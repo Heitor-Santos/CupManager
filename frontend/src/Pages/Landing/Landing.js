@@ -1,7 +1,7 @@
 import React from 'react';
 import { IonSearchbar, IonContent, IonButton, IonImg } from '@ionic/react';
-import ToolBar from './ToolBar'
-import HandleStorage from '../util/handleStorage'
+import ToolBar from '../../components/ToolBar'
+import HandleStorage from '../../util/handleStorage'
 
 const store = new HandleStorage()
 class Landing extends React.Component {
@@ -28,9 +28,9 @@ class Landing extends React.Component {
     render() {
         return (
             <IonContent>
-                <ToolBar />
+                <ToolBar title={this.props.title}/>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5vh', marginBottom: '5vh' }}>
-                    <IonImg src={require('../media/tournament.png')}></IonImg>
+                    <IonImg src={require('../../media/tournament.png')}></IonImg>
                 </div>
                 <IonSearchbar placeholder="Digite o nome do campeonato"
                     showCancelButton="focus"

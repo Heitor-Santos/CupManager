@@ -1,12 +1,12 @@
 import React from 'react'
 import { IonPage, IonContent} from '@ionic/react'
-import ToolBar from './ToolBar'
+import ToolBar from '../../components/ToolBar'
 import CupList from './CupList'
 
 function Tab3(props: any){
     return(
         <IonPage>
-            <ToolBar/>
+            <ToolBar title="Campeonatos Recentes"/>
             <IonContent>
                 <CupList />
             </IonContent>

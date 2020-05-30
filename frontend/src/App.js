@@ -20,7 +20,7 @@ import './theme/variables.css';
 
 import React from 'react';
 import TabParent from './Tabs/TabParent'
-import Landing from './Landing/Landing'
+import Landing from './Pages/Landing/Landing'
 import HandleStorage from './util/handleStorage'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -56,7 +56,7 @@ class App extends React.Component {
   }
   render() {
     const response = this.state.isFirstTime ?
-      <Landing onClick={() => this.openTabs()}  /> : <TabParent />
+      <Landing onClick={() => this.openTabs()}  title="CupManager"/> : <TabParent />
     return (
       response
     )

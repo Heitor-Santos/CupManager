@@ -17,6 +17,7 @@
     "@types/react-router-dom": "^5.1.3",
     "ionicons": "^5.0.0",
     "react": "^16.13.0",
+    "react-awesome-slider": "^4.1.0",
     "react-dom": "^16.13.0",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",

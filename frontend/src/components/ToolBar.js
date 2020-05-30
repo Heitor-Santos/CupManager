@@ -10,7 +10,7 @@ function ToolBar(props) {
                         <IonIcon slot="icon-only" ios={ellipsisHorizontal} md={ellipsisVertical}></IonIcon>
                     </IonButton>
                 </IonButtons>
-                <IonTitle>Campeonatos Recentes</IonTitle>
+                <IonTitle>{props.title}</IonTitle>
             </IonToolbar>
         </IonHeader>
     )
