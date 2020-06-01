@@ -1,8 +1,6 @@
 import React from 'react'
-import { IonSlides, IonSlide,IonAlert, IonButton, IonLoading, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonContent, IonFab, IonFabButton, IonIcon, IonPage, IonApp, IonInfiniteScroll, IonImg } from '@ionic/react';
+import { IonSlides, IonSlide} from '@ionic/react';
 import TeamCard from './TeamCard'
-import { add } from 'ionicons/icons'
-import HandleStorge from '../../util/handleStorage'
 //import AwesomeSlider from 'react-awesome-slider';
 //import 'react-awesome-slider/dist/styles.css';
 
@@ -34,45 +32,34 @@ class Match extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            teams: [
-                ['Heitor', 'Tiago', 'Gilmar', 'Elisson', 'Felipe', 'Robert'],
-                ['João', 'Lucas', 'Marcelo', 'Artur', 'José', 'Pedro']
-            ],
-            showAlert: false
+            teams: [[], []],
+            showAlert: false,
+            currTeam: null
         }
     }
     componentDidMount() {
-        console.log("oh naooo")
         const teams = [
             ['Heitor', 'Tiago', 'Gilmar', 'Elisson', 'Felipe', 'Robert'],
             ['João', 'Lucas', 'Marcelo', 'Artur', 'José', 'Pedro']
         ]
-        console.log("eu aqui")
         this.setState({ teams: teams })
     }
-    handleClick() {
-        this.setState({showAlert:true})
-        console.log('mudei')
+    addPlayer(currTeam,playerName) {
+        let teams = this.state.teams
+        teams[currTeam].push(playerName)
+        this.setState({ teams: teams })
     }
     render() {
         return (
             <div>
                 <IonSlides options={slideOpts}>
                     <IonSlide>
-                        <TeamCard team="Time A" players={this.state.teams[0]} onClick={()=>this.handleClick()} />
+                        <TeamCard team="Time A" players={this.state.teams[0]} addPlayer={(e)=>this.addPlayer(0, e)} />
                     </IonSlide>
                     <IonSlide>
-                        <TeamCard team="Time B" players={this.state.teams[1]} onClick={()=>this.handleClick()}/>
+                        <TeamCard team="Time B" players={this.state.teams[1]} addPlayer={(e)=>this.addPlayer(1, e)} />
                     </IonSlide>
                 </IonSlides>
-                <IonAlert
-                    isOpen={this.state.showAlert}
-                    onDidDismiss={() => this.setState({showAlert:false})}
-                    header={'Alert'}
-                    subHeader={'Subtitle'}
-                    message={'This is an alert message.'}
-                    buttons={['OK']}
-                />
             </div>
         )
     }

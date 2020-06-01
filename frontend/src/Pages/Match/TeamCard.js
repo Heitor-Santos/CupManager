@@ -3,6 +3,7 @@ import {
     IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
     IonList, IonItem, IonFab, IonIcon, IonButton, IonLabel, IonFabButton, IonImg, IonContent, IonPage
 } from '@ionic/react';
+import Alert from './Alert'
 import { add } from 'ionicons/icons'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -30,25 +31,35 @@ function PlayersList(props) {
     return (<IonList>{players}</IonList>)
 }
 class TeamCard extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            showAlert: false
+        }
+    }
+    toggleShowAlert() {
+        this.setState({ showAlert: !this.state.showAlert })
+        console.log(this.state.showAlert)
+    }
     render() {
-        const team = this.props.team;
-        const img = team == "Time A" ? require('../../media/timea.png') : require('../../media/timeb.png')
         return (
             <div>
                 <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                    <IonFabButton onClick={this.props.onClick}>
+                    <IonFabButton onClick={(e) => this.toggleShowAlert(e)}>
                         <IonIcon icon={add}></IonIcon>
                     </IonFabButton>
                 </IonFab>
-                <IonCard>
-                    <IonImg src={img} />
-                    <IonCardHeader>
+                <IonCard style={{ width: '50vh' }}>
+                    {/*<IonImg src={img} />*/}
+                    <IonCardHeader color="primary">
                         <IonCardTitle>{this.props.team}</IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
                         <PlayersList players={this.props.players} />
                     </IonCardContent>
                 </IonCard>
+                {this.state.showAlert ? <Alert showAlert={this.state.showAlert}
+                    addPlayer={(e) => this.props.addPlayer(e)} /> : null}
             </div>
         )
     }
