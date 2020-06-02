@@ -20,24 +20,18 @@ const Tab1: React.FC = ()=> {
   const [ cup, setCup ] = useState("");
   const [list, setList] = useState< any []>([])
   
-
-  const subtitleCard = firstPage? "Lista de todas partidas da competição." 
-  : "Dados estatícos sobre os jogadores."
-  const listPartidas = busy ? <p></p> : <Card list={list}/>
-
+  const subtitleCard = firstPage? "Lista de todas partidas da competição"
+  : "Dados estatícos sobre os jogadores"
+  
   // variaveis de conteudo
   const cardContent = () => { // qual conteudo vai ser disponivel
-    if (firstPage && busy) {
-      return <div></div>
-    } else if (firstPage && !busy) {
+    if (firstPage && !busy) {
         return listPartidas
-    } else {
+    } else if (!firstPage) {
         return <p>estatistica foda</p>
     }
   }
   
-
-
   // equivalente ao CompeneuntDeMount
   useEffect(() => {
     initPage()
@@ -54,7 +48,6 @@ const Tab1: React.FC = ()=> {
        const res2 = await postCup(keyCup)
        console.log('Cadastrou a copa? ' + res2)
         const res = await getUpdate(keyCup)
-        console.log(res)
         if (res != false) {
           setBusy(false)
         }
@@ -67,11 +60,13 @@ const Tab1: React.FC = ()=> {
     console.log("Pegando lista de partidas --> " + keyCup)
     const res = await getMatches(keyCup)
     if (res != null) {
-        setList(res)
+       setList(res)
        return true
     }
     return false
   }
+
+  const listPartidas = <Card list={list} keyCup={cup} getUpdate={getUpdate} />
     
     const handleClick = (whichButton : boolean) => {
       setPage(whichButton)
@@ -91,10 +86,14 @@ const Tab1: React.FC = ()=> {
         isOpen={busy} />
             <IonCard>
             <IonContent>
+              <div className = "cardHeader">
               <IonCardHeader>
                 <IonCardTitle>{cup.toUpperCase()}</IonCardTitle>
-                <IonCardSubtitle>{subtitleCard}</IonCardSubtitle>
+                <IonCardSubtitle>
+                  {subtitleCard}
+                </IonCardSubtitle>
               </IonCardHeader>
+              </div>
               <IonList>
                 {cardContent()}
               </IonList>
@@ -102,9 +101,9 @@ const Tab1: React.FC = ()=> {
             </IonCard>
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
               <IonButton className = "botao" shape="round" size = "small" color = {colorFirstPage}
-              onClick={(e) => handleClick(true)} />
+              onClick={() => handleClick(true)} />
               <IonButton className = "botao" shape="round" size = "small" color = {colorSecondPage}
-              onClick = {(e) => handleClick(false)} />
+              onClick = {() => handleClick(false)} />
             </div> 
         </IonContent>
       </IonPage>

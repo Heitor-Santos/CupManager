@@ -1,5 +1,6 @@
 import firebase from 'firebase';
 import { useState } from 'react';
+import { key } from 'ionicons/icons';
 
 var firebaseConfig = {
     apiKey: "AIzaSyBUVobQ91KDm5Fv0wTbAsAy4arysw31Mgs",
@@ -47,7 +48,7 @@ var firebaseConfig = {
   export async function postCup(cupName) {
     cupName = cupName.replace("/", "")
     const res = await getCup(cupName)
-    if (res) return false;
+    if (!res) return false;
     await cupCollection.doc(cupName).set({
       idMatches: [],
       idPlayers: [],
@@ -58,7 +59,7 @@ var firebaseConfig = {
 
   export async function getCup(cupName) {
     var result = false;
-    await db.collection(userCollection).get()
+    await db.collection(userCollection).where("name","==",cupName).get()
         .then(snapshot=> {
           snapshot.forEach(doc => {
             const data = doc.data()
@@ -73,20 +74,36 @@ var firebaseConfig = {
 
   export async function getMatches(keyCup) {
     const list =[]
-    await db.collection(userCollection+keyCup+"/Match").orderBy("idPartida", "asc").get()
-        .then(snapshot=> {
-          snapshot.forEach(doc => {
-            const {goalsA,goalsB,idPartida,idPlayersA,idPlayersB,winner} = doc.data()
-            list.push({
-              goalsB,
-              goalsA,
-              idPartida,
-              idPlayersA,
-              idPlayersB,
-              winner
+    if (keyCup != "" && keyCup != undefined) {
+      keyCup = keyCup.replace("/", "")
+      await db.collection(userCollection+keyCup+"/Match").orderBy("idMatch", "asc").get()
+          .then(snapshot=> {
+            snapshot.forEach(doc => {
+              const {goalsA,goalsB,idMatch,idPlayersA,idPlayersB,winner} = doc.data()
+              list.push({
+                goalsB,
+                goalsA,
+                idMatch,
+                idPlayersA,
+                idPlayersB,
+                winner
+              })
             })
-          })
-        })
+      })
+    }
     console.log(list)
     return list
   }
+
+  export async function deleteMatche(idMatch, keyCup) {
+    keyCup = keyCup.replace("/", "")
+    idMatch = idMatch.toString()
+    console.log(keyCup + " " + idMatch)
+    await db.collection(userCollection+keyCup+"/Match").doc(idMatch).delete().then(function() {
+      console.log("Partida apagada!")
+    }).catch(function(error) {
+      console.log("Error nessa porra: ",error)
+    }) 
+  }
+
+  
