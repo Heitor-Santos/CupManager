@@ -11,9 +11,15 @@ class Landing extends React.Component {
             cupName: ""
         }
     }
+    //só faz setar o nome do campeonato escrito na barra de pesquisa
     handleChange(evt) {
         this.setState({ cupName: evt.target.value })
     }
+    /**
+     * Essa função faz 3 coisas, a função parâmetro, setar o último campeonato acessado, e colocar no histórico
+     * @param {o nome do campeonato} cupName 
+     * @param {função a ser realizada quando o botão for apertado} onClick 
+     */
     async handleClick(cupName, onClick) {
         if (cupName != "") {
             const isFirstTime = await store.isFirstTime()

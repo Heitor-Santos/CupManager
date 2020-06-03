@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonCardContent,
+    IonCard, IonCardHeader, IonBadge, IonCardTitle, IonCardContent,
     IonList, IonItem, IonFab, IonIcon, IonButton, IonLabel, IonFabButton, IonImg, IonContent, IonPage
 } from '@ionic/react';
 import Alert from './Alert'
@@ -23,10 +23,19 @@ import '@ionic/react/css/display.css';
 
 function PlayersList(props) {
     const team = props.players
-    let players = team.map((player) =>
-        <IonItem>
-            <IonLabel>{player}</IonLabel>
-        </IonItem>
+    let players = team.map((player) => {
+        return typeof (player) === "object" ?
+            <IonItem>
+                <IonLabel>{player.name}</IonLabel>
+                <IonBadge color="primary">{player.golsContra}</IonBadge>
+                <IonBadge color="secondary">{player.assist}</IonBadge>
+                <IonBadge color="tertiary">{player.golsFavor}</IonBadge>
+            </IonItem>
+            :
+            <IonItem>
+                <IonLabel>{player}</IonLabel>
+            </IonItem>
+        }
     )
     return (<IonList>{players}</IonList>)
 }
@@ -44,13 +53,14 @@ class TeamCard extends React.Component {
     render() {
         return (
             <div>
-                <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                    <IonFabButton onClick={(e) => this.toggleShowAlert(e)}>
-                        <IonIcon icon={add}></IonIcon>
-                    </IonFabButton>
-                </IonFab>
+                {this.props.players.length < 6 ?//máximo de jogadores=6
+                    <IonFab vertical="bottom" horizontal="end" slot="fixed">
+                        <IonFabButton onClick={(e) => this.toggleShowAlert(e)}>
+                            <IonIcon icon={add}></IonIcon>
+                        </IonFabButton>
+                    </IonFab> : null
+                }
                 <IonCard style={{ width: '50vh' }}>
-                    {/*<IonImg src={img} />*/}
                     <IonCardHeader color="primary">
                         <IonCardTitle>{this.props.team}</IonCardTitle>
                     </IonCardHeader>
