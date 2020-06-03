@@ -1,6 +1,6 @@
 import React from 'react'
-import { IonSlides, IonSlide, IonIcon, IonFabButton,IonActionSheet } from '@ionic/react';
-import { alarmOutline } from 'ionicons/icons'
+import { IonSlides, IonSlide, IonIcon, IonFabButton, IonActionSheet } from '@ionic/react';
+import Toolbar from '../../components/ToolBar'
 import TeamCard from './TeamCard'
 import Clock from './Clock'
 const slideOpts = {
@@ -17,7 +17,8 @@ class Match extends React.Component {
             showAlert: false, //decide se abre a caixa de novo jogador
             infoPlayers: [[], []], //lista de informações sobre os jogadores
             matchState: null, //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
-            showActionSheet:false
+            showActionSheet: false,
+            matchTitle: null,
         }
     }
     componentDidMount() { //apenas jogando valores quaisquer de teste
@@ -39,7 +40,8 @@ class Match extends React.Component {
         this.setState({
             teams: teams,
             infoPlayers: infoPlayers,
-            matchState: "NOT-BEGUN"
+            matchState: "NOT-BEGUN",
+            matchTitle: "Partida 1"
         })
     }
     /**
@@ -59,7 +61,13 @@ class Match extends React.Component {
         //decide se vai mandar só a lista de nome ou as info tbm
         const players = matchState == "NOT-BEGUN" ? teams : this.state.infoPlayers
         return (
-            <div>
+            <div style={{}}>
+                <Toolbar title={this.state.matchTitle} />
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <div style={{ width: '50vh', backgroundColor: 'blue', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <h3 >23:54</h3>
+                    </div>
+                </div>
                 <IonSlides options={slideOpts}>
                     <IonSlide>
                         <TeamCard team="Time A" players={players[0]} addPlayer={(e) => this.addPlayer(0, e)} />
@@ -68,7 +76,7 @@ class Match extends React.Component {
                         <TeamCard team="Time B" players={players[1]} addPlayer={(e) => this.addPlayer(1, e)} />
                     </IonSlide>
                 </IonSlides>
-                <Clock/>
+                <Clock />
             </div>
         )
     }
