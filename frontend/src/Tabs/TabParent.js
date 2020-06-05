@@ -15,7 +15,7 @@ import Tab1 from './Tab 1/Tab1';
 import Tab2 from './Tab 2/Tab2';
 import Tab3 from './Tab 3/Tab3';
 import Match from '../Pages/Match/Match'
-import Clock from '../Pages/Match/Clock'
+import Clock from '../Pages/Match/ClockOptions'
 import ListIsEmpty from './Tab 3/listIsEmpty'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -45,8 +45,7 @@ function TabParent(props) {
                         <Route path="/tab3" component={Tab3} exact={true}/>
                         <Route path="/match" component={Match} exact={true}/>
                         <Route path="/card" component={ListIsEmpty} exact={true}/>
-                        <Route path="/shee" component={Clock} exact={true}/>
-                        <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
+                        <Route path="/" render={() => <Redirect to="/match" />} exact={true} />
                     </IonRouterOutlet>
                     <IonTabBar slot="bottom">
                         <IonTabButton tab="tab1" href="/tab1">
