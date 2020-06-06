@@ -4,8 +4,9 @@ import Toolbar from '../../components/ToolBar'
 import Header from './Header'
 import TeamCard from './TeamCard'
 import ClockOptions from './ClockOptions'
+import Statics from './Statics'
 const slideOpts = {
-    initialSlide: 0,
+    initialSlide: 2,
     speed: 400,
     autoHeight: true
 };
@@ -72,6 +73,9 @@ class Match extends React.Component {
                     </IonSlide>
                     <IonSlide>
                         <TeamCard team="Time B" players={players[1]} addPlayer={(e) => this.addPlayer(1, e)} />
+                    </IonSlide>
+                    <IonSlide>
+                        <Statics infoPlayers={this.state.infoPlayers[0]}/>
                     </IonSlide>
                 </IonSlides>
                 <ClockOptions setState={(e)=>this.setState(e)}/>
