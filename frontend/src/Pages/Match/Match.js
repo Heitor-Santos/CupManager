@@ -75,7 +75,7 @@ class Match extends React.Component {
                         <TeamCard team="Time B" players={players[1]} addPlayer={(e) => this.addPlayer(1, e)} />
                     </IonSlide>
                     <IonSlide>
-                        <Statics infoPlayers={this.state.infoPlayers[0]}/>
+                        <Statics infoPlayers={this.state.infoPlayers}/>
                     </IonSlide>
                 </IonSlides>
                 <ClockOptions setState={(e)=>this.setState(e)}/>
