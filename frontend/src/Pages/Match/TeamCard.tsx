@@ -48,7 +48,7 @@ class TeamCard extends React.Component<Props,State> {
                         <IonCardTitle>{this.props.team}</IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
-                        <PlayersList players={this.props.players} changePlayer={(e:any)=>this.props.changePlayer(e,e)} />
+                        <PlayersList players={this.props.players} changePlayer={(e:any,a:any)=>this.props.changePlayer(e,a)} />
                     </IonCardContent>
                 </IonCard>
                 <Alert showAlert={this.state.showAlert} addPlayer={(e:any)=>this.props.addPlayer(e)} />

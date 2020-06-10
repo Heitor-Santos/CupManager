@@ -17,7 +17,7 @@ function PlayersList(props: Props) {
     const team = props.players
     let players = team.map((player,index) => {
         return typeof(player)!=='string'?
-            <PlayerOptions player={player} index={index} changePlayer={(e:any)=>props.changePlayer(e,e)} />
+            <PlayerOptions player={player} index={index} changePlayer={(e:any,a:any)=>props.changePlayer(e,a)} />
             :
             <IonItem>
                 <IonLabel>{player}</IonLabel>

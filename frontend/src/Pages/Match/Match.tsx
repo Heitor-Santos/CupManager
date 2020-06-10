@@ -5,18 +5,19 @@ import Header from './Header'
 import TeamCard from './TeamCard'
 import ClockOptions from './ClockOptions'
 import Statics from './Statics'
+
 const slideOpts = {
     initialSlide: 2,
     speed: 400,
     autoHeight: true
 };
 interface infoPlayer {
-    name: string,
-    isGoleiro: boolean,
-    assist: number,
-    golsFavor: number,
-    golsContra: number,
-    golsTomados: number
+    "name": string,
+    "isGoleiro": boolean,
+    "assist": number,
+    "golsFavor": number,
+    "golsContra": number,
+    "golsTomados": number
 }
 interface State {
     teams: Array<Array<string>>,
@@ -75,19 +76,15 @@ class Match extends React.Component<Props,State> {
         teams[currTeam].push(playerName)
         this.setState({ teams: teams })
     }
-    changePlayer(currTeam:number, indexPlayer:number, opt:string) {
-        console.log(opt)
-        console.log(typeof(opt))
-        console.log(JSON.stringify(opt))
+    changePlayer(currTeam:number, indexPlayer:number, opt: keyof infoPlayer) {
         let infoPlayers = this.state.infoPlayers
         if (opt == "isGoleiro")
             infoPlayers[currTeam][indexPlayer][opt] = !infoPlayers[currTeam][indexPlayer][opt]
-        else
-            //infoPlayers[currTeam][indexPlayer][opt]++
+        else 
+            infoPlayers[currTeam][indexPlayer][opt]++
         this.setState({ infoPlayers })
     }
     render() {
-        //sconsole.log(this.state.showActionSheet)
         const matchState = this.state.matchState
         const teams = this.state.teams
         //decide se vai mandar só a lista de nome ou as info tbm
@@ -101,12 +98,12 @@ class Match extends React.Component<Props,State> {
                     <IonSlide>
                         <TeamCard team="Time A" players={players[0]}
                             addPlayer={(e:any) => this.addPlayer(0, e)}
-                            changePlayer={(e:any) => this.changePlayer(0, e,e)} />
+                            changePlayer={(e:any,a:any) => this.changePlayer(0, e,a)} />
                     </IonSlide>
                     <IonSlide>
                         <TeamCard team="Time B" players={players[1]}
                             addPlayer={(e:any) => this.addPlayer(1, e)}
-                            changePlayer={(e:any) => this.changePlayer(1, e,e)} />
+                            changePlayer={(e:any,a:any) => this.changePlayer(1, e,a)} />
                     </IonSlide>
                     <IonSlide>
                         <Statics infoPlayers={this.state.infoPlayers} />

@@ -67,8 +67,7 @@ function Actions(props: ActionsProps) {
                     },
                     {
                       text: 'OK',
-                      handler: ()=> {props.changePlayer(props.index,"ghui");
-                      }
+                      handler: (e)=>{props.changePlayer(e)}
                     }
                   ]} />
     )
@@ -93,7 +92,7 @@ class PlayerOptions extends React.Component<Props, State> {
                     <IonLabel>{player.name}</IonLabel>
                     <Actions name={player.name} isGoleiro={true} 
                     isOpen={this.state.showPopover} setState={(e: any) => this.setState(e)}
-                    changePlayer={(e:any)=>this.props.changePlayer(e,e)} index={this.props.index}/>
+                    changePlayer={(e:any)=>this.props.changePlayer(this.props.index,e)} index={this.props.index}/>
                     <IonBadge color="danger">{player.golsContra}</IonBadge>
                     <IonBadge color="warning">{player.assist}</IonBadge>
                     <IonBadge color="success">{player.golsFavor}</IonBadge>
