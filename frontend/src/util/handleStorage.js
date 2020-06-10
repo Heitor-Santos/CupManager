@@ -7,7 +7,7 @@ class HandleStorage {
     */
     async isFirstTime() {
         const { value } = await Storage.get({ key: 'lastCup' });
-        if (value == undefined) return true
+        if (value == undefined || value == "") return true
         return false
     }
     /**

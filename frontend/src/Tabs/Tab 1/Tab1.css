@@ -1,0 +1,22 @@
+ion-card {
+    height: 88% !important;
+    border-radius: 24px;
+}
+
+.cardHeader {
+    background: #fce4ec
+
+    ;
+  
+}
+
+.bg{
+    --background: none;
+    background: rgb(29,233,182);
+    background: linear-gradient(0deg, rgba(29,233,182,0.6881127450980392) 0%, rgba(0,191,165,0.8253676470588236) 100%);
+}
+
+.botao {
+    height: 35px;
+    width: 35px;
+}
