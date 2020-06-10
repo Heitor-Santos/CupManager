@@ -1,10 +1,16 @@
 import React from 'react'
-import { IonSlides, IonSlide, IonAlert, IonButton, IonLoading, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonContent, IonFab, IonFabButton, IonIcon, IonPage, IonApp, IonInfiniteScroll, IonImg } from '@ionic/react';
-import TeamCard from './TeamCard'
-import { add, key } from 'ionicons/icons'
+import {IonAlert} from '@ionic/react';
 
-class Alert extends React.Component {
-    constructor(props) {
+interface Props{
+    onClick?: Function,
+    addPlayer: Function,
+    showAlert: boolean
+}
+interface State{
+    showAlert: boolean
+}
+class Alert extends React.Component<Props,State> {
+    constructor(props: Props) {
         super(props)
         this.state = {
             showAlert: true
@@ -14,8 +20,8 @@ class Alert extends React.Component {
         console.log(this.state.showAlert)
         return (
             <IonAlert
-                isOpen={this.state.showAlert}
-                onDidDismiss={this.props.onClick}
+                isOpen={this.props.showAlert}
+                onDidDismiss={()=>this.props.onClick}
                 header={'Adicionar jogador'}
                 inputs={[
                     {

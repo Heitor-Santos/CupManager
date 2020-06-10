@@ -1,13 +1,13 @@
 import React from 'react'
 import { IonGrid, IonRow, IonCol } from '@ionic/react'
 
-interface IProps {
+interface Props {
     matchTime: string | undefined
 }
-interface IState {
+interface State {
     matchTime: string | undefined
 }
-class Header extends React.Component<IProps, IState>{
+class Header extends React.Component<Props, State>{
     constructor(props: any) {
         super(props)
         this.state = {
@@ -17,7 +17,7 @@ class Header extends React.Component<IProps, IState>{
     componentDidMount() {
         this.setState({ matchTime: this.props.matchTime });
     }
-    static getDerivedStateFromProps(nextProps: IProps, prevState: IState) {
+    static getDerivedStateFromProps(nextProps: Props, prevState: State) {
         return({matchTime: nextProps.matchTime})
     }
     render() {

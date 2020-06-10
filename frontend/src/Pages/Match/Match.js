@@ -42,7 +42,7 @@ class Match extends React.Component {
         this.setState({
             teams: teams,
             infoPlayers: infoPlayers,
-            matchState: "NOT-BEGUN",
+            matchState: "BEGUN",
             matchTitle: "Partida 1"
         })
     }

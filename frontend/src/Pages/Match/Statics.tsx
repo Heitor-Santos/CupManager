@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { Bar } from 'react-chartjs-2'
+
+//Acho que todo esse componente é bem direto ao ponto, qualquer dúvida estou a postos
 interface Player {
     name: string,
     assist: number,
@@ -14,14 +16,9 @@ export interface Props {
     infoPlayers: Array<team>
 }
 
-export interface State {
-
-}
-
-class Statics extends React.Component<Props, State> {
+class Statics extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
-        //this.state = { : };
     }
     render() {
         const charData = {
@@ -69,7 +66,6 @@ class Statics extends React.Component<Props, State> {
         return (
             <Bar
                 data={charData}
-
                 height={300}
                 options={{scales: {
                     yAxes: [{
@@ -82,5 +78,4 @@ class Statics extends React.Component<Props, State> {
         );
     }
 }
-
 export default Statics;
