@@ -1,5 +1,5 @@
 import React from 'react'
-import { IonSlides, IonSlide} from '@ionic/react';
+import { IonSlides, IonSlide } from '@ionic/react';
 import Toolbar from '../../components/ToolBar'
 import Header from './Header'
 import TeamCard from './TeamCard'
@@ -32,6 +32,7 @@ class Match extends React.Component {
             return (team.map((player) => {
                 return ({
                     name: player,
+                    isGoleiro: false,
                     assist: Math.floor(Math.random() * 10),
                     golsFavor: Math.floor(Math.random() * 10),
                     golsContra: Math.floor(Math.random() * 10),
@@ -56,6 +57,16 @@ class Match extends React.Component {
         teams[currTeam].push(playerName)
         this.setState({ teams: teams })
     }
+    changePlayer(currTeam, indexPlayer, opt) {
+        const opts=['golsFavor', 'golsContra', 'golsTomados', 'assist']
+        opt = opts[opt]
+        let infoPlayers = this.state.infoPlayers
+        if (opt == "isGoleiro")
+            infoPlayers[currTeam][indexPlayer][opt] = !infoPlayers[currTeam][indexPlayer][opt]
+        else
+            infoPlayers[currTeam][indexPlayer][opt]++
+        this.setState({ infoPlayers })
+    }
     render() {
         console.log(this.state.showActionSheet)
         const matchState = this.state.matchState
@@ -66,19 +77,23 @@ class Match extends React.Component {
         return (
             <div style={{}}>
                 <Toolbar title={this.state.matchTitle} />
-                <Header matchTime={this.state.matchTime}/>
+                <Header matchTime={this.state.matchTime} />
                 <IonSlides options={slideOpts}>
                     <IonSlide>
-                        <TeamCard team="Time A" players={players[0]} addPlayer={(e) => this.addPlayer(0, e)} />
+                        <TeamCard team="Time A" players={players[0]}
+                            addPlayer={(e) => this.addPlayer(0, e)}
+                            changePlayer={(e) => this.changePlayer(0, e,e)} />
                     </IonSlide>
                     <IonSlide>
-                        <TeamCard team="Time B" players={players[1]} addPlayer={(e) => this.addPlayer(1, e)} />
+                        <TeamCard team="Time B" players={players[1]}
+                            addPlayer={(e) => this.addPlayer(1, e)}
+                            changePlayer={(e) => this.changePlayer(1, e,e)} />
                     </IonSlide>
                     <IonSlide>
-                        <Statics infoPlayers={this.state.infoPlayers}/>
+                        <Statics infoPlayers={this.state.infoPlayers} />
                     </IonSlide>
                 </IonSlides>
-                <ClockOptions setState={(e)=>this.setState(e)}/>
+                <ClockOptions setState={(e) => this.setState(e)} />
             </div>
         )
     }

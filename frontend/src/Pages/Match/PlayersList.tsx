@@ -6,17 +6,18 @@ interface Player{
     assist: number,
     golsContra: number,
     golsFavor: number,
-    golsTomados: number
+    golsTomados: number,
 }
 interface Props{
     players: Array<Player|string>,
+    changePlayer: Function,
 }
  
 function PlayersList(props: Props) {
     const team = props.players
     let players = team.map((player,index) => {
         return typeof(player)!=='string'?
-            <PlayerOptions player={player}/>
+            <PlayerOptions player={player} index={index} changePlayer={props.changePlayer} />
             :
             <IonItem>
                 <IonLabel>{player}</IonLabel>

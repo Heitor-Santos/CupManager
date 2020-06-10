@@ -9,17 +9,21 @@ export interface Props {
         golsContra: number,
         golsFavor: number,
         golsTomados: number
-    }
+    },
+    index: number,
+    changePlayer:Function
 }
 
 export interface State {
     showPopover: boolean
 }
 interface ActionsProps {
+    index: number,
     name: string,
     isOpen: boolean,
     isGoleiro: boolean,
     setState: Function,
+    changePlayer:Function
 }
 function Actions(props: ActionsProps) {
     return (
@@ -32,25 +36,25 @@ function Actions(props: ActionsProps) {
                     name: 'gol',
                     type: 'radio',
                     label:'Marcou gol',
-                    value: '0'
+                    value: 'golsFavor'
                 },
                 {
                     name: 'golContra',
                     type: 'radio',
                     label:'Marcou gol contra',
-                    value: '0'
+                    value: 'golsContra'
                 },
                 {
                     name: 'golTomado',
                     type: 'radio',
                     label:'Levou gol',
-                    value: '1'
+                    value: 'golsTomados'
                 },
                 {
                     name: 'assist',
                     type: 'radio',
                     label:'Fez assistência',
-                    value: '0'
+                    value: 'assist'
                 }]}
                 buttons={[
                     {
@@ -64,7 +68,7 @@ function Actions(props: ActionsProps) {
                     {
                       text: 'OK',
                       handler: (alertData:string) => {
-                        console.log(alertData);
+                        props.changePlayer(props.index,alertData);console.log(alertData)
                       }
                     }
                   ]} />
@@ -88,7 +92,9 @@ class PlayerOptions extends React.Component<Props, State> {
             <div >
                 <IonItem onClick={() => this.toggleShowPopover()}>
                     <IonLabel>{player.name}</IonLabel>
-                    <Actions name={player.name} isGoleiro={true} isOpen={this.state.showPopover} setState={(e: any) => this.setState(e)} />
+                    <Actions name={player.name} isGoleiro={true} 
+                    isOpen={this.state.showPopover} setState={(e: any) => this.setState(e)}
+                    changePlayer={this.props.changePlayer} index={this.props.index}/>
                     <IonBadge color="danger">{player.golsContra}</IonBadge>
                     <IonBadge color="warning">{player.assist}</IonBadge>
                     <IonBadge color="success">{player.golsFavor}</IonBadge>

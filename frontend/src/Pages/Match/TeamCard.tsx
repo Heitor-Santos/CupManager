@@ -16,6 +16,7 @@ interface Player{
 interface Props{
     players: Array<Player|string>,
     addPlayer: Function,
+    changePlayer: Function,
     team: string
 }
 interface State{
@@ -47,7 +48,7 @@ class TeamCard extends React.Component<Props,State> {
                         <IonCardTitle>{this.props.team}</IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
-                        <PlayersList players={this.props.players} />
+                        <PlayersList players={this.props.players} changePlayer={this.props.changePlayer} />
                     </IonCardContent>
                 </IonCard>
                 <Alert showAlert={this.state.showAlert} addPlayer={(e:any)=>this.props.addPlayer(e)} />
