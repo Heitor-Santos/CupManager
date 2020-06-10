@@ -17,7 +17,7 @@ class Alert extends React.Component<Props,State> {
         }
     }
     render() {
-        console.log(this.state.showAlert)
+        //console.log(this.state.showAlert)
         return (
             <IonAlert
                 isOpen={this.props.showAlert}

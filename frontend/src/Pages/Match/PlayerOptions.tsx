@@ -67,8 +67,7 @@ function Actions(props: ActionsProps) {
                     },
                     {
                       text: 'OK',
-                      handler: (alertData:string) => {
-                        props.changePlayer(props.index,alertData);console.log(alertData)
+                      handler: ()=> {props.changePlayer(props.index,"ghui");
                       }
                     }
                   ]} />
@@ -87,14 +86,14 @@ class PlayerOptions extends React.Component<Props, State> {
     }
     render() {
         const player = this.props.player
-        console.log(this.state.showPopover)
+        //console.log(this.state.showPopover)
         return (
             <div >
                 <IonItem onClick={() => this.toggleShowPopover()}>
                     <IonLabel>{player.name}</IonLabel>
                     <Actions name={player.name} isGoleiro={true} 
                     isOpen={this.state.showPopover} setState={(e: any) => this.setState(e)}
-                    changePlayer={this.props.changePlayer} index={this.props.index}/>
+                    changePlayer={(e:any)=>this.props.changePlayer(e,e)} index={this.props.index}/>
                     <IonBadge color="danger">{player.golsContra}</IonBadge>
                     <IonBadge color="warning">{player.assist}</IonBadge>
                     <IonBadge color="success">{player.golsFavor}</IonBadge>

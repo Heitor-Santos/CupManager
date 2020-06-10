@@ -48,7 +48,7 @@ var firebaseConfig = {
   export async function postCup(cupName) {
     cupName = cupName.replace("/", "")
     const res = await getCup(cupName)
-    if (!res) return false;
+    if (res) return false;
     await cupCollection.doc(cupName).set({
       idMatches: [],
       idPlayers: [],

@@ -10,16 +10,34 @@ const slideOpts = {
     speed: 400,
     autoHeight: true
 };
-//const [showActionSheet, setShowActionSheet] = useState(false);
-class Match extends React.Component {
-    constructor(props) {
+interface infoPlayer {
+    name: string,
+    isGoleiro: boolean,
+    assist: number,
+    golsFavor: number,
+    golsContra: number,
+    golsTomados: number
+}
+interface State {
+    teams: Array<Array<string>>,
+    showAlert: boolean,
+    infoPlayers: Array<Array<infoPlayer>>
+    matchState: string,
+    matchTitle: string,
+    matchTime: string|undefined
+}
+interface Props{
+
+}
+class Match extends React.Component<Props,State> {
+    constructor(props: Props) {
         super(props)
         this.state = {
             teams: [[], []], //lista de nomes de jogadores
             showAlert: false, //decide se abre a caixa de novo jogador
             infoPlayers: [[], []], //lista de informações sobre os jogadores
-            matchState: undefined, //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
-            matchTitle: undefined,
+            matchState: "", //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
+            matchTitle: "",
             matchTime: undefined
         }
     }
@@ -52,28 +70,29 @@ class Match extends React.Component {
      * @param {índice do time no qual vc quer add um jogador} currTeam 
      * @param {nome do jogador a ser adicionado} playerName 
      */
-    addPlayer(currTeam, playerName) {
+    addPlayer(currTeam: number, playerName: string) {
         let teams = this.state.teams
         teams[currTeam].push(playerName)
         this.setState({ teams: teams })
     }
-    changePlayer(currTeam, indexPlayer, opt) {
-        const opts=['golsFavor', 'golsContra', 'golsTomados', 'assist']
-        opt = opts[opt]
+    changePlayer(currTeam:number, indexPlayer:number, opt:string) {
+        console.log(opt)
+        console.log(typeof(opt))
+        console.log(JSON.stringify(opt))
         let infoPlayers = this.state.infoPlayers
         if (opt == "isGoleiro")
             infoPlayers[currTeam][indexPlayer][opt] = !infoPlayers[currTeam][indexPlayer][opt]
         else
-            infoPlayers[currTeam][indexPlayer][opt]++
+            //infoPlayers[currTeam][indexPlayer][opt]++
         this.setState({ infoPlayers })
     }
     render() {
-        console.log(this.state.showActionSheet)
+        //sconsole.log(this.state.showActionSheet)
         const matchState = this.state.matchState
         const teams = this.state.teams
         //decide se vai mandar só a lista de nome ou as info tbm
         const players = matchState == "NOT-BEGUN" ? teams : this.state.infoPlayers
-        console.log(this.state.matchTime)
+        //console.log(this.state.matchTime)
         return (
             <div style={{}}>
                 <Toolbar title={this.state.matchTitle} />
@@ -81,19 +100,19 @@ class Match extends React.Component {
                 <IonSlides options={slideOpts}>
                     <IonSlide>
                         <TeamCard team="Time A" players={players[0]}
-                            addPlayer={(e) => this.addPlayer(0, e)}
-                            changePlayer={(e) => this.changePlayer(0, e,e)} />
+                            addPlayer={(e:any) => this.addPlayer(0, e)}
+                            changePlayer={(e:any) => this.changePlayer(0, e,e)} />
                     </IonSlide>
                     <IonSlide>
                         <TeamCard team="Time B" players={players[1]}
-                            addPlayer={(e) => this.addPlayer(1, e)}
-                            changePlayer={(e) => this.changePlayer(1, e,e)} />
+                            addPlayer={(e:any) => this.addPlayer(1, e)}
+                            changePlayer={(e:any) => this.changePlayer(1, e,e)} />
                     </IonSlide>
                     <IonSlide>
                         <Statics infoPlayers={this.state.infoPlayers} />
                     </IonSlide>
                 </IonSlides>
-                <ClockOptions setState={(e) => this.setState(e)} />
+                <ClockOptions setState={(e:any) => this.setState(e)} />
             </div>
         )
     }

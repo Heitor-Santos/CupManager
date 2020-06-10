@@ -31,7 +31,7 @@ class TeamCard extends React.Component<Props,State> {
     }
     toggleShowAlert() {
         this.setState({ showAlert: !this.state.showAlert })
-        console.log(this.state.showAlert)
+        //console.log(this.state.showAlert)
     }
     render() {
         return (
@@ -48,7 +48,7 @@ class TeamCard extends React.Component<Props,State> {
                         <IonCardTitle>{this.props.team}</IonCardTitle>
                     </IonCardHeader>
                     <IonCardContent>
-                        <PlayersList players={this.props.players} changePlayer={this.props.changePlayer} />
+                        <PlayersList players={this.props.players} changePlayer={(e:any)=>this.props.changePlayer(e,e)} />
                     </IonCardContent>
                 </IonCard>
                 <Alert showAlert={this.state.showAlert} addPlayer={(e:any)=>this.props.addPlayer(e)} />

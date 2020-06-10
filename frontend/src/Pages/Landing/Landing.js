@@ -23,18 +23,16 @@ class Landing extends React.Component {
     async handleClick(cupName, onClick) {
         if (cupName != "") {
             const isFirstTime = await store.isFirstTime()
-            if (isFirstTime == true) {
-                await store.setLastCup(cupName)
-                onClick()
-            }
+            await store.setLastCup(cupName)
+            //onClick()
             store.pushToRecentCups(cupName)
         }
-        
+
     }
     render() {
         return (
             <IonContent>
-                <ToolBar title={this.props.title}/>
+                <ToolBar title={this.props.title} />
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5vh', marginBottom: '5vh' }}>
                     <IonImg src={require('../../media/tournament.png')}></IonImg>
                 </div>
