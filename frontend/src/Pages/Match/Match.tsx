@@ -7,7 +7,7 @@ import ClockOptions from './ClockOptions'
 import Statics from './Statics'
 
 const slideOpts = {
-    initialSlide: 2,
+    initialSlide: 0,
     speed: 400,
     autoHeight: true
 };
@@ -25,7 +25,9 @@ interface State {
     infoPlayers: Array<Array<infoPlayer>>
     matchState: string,
     matchTitle: string,
-    matchTime: string|undefined
+    matchTime: string|undefined,
+    gols: Array<number>,
+    currGoleiros: Array<number>
 }
 interface Props{
 
@@ -39,7 +41,9 @@ class Match extends React.Component<Props,State> {
             infoPlayers: [[], []], //lista de informações sobre os jogadores
             matchState: "", //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
             matchTitle: "",
-            matchTime: undefined
+            matchTime: undefined,
+            gols:[0,0],
+            currGoleiros:[0,0]
         }
     }
     componentDidMount() { //apenas jogando valores quaisquer de teste
@@ -63,7 +67,9 @@ class Match extends React.Component<Props,State> {
             teams: teams,
             infoPlayers: infoPlayers,
             matchState: "BEGUN",
-            matchTitle: "Partida 1"
+            matchTitle: "Partida 1",
+            gols: [0,0],
+            currGoleiros: [0,0]
         })
     }
     /**
@@ -78,11 +84,30 @@ class Match extends React.Component<Props,State> {
     }
     changePlayer(currTeam:number, indexPlayer:number, opt: keyof infoPlayer) {
         let infoPlayers = this.state.infoPlayers
-        if (opt == "isGoleiro")
-            infoPlayers[currTeam][indexPlayer][opt] = !infoPlayers[currTeam][indexPlayer][opt]
-        else 
+        let currGoleiros = this.state.currGoleiros;
+        let gols = this.state.gols
+        if (opt == "isGoleiro"){
+            infoPlayers[currTeam][currGoleiros[currTeam]][opt] = false
+            infoPlayers[currTeam][indexPlayer][opt] = true
+            currGoleiros[currTeam] = indexPlayer
+        }            
+        else{
             infoPlayers[currTeam][indexPlayer][opt]++
-        this.setState({ infoPlayers })
+            if(opt == "golsFavor"){
+                infoPlayers[currTeam==0?1:0][currGoleiros[currTeam==0?1:0]]['golsTomados']++
+                gols[currTeam]++
+            }
+            if(opt == "golsContra"){
+                infoPlayers[currTeam][currGoleiros[currTeam]]['golsTomados']++
+                gols[currTeam==0?1:0]++
+            }
+        } 
+        this.setState({ infoPlayers,currGoleiros, gols})
+    }
+    removePlayer(currTeam:number, indexPlayer:number){
+        let teams = this.state.teams
+        teams[currTeam].splice(indexPlayer,1)
+        this.setState({ teams: teams })
     }
     render() {
         const matchState = this.state.matchState
@@ -93,17 +118,21 @@ class Match extends React.Component<Props,State> {
         return (
             <div style={{}}>
                 <Toolbar title={this.state.matchTitle} />
-                <Header matchTime={this.state.matchTime} />
+                <Header matchTime={this.state.matchTime} gols={this.state.gols}/>
                 <IonSlides options={slideOpts}>
                     <IonSlide>
                         <TeamCard team="Time A" players={players[0]}
                             addPlayer={(e:any) => this.addPlayer(0, e)}
-                            changePlayer={(e:any,a:any) => this.changePlayer(0, e,a)} />
+                            changePlayer={(e:any,a:any) => this.changePlayer(0, e,a)} 
+                            removePlayer={(e:any) => this.removePlayer(0, e)}
+                            matchState={this.state.matchState}/>
                     </IonSlide>
                     <IonSlide>
                         <TeamCard team="Time B" players={players[1]}
                             addPlayer={(e:any) => this.addPlayer(1, e)}
-                            changePlayer={(e:any,a:any) => this.changePlayer(1, e,a)} />
+                            changePlayer={(e:any,a:any) => this.changePlayer(1, e,a)}
+                            removePlayer={(e:any) => this.removePlayer(1, e)}
+                            matchState={this.state.matchState} />
                     </IonSlide>
                     <IonSlide>
                         <Statics infoPlayers={this.state.infoPlayers} />

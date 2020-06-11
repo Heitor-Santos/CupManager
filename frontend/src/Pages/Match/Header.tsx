@@ -2,7 +2,8 @@ import React from 'react'
 import { IonGrid, IonRow, IonCol } from '@ionic/react'
 
 interface Props {
-    matchTime: string | undefined
+    matchTime: string | undefined,
+    gols: Array<number>
 }
 interface State {
     matchTime: string | undefined
@@ -21,10 +22,11 @@ class Header extends React.Component<Props, State>{
         return({matchTime: nextProps.matchTime})
     }
     render() {
+        const gols = this.props.gols
         const head = this.state.matchTime===undefined?null:
         <IonGrid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <IonRow style={{ width: '50vh' }}>
-                    <IonCol style={{ borderRadius: '2px', color: 'white', backgroundColor: 'blue', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><h3>0 X 0</h3></IonCol>
+                    <IonCol style={{ borderRadius: '2px', color: 'white', backgroundColor: 'blue', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><h3>{gols[0]} X {gols[1]}</h3></IonCol>
                     <IonCol></IonCol>
                     <IonCol style={{ borderRadius: '2px', color: 'blue', borderStyle: 'solid', borderWidth: '2px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}><h3>{this.state.matchTime}</h3></IonCol>
                 </IonRow>
