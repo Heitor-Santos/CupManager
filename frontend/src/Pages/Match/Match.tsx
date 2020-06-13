@@ -5,7 +5,7 @@ import Header from './Header'
 import TeamCard from './TeamCard'
 import ClockOptions from './ClockOptions'
 import Statics from './Statics'
-import { getCup, postMatch, getMatch, getPlayer, getPlayers, putMatch, postPlayer } from '../../firebase/firestore'
+import { getCup, postMatch, getMatch, getPlayer, getPlayers, putMatch, postPlayer, putPlayer } from '../../firebase/firestore'
 const slideOpts = {
     initialSlide: 0,
     speed: 400,
@@ -49,7 +49,7 @@ class Match extends React.Component<Props, State> {
         this.state = {
             infoMatch: {
                 teamA: ['Heitor', 'Gilmar', 'Elisson', 'Tiago'], //lista de nomes de jogadores do time A
-                teamB: ['Ladislau','Robert','Clara','Késsia'], //lista de nomes de jogadores do time B
+                teamB: ['Ladislau', 'Robert', 'Clara', 'Késsia'], //lista de nomes de jogadores do time B
                 matchState: "NOT-BEGUN", //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
                 matchName: this.props.match.params.matchName,
                 matchTime: undefined,
@@ -62,22 +62,36 @@ class Match extends React.Component<Props, State> {
         this.matchName = this.props.match.params.matchName;
     }
     async componentDidMount() {
+        console.log("???")
         let AllInfoPlayers = []
         let match = await getMatch(this.cupName, this.matchName) as MatchData | undefined
+        console.log(match)
         if (typeof match != 'undefined') {
-            AllInfoPlayers.push(await getPlayers(this.cupName, undefined, undefined, undefined, match.teamA, this.matchName))
-            AllInfoPlayers.push(await getPlayers(this.cupName, undefined, undefined, undefined, match.teamB, this.matchName))
-            const infoPlayers = AllInfoPlayers.map(team => { return (team.map(player => player.stats[this.cupName])) })
+            AllInfoPlayers.push(await getPlayers(this.cupName, this.matchName, match.teamA))
+            console.log(AllInfoPlayers)
+            AllInfoPlayers.push(await getPlayers(this.cupName, this.matchName, match.teamB))
+            console.log(AllInfoPlayers)
+            const infoPlayers = AllInfoPlayers
             this.setState({ infoMatch: match, infoPlayers: infoPlayers })
+            console.log(infoPlayers)
         }
     }
     async matchStart() {
-        postMatch(this.cupName, this.matchName, this.state.infoMatch)
-        this.state.infoMatch.teamA.map(async (player) => {let resp = await postPlayer(this.cupName, player) as string;})
-        this.state.infoMatch.teamB.map(async (player) => {let resp = await postPlayer(this.cupName, player) as string})
+        let infoMatch = this.state.infoMatch
+        infoMatch.matchState = "BEGUN"
+        postMatch(this.cupName, this.matchName, infoMatch)
+        this.state.infoMatch.teamA.map(async (player) => { let resp = await postPlayer(this.cupName, player,this.matchName) as string; })
+        this.state.infoMatch.teamB.map(async (player) => { let resp = await postPlayer(this.cupName, player,this.matchName) as string })
+        let infoPlayers =[]
+        infoPlayers.push(await getPlayers(this.cupName, this.matchName, this.state.infoMatch.teamA))
+        infoPlayers.push(await getPlayers(this.cupName, this.matchName, this.state.infoMatch.teamB))
+        this.setState({infoMatch,infoPlayers})
     }
-    async whenIsOver(){
-
+    async whenIsOver() {
+        let infoMatch = this.state.infoMatch
+        infoMatch.matchState = "FINISHED"
+        this.setState({infoMatch})
+        let editMatch = await putMatch(this.cupName,this.matchName,this.state.infoMatch)
     }
     /**
      * 
@@ -89,23 +103,28 @@ class Match extends React.Component<Props, State> {
         infoMatch[currTeam].push(playerName)
         this.setState({ infoMatch })
     }
-    changePlayer(currTeam: number, indexPlayer: number, opt: keyof infoPlayer) {
+    async changePlayer(currTeam: 0 | 1, indexPlayer: number, opt: keyof infoPlayer) {
         let infoPlayers = this.state.infoPlayers
         let currGoleiros = this.state.infoMatch.currGoleiros;
         let gols = this.state.infoMatch.gols
+        let playersToChange: Array<Array<number>> = [[], []]
         if (opt == "isGoleiro") {
             infoPlayers[currTeam][currGoleiros[currTeam]][opt] = false
+            playersToChange[currTeam].push(currGoleiros[currTeam])
             infoPlayers[currTeam][indexPlayer][opt] = true
             currGoleiros[currTeam] = indexPlayer
         }
         else {
             infoPlayers[currTeam][indexPlayer][opt]++
+            playersToChange[currTeam].push(indexPlayer)
             if (opt == "golsFavor") {
                 infoPlayers[currTeam == 0 ? 1 : 0][currGoleiros[currTeam == 0 ? 1 : 0]]['golsTomados']++
+                playersToChange[currTeam == 0 ? 1 : 0].push(currGoleiros[currTeam == 0 ? 1 : 0])
                 gols[currTeam]++
             }
             if (opt == "golsContra") {
                 infoPlayers[currTeam][currGoleiros[currTeam]]['golsTomados']++
+                playersToChange[currTeam].push(currGoleiros[currTeam])
                 gols[currTeam == 0 ? 1 : 0]++
             }
         }
@@ -113,6 +132,12 @@ class Match extends React.Component<Props, State> {
         infoMatch.currGoleiros = currGoleiros;
         infoMatch.gols = gols
         this.setState({ infoPlayers, infoMatch })
+        let editMatch = await putMatch(this.cupName, this.matchName, this.state.infoMatch)
+        for (let i = 0; i < playersToChange.length; i++) {
+            for (let player of playersToChange[i]) {
+                let editPlayer = await putPlayer(this.cupName, infoPlayers[i][player].name, this.matchName, infoPlayers[i][player])
+            }
+        }
     }
     removePlayer(currTeam: "teamA" | "teamB", indexPlayer: number) {
         let infoMatch = this.state.infoMatch
@@ -124,6 +149,7 @@ class Match extends React.Component<Props, State> {
         const teams = [this.state.infoMatch.teamA, this.state.infoMatch.teamB]
         //decide se vai mandar só a lista de nome ou as info tbm
         const players = matchState == "NOT-BEGUN" ? teams : this.state.infoPlayers
+        console.log(players)
         //console.log(this.state.matchTime)
         return (
             <div style={{}}>
@@ -149,7 +175,7 @@ class Match extends React.Component<Props, State> {
                     </IonSlide>
                 </IonSlides>
                 <ClockOptions setState={(e: any) => this.setState(e)} onStart={() => this.matchStart()}
-                    onOver={() => console.log('oi')} infoMatch={this.state.infoMatch} />
+                    onOver={()=>this.whenIsOver()} infoMatch={this.state.infoMatch} />
             </div>
         )
     }

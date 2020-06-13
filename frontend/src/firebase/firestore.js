@@ -102,15 +102,26 @@ export async function putMatch(cupName, matchName, matchData) {
     .catch((err) => { resp = `error ${err}` })
   return resp;
 }
-export async function postPlayer(cupName, playerName) {
+export async function postPlayer(cupName, playerName, matchName) {
   let resp = 'already-exists';
-  let player = await getPlayer(cupName, playerName)
+  let player = await getPlayer(cupName, playerName, matchName)
   if (player == undefined) {
     await db.collection('cups').doc(cupName).collection('players').doc(playerName).set({
-      name: playerName,
+      name: playerName,//ALTERAR PARA COLOCAR  A SUBCOLEÇÃO DE PARTIDAS
+    }).then((succ) => { resp = `success` })
+      .catch((err) => { resp = `error ${err}` })
+    await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats')
+    .doc(matchName).set({
+        "name": playerName,
+        "isGoleiro": false,
+        "assist": 0,
+        "golsFavor": 0,
+        "golsContra": 0,
+        "golsTomados": 0
     }).then((succ) => { resp = `success` })
       .catch((err) => { resp = `error ${err}` })
   }
+  console.log(resp)
   return resp;
 }
 export async function putPlayer(cupName, playerName, matchName, playerData) {
@@ -118,40 +129,35 @@ export async function putPlayer(cupName, playerName, matchName, playerData) {
   await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats').doc(matchName).set({
     playerData
   }).then((succ) => { resp = `success` })
-  .catch((err) => { resp = `error ${err}` })
+    .catch((err) => { resp = `error ${err}` })
   return resp
 }
-export async function getPlayer(cupName, playerName,matchName,) {
+export async function getPlayer(cupName, playerName, matchName) {
   let resp = undefined;
-  await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats').doc(matchName).get()
-    .then((match) => {
-      if (match.exists && JSON.stringify(match.data() != '{}')) resp = match.data()
+  if (matchName != undefined) {
+    await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats').doc(matchName).get()
+      .then((match) => {
+        if (match.exists && JSON.stringify(match.data() != '{}')) resp = match.data()
+      })
+      .catch(err => resp = err)
+  }
+  else {
+    await db.collection('cups').doc(cupName).collection('players').doc(playerName).get().then((player) => {
+      if (player.exists) { resp = player.data() }
     })
-    .catch(err => resp = err)
+  }
   return resp
 }
 
-export async function getPlayers(cupName, param, crit, val, listPlayers, matchName) {
+export async function getPlayers(cupName, matchName, listPlayers) {
   let resp = [];
-  //primeiro caso é se você passa um parâmetro, um critério e um valor de filtro
-  if ((crit && param && val) != undefined) {
-    await db.collection('cups').doc(cupName).collection('players').where(param, crit, val)
-      .get().then(players => {
-        if (!players.empty) players.forEach(player => resp.push(player.data()))
-      })
-  }
-  //segundo caso é se você passa uma lista de jogadores para carregar
-  else if (listPlayers != undefined | listPlayers != []) {
+  if (listPlayers != undefined && listPlayers != []) {
     console.log(listPlayers)
     for (let player of listPlayers) {
       let infoPlayer = await getPlayer(cupName, player, matchName)
       if (infoPlayer != undefined) resp.push(infoPlayer)
     }
   }
-  //terceiro caso é se você não passar nenhum parâmetro além do cupName, ele retorna todos os players da cup
-  else await db.collection('cups').doc(cupName).collection('players').get().then(players => {
-    if (!players.empty) players.forEach(player => resp.push(player.data()))
-  })
   return resp;
 }
 

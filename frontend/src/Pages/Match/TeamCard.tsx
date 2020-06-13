@@ -36,6 +36,7 @@ class TeamCard extends React.Component<Props,State> {
         this.setState({ showAlert: !this.state.showAlert })
     }
     render() {
+        console.log(this.props.players)
         return (
             <div>
                 {this.props.players.length < 6 && this.props.matchState=="NOT-BEGUN"?

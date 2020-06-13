@@ -67,7 +67,7 @@ class ClockOptions extends React.Component<IProps, IState>{
       //if (!this.state.running) clearInterval(repetecoID)
       if (this.cron.isOver()) {
         let infoMatch = this.props.infoMatch;
-        infoMatch.matchTime = this.cron.expecOutput
+        infoMatch.matchTime = "00:00"
         this.props.setState({ infoMatch })
         this.props.onOver()
         clearInterval(repetecoID)
