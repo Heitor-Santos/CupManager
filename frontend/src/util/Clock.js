@@ -19,7 +19,7 @@ export default class Clock{
             this.seconds = begin.getSeconds();
             this.expecOutput = begin.toLocaleTimeString([], { minute: '2-digit', second: '2-digit', hour12: false })
             this.timeLeft -= 1000
-            console.log(this.expecOutput)
+            //console.log(this.expecOutput)
             if (this.minutes <= 0 && this.seconds <= 0) {
                 this.running = false
                 clearInterval(this.updateID)

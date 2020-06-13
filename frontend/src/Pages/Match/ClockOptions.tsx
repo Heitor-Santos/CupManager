@@ -12,6 +12,17 @@ const secondButtonInfo = [{
 }]
 interface IProps {
   setState: Function,
+  onStart: Function,
+  onOver: Function,
+  infoMatch: {
+    teamA: Array<string>,
+    teamB: Array<string>,
+    matchState: string,
+    matchName: string,
+    matchTime: undefined | string,
+    gols: Array<number>,
+    currGoleiros: Array<number>
+  }
 }
 interface IState {
   showActionSheet: boolean,
@@ -28,47 +39,54 @@ class ClockOptions extends React.Component<IProps, IState>{
       secondButton: 0,
       running: false
     }
-    this.cron=null; 
-    this.matchTime=undefined;
+    this.cron = null;
+    this.matchTime = undefined;
   }
   handleChange(evt: any) {
     const time = new Date(evt.target.value)
     this.matchTime = time.toLocaleTimeString([], { minute: '2-digit', second: '2-digit', hour12: false })
-    this.props.setState({ matchTime: this.matchTime })
-    console.log("sad")
+    let infoMatch = this.props.infoMatch;
+    infoMatch.matchTime = this.matchTime
+    this.props.setState({ infoMatch })
+    //console.log("sad")
   }
   createClock() {
+    //console.log("criei")
     let time = this.matchTime
     let timey = parseInt(time.substring(0, 2)) * 60 + parseInt(time.substring(3, 5))
     this.cron = new Clock(timey)
     this.setState({ running: true })
-    /*if (this.props.estadoPartida == "NOT-BEGUN") {
-      this.props.loadTime()
-      this.props.postPartida()
-    }*/
+    if (this.props.infoMatch.matchState == "NOT-BEGUN") {
+      this.props.onStart()
+    }
     this.cron.start()
     let repetecoID = setInterval(() => {
-      this.props.setState({matchTime: this.cron.expecOutput})
+      let infoMatch = this.props.infoMatch;
+      infoMatch.matchTime = this.cron.expecOutput
+      this.props.setState({ infoMatch })
       //if (!this.state.running) clearInterval(repetecoID)
       if (this.cron.isOver()) {
-        this.props.setState({matchTime:'00:00'})
-        //this.props.editPartida()
+        let infoMatch = this.props.infoMatch;
+        infoMatch.matchTime = this.cron.expecOutput
+        this.props.setState({ infoMatch })
+        this.props.onOver()
         clearInterval(repetecoID)
       }
     }, 1000)
   }
   onStart() {
     this.state.running ? this.cron.start() : this.createClock()
-    this.setState({secondButton:1})
+    this.setState({ secondButton: 1 })
+    //console.log("bla")
   }
   onPause() {
     if (this.state.running) this.cron.pause()
-    this.setState({secondButton:0})
+    this.setState({ secondButton: 0 })
   }
   onStop() {
     if (this.state.running) {
       this.cron.stop()
-      this.setState({ running: false, secondButton:0})
+      this.setState({ running: false, secondButton: 0 })
     }
   }
   onReset() {
@@ -93,11 +111,11 @@ class ClockOptions extends React.Component<IProps, IState>{
             text: 'Tempo da partida',
             role: 'destructive',
             icon: calendar,
-            handler: this.state.running?undefined:()=>tida?.click()
+            handler: this.state.running ? undefined : () => tida?.click()
           }, {
             text: secondButtonInfo[this.state.secondButton]["text"],
             icon: secondButtonInfo[this.state.secondButton]["icon"],
-            handler: this.state.secondButton===0?()=>this.onStart():()=>this.onPause()
+            handler: this.state.secondButton === 0 ? () => this.onStart() : () => this.onPause()
           }, {
             text: 'Reiniciar',
             icon: refreshCircleOutline,

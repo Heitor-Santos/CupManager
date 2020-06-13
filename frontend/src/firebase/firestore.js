@@ -46,7 +46,7 @@ export async function getUserLogin() {
 }
 
 export async function postCup(cupName) {
-  cupName = cupName.replace("/", "")
+  cupName = cupName.replace("/", "") //pra que serve esse replace aqui?
   const res = await getCup(cupName)
   if (res) return false;
   await cupCollection.doc(cupName).set({
@@ -78,6 +78,7 @@ export async function getCup(cupName) {
 }
 export async function postMatch(cupName, matchName, matchData) {
   let resp = undefined;
+  console.log(matchData)
   await db.collection('cups').doc(cupName).collection('matches').doc(matchName).set(matchData)
     .then((succ) => { resp = `success` })
     .catch((err) => { resp = `error ${err}` })
@@ -88,7 +89,7 @@ export async function getMatch(cupName, matchName) {
   let resp = undefined;
   await db.collection('cups').doc(cupName).collection('matches').doc(matchName).get()
     .then((match) => {
-      if (match.exists) resp = match.data()
+      if (match.exists && JSON.stringify(match.data()) != '{}') resp = match.data()
     })
     .catch(err => resp = err)
   return resp
@@ -101,30 +102,56 @@ export async function putMatch(cupName, matchName, matchData) {
     .catch((err) => { resp = `error ${err}` })
   return resp;
 }
-
-export async function getPlayer(cupName, playerName) {
+export async function postPlayer(cupName, playerName) {
+  let resp = 'already-exists';
+  let player = await getPlayer(cupName, playerName)
+  if (player == undefined) {
+    await db.collection('cups').doc(cupName).collection('players').doc(playerName).set({
+      name: playerName,
+    }).then((succ) => { resp = `success` })
+      .catch((err) => { resp = `error ${err}` })
+  }
+  return resp;
+}
+export async function putPlayer(cupName, playerName, matchName, playerData) {
+  let resp = '';
+  await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats').doc(matchName).set({
+    playerData
+  }).then((succ) => { resp = `success` })
+  .catch((err) => { resp = `error ${err}` })
+  return resp
+}
+export async function getPlayer(cupName, playerName,matchName,) {
   let resp = undefined;
-  await db.collection('cups').doc(cupName).collection('players').doc(playerName).get()
-    .then((player) => {
-      if (player.exists) resp = player.data()
+  await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats').doc(matchName).get()
+    .then((match) => {
+      if (match.exists && JSON.stringify(match.data() != '{}')) resp = match.data()
     })
     .catch(err => resp = err)
   return resp
 }
 
-export async function getPlayers(cupName, param, crit, val) {
+export async function getPlayers(cupName, param, crit, val, listPlayers, matchName) {
   let resp = [];
+  //primeiro caso é se você passa um parâmetro, um critério e um valor de filtro
   if ((crit && param && val) != undefined) {
     await db.collection('cups').doc(cupName).collection('players').where(param, crit, val)
       .get().then(players => {
-        if (!players.empty) players.forEach(player => resp.push(players))
+        if (!players.empty) players.forEach(player => resp.push(player.data()))
       })
   }
-  else {
-    await db.collection('cups').doc(cupName).collection('players').get().then(players => {
-      if (!players.empty) players.forEach(player => resp.push(players))
-    })
+  //segundo caso é se você passa uma lista de jogadores para carregar
+  else if (listPlayers != undefined | listPlayers != []) {
+    console.log(listPlayers)
+    for (let player of listPlayers) {
+      let infoPlayer = await getPlayer(cupName, player, matchName)
+      if (infoPlayer != undefined) resp.push(infoPlayer)
+    }
   }
+  //terceiro caso é se você não passar nenhum parâmetro além do cupName, ele retorna todos os players da cup
+  else await db.collection('cups').doc(cupName).collection('players').get().then(players => {
+    if (!players.empty) players.forEach(player => resp.push(player.data()))
+  })
   return resp;
 }
 
