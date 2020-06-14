@@ -49,9 +49,7 @@ export async function postCup(cupName) {
   cupName = cupName.replace("/", "") //pra que serve esse replace aqui?
   const res = await getCup(cupName)
   if (res) return false;
-  await cupCollection.doc(cupName).set({
-    idMatches: [],
-    idPlayers: [],
+  await db.collection("/cups").doc(cupName).set({
     name: cupName
   })
   return true
@@ -59,23 +57,17 @@ export async function postCup(cupName) {
 
 export async function getCup(cupName) {
   var result = false;
-  await db.collection(userCollection).doc(cupName).get()
+  await db.collection("/cups").doc(cupName).get()
     .then(cup => {
       if (!cup.exists) console.log(`${cup} não existe`)
-      else console.log(cup.data())
+      else {
+        console.log(cup.data()) 
+        result = true
+      }
     })
-  /*await db.collection(userCollection).where("name","==",cupName).get()
-      .then(snapshot=> {
-        snapshot.forEach(doc => {
-          const data = doc.data()
-          console.log(data)
-          if (data.name == cupName) {
-            result = true
-          }
-        })
-      })
-  return result */
+    return result
 }
+
 export async function postMatch(cupName, matchName, matchData) {
   let resp = undefined;
   console.log(matchData)
@@ -165,17 +157,18 @@ export async function getMatches(keyCup) {
   const list = []
   if (keyCup != "" && keyCup != undefined) {
     keyCup = keyCup.replace("/", "")
-    await db.collection(userCollection + keyCup + "/Match").orderBy("idMatch", "asc").get()
+    await db.collection("/cups/"+keyCup+"/matches").get()
       .then(snapshot => {
         snapshot.forEach(doc => {
-          const { goalsA, goalsB, idMatch, idPlayersA, idPlayersB, winner } = doc.data()
+          const { currGoleiros, gols, matchName, matchState, matchTime, teamA, teamB } = doc.data()
           list.push({
-            goalsB,
-            goalsA,
-            idMatch,
-            idPlayersA,
-            idPlayersB,
-            winner
+            currGoleiros,
+            gols,
+            matchName,
+            matchState,
+            matchTime,
+            teamA,
+            teamB
           })
         })
       })
@@ -188,7 +181,7 @@ export async function deleteMatche(idMatch, keyCup) {
   keyCup = keyCup.replace("/", "")
   idMatch = idMatch.toString()
   console.log(keyCup + " " + idMatch)
-  await db.collection(userCollection + keyCup + "/Match").doc(idMatch).delete().then(function () {
+  await db.collection("/cups/"+keyCup+"/matches").doc(idMatch).delete().then(function () {
     console.log("Partida apagada!")
   }).catch(function (error) {
     console.log("Error nessa porra: ", error)

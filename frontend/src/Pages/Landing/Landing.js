@@ -2,13 +2,15 @@ import React from 'react';
 import { IonSearchbar, IonContent, IonButton, IonImg } from '@ionic/react';
 import ToolBar from '../../components/ToolBar'
 import HandleStorage from '../../util/handleStorage'
+import { Redirect } from 'react-router';
 
 const store = new HandleStorage()
 class Landing extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            cupName: ""
+            cupName: "",
+            redirect: false
         }
     }
     //só faz setar o nome do campeonato escrito na barra de pesquisa
@@ -26,24 +28,33 @@ class Landing extends React.Component {
             await store.setLastCup(cupName)
             //onClick()
             store.pushToRecentCups(cupName)
+            if (onClick !== undefined) {
+                onClick()
+            } else {
+               this.setState({redirect:true})
+               this.setState({redirect:false})
+            }
         }
-
     }
+
+    
     render() {
+        const res = this.state.redirect ? <Redirect to = "/tab1"/>:
+        <IonContent>
+        <ToolBar title={this.props.title} />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5vh', marginBottom: '5vh' }}>
+            <IonImg src={require('../../media/tournament.png')}></IonImg>
+        </div>
+        <IonSearchbar placeholder="Digite o nome do campeonato"
+            showCancelButton="focus"
+            onIonChange={(evt) => this.handleChange(evt)} />
+        <IonButton expand="block"
+            onClick={() => this.handleClick(this.state.cupName, this.props.onClick)}>
+            Entrar no campeonato
+        </IonButton>
+        </IonContent>
         return (
-            <IonContent>
-                <ToolBar title={this.props.title} />
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5vh', marginBottom: '5vh' }}>
-                    <IonImg src={require('../../media/tournament.png')}></IonImg>
-                </div>
-                <IonSearchbar placeholder="Digite o nome do campeonato"
-                    showCancelButton="focus"
-                    onIonChange={(evt) => this.handleChange(evt)} />
-                <IonButton expand="block"
-                    onClick={() => this.handleClick(this.state.cupName, this.props.onClick)}>
-                    Entrar no campeonato
-                </IonButton>
-            </IonContent>
+           res
         )
     }
 }

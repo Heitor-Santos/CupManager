@@ -54,6 +54,7 @@ class App extends React.Component {
   openTabs() {
     this.setState({ isFirstTime: false })
   }
+
   render() {
     const response = this.state.isFirstTime ?
       <Landing onClick={() => this.openTabs()}  title="CupManager"/> : <TabParent />
@@ -61,6 +62,7 @@ class App extends React.Component {
       response
     )
   }
+
 }
 
 export default App;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Props } from 'react'
-import { IonItem, IonButton, IonLabel, IonList, IonItemSliding, IonItemOption, IonItemOptions, IonIcon, IonAlert, IonLoading, } from '@ionic/react'
+import { IonItem, IonButton, IonLabel, IonList, IonItemSliding, IonItemOption, IonItemOptions, IonIcon, IonAlert, IonLoading, IonFab, IonFabButton, } from '@ionic/react'
 import "./Tab1.css"
-import { construct, trash, key, create, chevronBackCircleOutline, chevronBackOutline } from 'ionicons/icons'
+import { construct, trash, key, create, chevronBackCircleOutline, chevronBackOutline, add } from 'ionicons/icons'
 import { deleteMatche } from '../../firebase/firestore'
 
 interface ListPartida {
@@ -16,6 +16,7 @@ const Card: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
   const [showAlert, setShowAlert] = useState(false);
   const [idAlertMatch, setIdAlertMatch] = useState();
   const [ busy, setBusy ] = useState<boolean>(false);
+  const url = "/"+keyCup+"/"
 
 
   const handleClick = async (idMatch : any) => {
@@ -33,16 +34,16 @@ const Card: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
   }
 
   const List = list.map((elem)=>(
-    <IonItemSliding key = {elem.idMatch}>
-      <IonItem>
+    <IonItemSliding key = {parseInt(elem.matchName)}>
+      <IonItem href = {url+elem.matchName}>
         <IonLabel> 
-          Partida {elem.idMatch}
+          Partida {elem.matchName}
           </IonLabel>
           <IonIcon icon={chevronBackOutline} />
           <IonIcon icon={trash} />
       </IonItem>
       <IonItemOptions side = "end">
-        <IonItemOption onClick={() => createAlert(elem.idMatch)}>
+        <IonItemOption onClick={() => createAlert(elem.matchName)}>
           Apagar Partida?
         </IonItemOption>
       </IonItemOptions>

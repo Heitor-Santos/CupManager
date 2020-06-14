@@ -153,7 +153,7 @@ class Match extends React.Component<Props, State> {
         //console.log(this.state.matchTime)
         return (
             <div style={{}}>
-                <Toolbar title={this.state.infoMatch.matchName} />
+                <Toolbar title={"Partida " + this.state.infoMatch.matchName} />
                 <Header matchTime={this.state.infoMatch.matchTime} gols={this.state.infoMatch.gols} />
                 <IonSlides options={slideOpts}>
                     <IonSlide>

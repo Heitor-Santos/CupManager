@@ -6,19 +6,28 @@ import "./Tab1.css"
 import Card from './Card';
 import HandleStorage from '../../util/handleStorage';
 
-const Tab1: React.FC = ()=> {
+const Tab1: React.FC = () => {
       
   // loja que armazena ultimos dados  
   const store = new HandleStorage()
-
-  // variaveis controladores de estado da TAB
   
+  const checkLastCup = async (store: HandleStorage) => {
+    const cupLast = await store.getLastCup()
+    if(cupLast != cup && cupLast != null) {
+      setCup(cupLast)
+    }
+  }
+  checkLastCup(store)
+  
+  // variaveis controladores de estado da TAB
   const [ firstPage, setPage ] = useState(true);
   const [ colorFirstPage, setColorButtonFirst] = useState("dark");
   const [ colorSecondPage, setColorButtonSecond ] = useState("light");
   const [ busy, setBusy ] = useState<boolean>(true);
   const [ cup, setCup ] = useState("");
   const [list, setList] = useState< any []>([])
+  const[ulr,setUrl] = useState<string>("")
+
   
   const subtitleCard = firstPage? "Lista de todas partidas da competição"
   : "Dados estatícos sobre os jogadores"
@@ -31,11 +40,14 @@ const Tab1: React.FC = ()=> {
         return <p>estatistica foda</p>
     }
   }
+
+
   
   // equivalente ao CompeneuntDeMount
   useEffect(() => {
+    setBusy(true)
     initPage()
-  }, []);
+  },[cup]);
 
   // inicia os dados essencias da aplicação
   const initPage = async () => {
@@ -60,6 +72,8 @@ const Tab1: React.FC = ()=> {
     console.log("Pegando lista de partidas --> " + keyCup)
     const res = await getMatches(keyCup)
     if (res != null) {
+       let pointer = res.length + 1
+       setUrl("/"+cup+"/"+ pointer)
        setList(res)
        return true
     }
@@ -78,7 +92,7 @@ const Tab1: React.FC = ()=> {
       <IonPage>
         <IonContent className="bg">
         <IonFab vertical = "bottom" horizontal = "end" slot = "fixed">
-          <IonFabButton>
+          <IonFabButton href= {ulr} >
               <IonIcon icon = {add}></IonIcon>
             </IonFabButton>
         </IonFab>

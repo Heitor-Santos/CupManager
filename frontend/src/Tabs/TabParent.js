@@ -45,7 +45,7 @@ function TabParent(props) {
                         <Route path="/tab3" component={Tab3} exact={true}/>
                         <Route path="/:cupName/:matchName" component={Match} exact={true}/>
                         <Route path="/card" component={ListIsEmpty} exact={true}/>
-                        <Route path="/" render={() => <Redirect to="/Várzea/31-04" />} exact={true} />
+                        <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
                     </IonRouterOutlet>
                     <IonTabBar slot="bottom">
                         <IonTabButton tab="tab1" href="/tab1">
