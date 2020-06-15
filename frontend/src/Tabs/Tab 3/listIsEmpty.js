@@ -10,8 +10,7 @@ function ListIsEmpty(props){
                 <IonCardTitle>Oops...</IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
-                Parece que está lista está vazia, acesse um campeonato ou tente reiniciar
-                o app.
+                Parece que está lista está vazia, tente criar uma partida, acessar um campeonato ou reniciar o app.
             </IonCardContent>
         </IonCard>
     )

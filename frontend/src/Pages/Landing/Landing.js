@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonSearchbar, IonContent, IonButton, IonImg } from '@ionic/react';
+import { IonSearchbar, IonContent, IonButton, IonImg, IonToast} from '@ionic/react';
 import ToolBar from '../../components/ToolBar'
 import HandleStorage from '../../util/handleStorage'
 import { Redirect } from 'react-router';
@@ -10,9 +10,11 @@ class Landing extends React.Component {
         super(props)
         this.state = {
             cupName: "",
-            redirect: false
+            redirect: false,
+            showToast: false
         }
     }
+
     //só faz setar o nome do campeonato escrito na barra de pesquisa
     handleChange(evt) {
         this.setState({ cupName: evt.target.value })
@@ -34,13 +36,23 @@ class Landing extends React.Component {
                this.setState({redirect:true})
                this.setState({redirect:false})
             }
+        } else {
+            this.setState({showToast:true})
         }
     }
 
     
     render() {
-        const res = this.state.redirect ? <Redirect to = "/tab1"/>:
+        const res = this.state.redirect ? <Redirect to = "/tab1"/> :
         <IonContent>
+        <IonToast
+        isOpen={this.state.showToast}
+        color = "danger"
+        onDidDismiss={() => this.setState({showToast:false})}
+        message="Por favor digite um nome de campeonato válido!"
+        duration={2000}
+        position = "middle"
+        />
         <ToolBar title={this.props.title} />
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5vh', marginBottom: '5vh' }}>
             <IonImg src={require('../../media/tournament.png')}></IonImg>
@@ -49,6 +61,7 @@ class Landing extends React.Component {
             showCancelButton="focus"
             onIonChange={(evt) => this.handleChange(evt)} />
         <IonButton expand="block"
+            color = "warning"
             onClick={() => this.handleClick(this.state.cupName, this.props.onClick)}>
             Entrar no campeonato
         </IonButton>

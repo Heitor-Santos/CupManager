@@ -1,8 +1,9 @@
 import React, { useState, useEffect, Props } from 'react'
-import { IonItem, IonButton, IonLabel, IonList, IonItemSliding, IonItemOption, IonItemOptions, IonIcon, IonAlert, IonLoading, IonFab, IonFabButton, } from '@ionic/react'
+import { IonItem, IonButton, IonLabel, IonList, IonItemSliding, IonItemOption, IonItemOptions, IonIcon, IonAlert, IonLoading, IonFab, IonFabButton, IonText, } from '@ionic/react'
 import "./Tab1.css"
 import { construct, trash, key, create, chevronBackCircleOutline, chevronBackOutline, add } from 'ionicons/icons'
 import { deleteMatche } from '../../firebase/firestore'
+import ListIsEmpty from '../Tab 3/listIsEmpty'
 
 interface ListPartida {
   list: any[],
@@ -16,7 +17,16 @@ const Card: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
   const [showAlert, setShowAlert] = useState(false);
   const [idAlertMatch, setIdAlertMatch] = useState();
   const [ busy, setBusy ] = useState<boolean>(false);
+  const [listEmpty, setEmpty] = useState<boolean>(false);
   const url = "/"+keyCup+"/"
+
+  useEffect(()=>{
+    if (list.length == 0) {
+      setEmpty(true)
+    } else {
+      setEmpty(false)
+    }
+  },[list.length])
 
 
   const handleClick = async (idMatch : any) => {
@@ -29,11 +39,11 @@ const Card: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
   }
 
   const createAlert = (idMatch : any) => {
-    setIdAlertMatch(idMatch)
     setShowAlert(true)
+    setIdAlertMatch(idMatch)
   }
 
-  const List = list.map((elem)=>(
+  const List = listEmpty? <ListIsEmpty /> : list.map((elem)=>(
     <IonItemSliding key = {parseInt(elem.matchName)}>
       <IonItem href = {url+elem.matchName}>
         <IonLabel> 
