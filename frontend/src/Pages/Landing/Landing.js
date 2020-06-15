@@ -25,7 +25,8 @@ class Landing extends React.Component {
      * @param {função a ser realizada quando o botão for apertado} onClick 
      */
     async handleClick(cupName, onClick) {
-        if (cupName != "") {
+        if (cupName !== "") {
+            cupName = cupName.replace("/", "|")
             const isFirstTime = await store.isFirstTime()
             await store.setLastCup(cupName)
             //onClick()

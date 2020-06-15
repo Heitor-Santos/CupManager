@@ -1,5 +1,5 @@
 import React from 'react'
-import { IonSlides, IonSlide } from '@ionic/react';
+import { IonSlides, IonSlide, IonPage, IonContent } from '@ionic/react';
 import Toolbar from '../../components/ToolBar'
 import Header from './Header'
 import TeamCard from './TeamCard'
@@ -152,7 +152,9 @@ class Match extends React.Component<Props, State> {
         console.log(players)
         //console.log(this.state.matchTime)
         return (
-            <div style={{}}>
+            <IonPage>
+                <IonContent>
+                <div style={{}}>
                 <Toolbar title={"Partida " + this.state.infoMatch.matchName} />
                 <Header matchTime={this.state.infoMatch.matchTime} gols={this.state.infoMatch.gols} />
                 <IonSlides options={slideOpts}>
@@ -176,7 +178,9 @@ class Match extends React.Component<Props, State> {
                 </IonSlides>
                 <ClockOptions setState={(e: any) => this.setState(e)} onStart={() => this.matchStart()}
                     onOver={()=>this.whenIsOver()} infoMatch={this.state.infoMatch} />
-            </div>
+                </div>
+                </IonContent>
+            </IonPage>
         )
     }
 }

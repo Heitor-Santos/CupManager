@@ -1,10 +1,11 @@
-import React, { Props, Component, useState, useEffect } from 'react'
-import { IonPage, IonContent, IonItem, IonIcon, IonHeader, IonToolbar, IonTitle, IonButton, IonFab, IonFabButton, IonLabel, IonList, IonListHeader, IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonLoading, IonText, } from '@ionic/react'
-import { add, list, key } from 'ionicons/icons'
+import React, { useState, useEffect } from 'react'
+import { IonPage, IonContent, IonIcon, IonHeader, IonFab, IonFabButton, IonLabel, IonList, IonLoading, IonSegment, IonSegmentButton, } from '@ionic/react'
+import { add } from 'ionicons/icons'
 import {loginUser,getMatches,postCup} from "../../firebase/firestore";
 import "./Tab1.css"
 import Card from './Card';
 import HandleStorage from '../../util/handleStorage';
+import ToolBar from '../../components/ToolBar';
 
 const Tab1: React.FC = () => {
       
@@ -21,16 +22,10 @@ const Tab1: React.FC = () => {
   
   // variaveis controladores de estado da TAB
   const [ firstPage, setPage ] = useState(true);
-  const [ colorFirstPage, setColorButtonFirst] = useState("dark");
-  const [ colorSecondPage, setColorButtonSecond ] = useState("light");
   const [ busy, setBusy ] = useState<boolean>(true);
   const [ cup, setCup ] = useState("");
   const [list, setList] = useState< any []>([])
   const[ulr,setUrl] = useState<string>("")
-
-  
-  const subtitleCard = firstPage? "Lista de todas partidas da competição"
-  : "Dados estatícos sobre os jogadores"
   
   // variaveis de conteudo
   const cardContent = () => { // qual conteudo vai ser disponivel
@@ -40,8 +35,6 @@ const Tab1: React.FC = () => {
         return <p>estatistica foda</p>
     }
   }
-
-
   
   // equivalente ao CompeneuntDeMount
   useEffect(() => {
@@ -81,44 +74,31 @@ const Tab1: React.FC = () => {
   }
 
   const listPartidas = <Card list={list} keyCup={cup} getUpdate={getUpdate} />
-    
-    const handleClick = (whichButton : boolean) => {
-      setPage(whichButton)
-      whichButton ? setColorButtonFirst("dark") : setColorButtonFirst("light")
-      whichButton ? setColorButtonSecond("light") : setColorButtonSecond("dark")
-    }
 
     return (
       <IonPage>
-        <IonContent className="bg">
         <IonFab vertical = "bottom" horizontal = "end" slot = "fixed">
-          <IonFabButton href= {ulr} >
+          <IonFabButton href = {ulr}  color = "tertiary">
               <IonIcon icon = {add}></IonIcon>
             </IonFabButton>
         </IonFab>
         <IonLoading message="Carregando Torneio..." duration={0} 
         isOpen={busy} />
-            <IonCard>
-            <IonContent>
-              <div className = "cardHeader">
-              <IonCardHeader>
-                <IonCardTitle>{cup.toUpperCase()}</IonCardTitle>
-                <IonCardSubtitle>
-                  {subtitleCard}
-                </IonCardSubtitle>
-              </IonCardHeader>
-              </div>
-              <IonList>
-                {cardContent()}
-              </IonList>
-            </IonContent>  
-            </IonCard>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-              <IonButton className = "botao" shape="round" size = "small" color = {colorFirstPage}
-              onClick={() => handleClick(true)} />
-              <IonButton className = "botao" shape="round" size = "small" color = {colorSecondPage}
-              onClick = {() => handleClick(false)} />
-            </div> 
+        <IonHeader class="ion-no-border" translucent={true}>
+          <ToolBar title={cup.toUpperCase()}/>
+          <IonSegment color = "tertiary" >
+            <IonSegmentButton value = "list"  onClick={() => setPage(true)}>
+              <IonLabel>Lista Partidas</IonLabel>
+            </IonSegmentButton>
+            <IonSegmentButton value = "estastics" onClick={() => setPage(false)}>
+              <IonLabel>Estatísticas Gerais</IonLabel>
+            </IonSegmentButton>
+          </IonSegment>
+        </IonHeader>
+          <IonContent>
+            <IonList inset={true}>
+              {cardContent()}
+           </IonList>
         </IonContent>
       </IonPage>
     );

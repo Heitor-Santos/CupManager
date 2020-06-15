@@ -53,7 +53,7 @@ const Card: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
           <IonIcon icon={trash} />
       </IonItem>
       <IonItemOptions side = "end">
-        <IonItemOption onClick={() => createAlert(elem.matchName)}>
+        <IonItemOption color = "danger" onClick={() => createAlert(elem.matchName)}>
           Apagar Partida?
         </IonItemOption>
       </IonItemOptions>
