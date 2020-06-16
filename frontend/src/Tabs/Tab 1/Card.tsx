@@ -1,9 +1,8 @@
 import React, { useState, useEffect, Props } from 'react'
 import { IonItem, IonButton, IonLabel, IonList, IonItemSliding, IonItemOption, IonItemOptions, IonIcon, IonAlert, IonLoading, IonFab, IonFabButton, IonText, } from '@ionic/react'
 import "./Tab1.css"
-import { construct, trash, key, create, chevronBackCircleOutline, chevronBackOutline, add } from 'ionicons/icons'
+import { trash, chevronBackOutline} from 'ionicons/icons'
 import { deleteMatche } from '../../firebase/firestore'
-import ListIsEmpty from '../Tab 3/listIsEmpty'
 
 interface ListPartida {
   list: any[],
@@ -43,7 +42,7 @@ const Card: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
     setIdAlertMatch(idMatch)
   }
 
-  const List = listEmpty? <ListIsEmpty /> : list.map((elem)=>(
+  const List = listEmpty? <IonItem><IonLabel><strong>Lista vazia! Aperte no "+" para adicionar partida!</strong></IonLabel></IonItem> : list.map((elem)=>(
     <IonItemSliding key = {parseInt(elem.matchName)}>
       <IonItem href = {url+elem.matchName}>
         <IonLabel> 

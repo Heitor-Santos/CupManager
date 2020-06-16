@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { IonPage, IonContent, IonIcon, IonHeader, IonFab, IonFabButton, IonLabel, IonList, IonLoading, IonSegment, IonSegmentButton, } from '@ionic/react'
+import { IonPage, IonContent, IonIcon, IonHeader, IonFab, IonFabButton, IonLabel, IonList, IonLoading, IonSegment, IonSegmentButton, IonCard, } from '@ionic/react'
 import { add } from 'ionicons/icons'
 import {loginUser,getMatches,postCup} from "../../firebase/firestore";
 import "./Tab1.css"
@@ -77,15 +77,12 @@ const Tab1: React.FC = () => {
 
     return (
       <IonPage>
-        <IonFab vertical = "bottom" horizontal = "end" slot = "fixed">
-          <IonFabButton href = {ulr}  color = "tertiary">
-              <IonIcon icon = {add}></IonIcon>
-            </IonFabButton>
-        </IonFab>
         <IonLoading message="Carregando Torneio..." duration={0} 
         isOpen={busy} />
         <IonHeader class="ion-no-border" translucent={true}>
           <ToolBar title={cup.toUpperCase()}/>
+        </IonHeader>
+          <IonContent className = "bg">
           <IonSegment color = "tertiary" >
             <IonSegmentButton value = "list"  onClick={() => setPage(true)}>
               <IonLabel>Lista Partidas</IonLabel>
@@ -94,12 +91,19 @@ const Tab1: React.FC = () => {
               <IonLabel>Estatísticas Gerais</IonLabel>
             </IonSegmentButton>
           </IonSegment>
-        </IonHeader>
-          <IonContent>
-            <IonList inset={true}>
-              {cardContent()}
-           </IonList>
-        </IonContent>
+            <IonCard>
+              <IonContent>
+                <IonFab vertical = "bottom" horizontal = "center" slot = "fixed">
+                  <IonFabButton href = {ulr}  color = "tertiary" size="small">
+                      <IonIcon icon = {add}></IonIcon>
+                    </IonFabButton>
+                </IonFab>
+              <IonList inset={true}>
+                {cardContent()}
+              </IonList>
+              </IonContent>
+            </IonCard>
+            </IonContent>
       </IonPage>
     );
   };

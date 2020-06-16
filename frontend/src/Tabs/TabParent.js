@@ -50,7 +50,7 @@ function TabParent(props) {
                         <Route path="/card" component={ListIsEmpty} exact={true}/>
                         <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
                     </IonRouterOutlet>
-                    <IonTabBar slot="bottom">
+                    <IonTabBar color = "light" slot="bottom">
                         <IonTabButton tab="tab1" href="/tab1">
                             <IonIcon icon={home} />
                             <IonLabel>Início</IonLabel>

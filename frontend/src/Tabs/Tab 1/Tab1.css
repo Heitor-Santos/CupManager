@@ -1,6 +1,10 @@
+ion-card {
+    height: 85% !important;
+    border-radius: 15px;
+}
+
 
 .bg{
     --background: none;
-    background: rgb(29,233,182) !important;
-    background: linear-gradient(0deg, rgba(29,233,182,0.6881127450980392) 0%, rgba(0,191,165,0.8253676470588236) 100%);
+    background: #ffffff!important;
 }
