@@ -190,13 +190,17 @@ export async function deleteMatche(idMatch, keyCup) {
     console.log("Partida apagada!")
     await db.collection("/cups/" + keyCup + "/players/").get().then(snapshot=> {
       snapshot.forEach(async doc => {
-        await db.collection("/cups/" + keyCup + "/players/" + doc.id + "/stats/").doc(idMatch).delete().then(()=>{
-          console.log("Est apagada.")
-        })
+        await deleteStats(keyCup, doc.id, idMatch)
       })
     })
   }).catch(function (error) {
     console.log("Error nessa porra: ", error)
+  })
+}
+
+export async function deleteStats (keyCup, docId, idMatch) {
+  await db.collection("/cups/" + keyCup + "/players/" + docId + "/stats/").doc(idMatch).delete().then(()=>{
+    console.log("Est apagada")
   })
 }
 
