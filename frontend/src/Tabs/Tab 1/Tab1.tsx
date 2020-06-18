@@ -26,6 +26,7 @@ const Tab1: React.FC = () => {
   const [ cup, setCup ] = useState("");
   const [list, setList] = useState< any []>([])
   const[ulr,setUrl] = useState<string>("")
+  const [segmentValue, setSegmentValue] = useState("list")
   
   // variaveis de conteudo
   const cardContent = () => { // qual conteudo vai ser disponivel
@@ -78,6 +79,12 @@ const Tab1: React.FC = () => {
     return false
   }
 
+  const setSegment = (value: any) => {
+    if (value != undefined) {
+      setSegmentValue(value)
+    }
+  }
+
   const listPartidas = <Card list={list} keyCup={cup} getUpdate={getUpdate} />
 
     return (
@@ -88,7 +95,7 @@ const Tab1: React.FC = () => {
           <ToolBar title={cup.toUpperCase()}/>
         </IonHeader>
           <IonContent className = "bg">
-          <IonSegment color = "tertiary" >
+          <IonSegment color = "tertiary" value = {segmentValue} onIonChange={e => setSegment(e.detail.value)}>
             <IonSegmentButton value = "list"  onClick={() => setPage(true)}>
               <IonLabel>Lista Partidas</IonLabel>
             </IonSegmentButton>
