@@ -186,8 +186,15 @@ export async function deleteMatche(idMatch, keyCup) {
   keyCup = keyCup.replace("/", "")
   idMatch = idMatch.toString()
   console.log(keyCup + " " + idMatch)
-  await db.collection("/cups/" + keyCup + "/matches").doc(idMatch).delete().then(function () {
+  await db.collection("/cups/" + keyCup + "/matches").doc(idMatch).delete().then(async function () {
     console.log("Partida apagada!")
+    await db.collection("/cups/" + keyCup + "/players/").get().then(snapshot=> {
+      snapshot.forEach(async doc => {
+        await db.collection("/cups/" + keyCup + "/players/" + doc.id + "/stats/").doc(idMatch).delete().then(()=>{
+          console.log("Est apagada.")
+        })
+      })
+    })
   }).catch(function (error) {
     console.log("Error nessa porra: ", error)
   })

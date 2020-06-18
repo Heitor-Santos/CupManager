@@ -49,7 +49,7 @@ class TeamCard extends React.Component<Props,State> {
                         </IonFabButton>
                     </IonFab> : null
                 }
-                <IonCard>
+                <IonCard className = "matchCard">
                     <IonCardHeader color="primary">
                         <IonCardTitle>{this.props.team}</IonCardTitle>
                     </IonCardHeader>

@@ -65,7 +65,12 @@ const Tab1: React.FC = () => {
     console.log("Pegando lista de partidas --> " + keyCup)
     const res = await getMatches(keyCup)
     if (res != null) {
-       let pointer = res.length + 1
+      let pointer;
+       if (res.length == 0) {
+         pointer = 1
+       } else {
+        pointer = parseInt(res[res.length-1]["matchName"])+1
+       }
        setUrl("/"+cup+"/"+ pointer)
        setList(res)
        return true
@@ -91,7 +96,7 @@ const Tab1: React.FC = () => {
               <IonLabel>Estatísticas Gerais</IonLabel>
             </IonSegmentButton>
           </IonSegment>
-            <IonCard>
+            <IonCard className = "listMatch">
               <IonContent>
                 <IonFab vertical = "bottom" horizontal = "center" slot = "fixed">
                   <IonFabButton href = {ulr}  color = "tertiary" size="small">
