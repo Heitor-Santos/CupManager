@@ -2,9 +2,9 @@ import React from 'react'
 import {IonAlert} from '@ionic/react';
 
 interface Props{
-    onClick?: Function,
     addPlayer: Function,
-    showAlert: boolean
+    showAlert: boolean,
+    toggleAlert: Function,
 }
 interface State{
     showAlert: boolean
@@ -21,7 +21,7 @@ class Alert extends React.Component<Props,State> {
         return (
             <IonAlert
                 isOpen={this.props.showAlert}
-                onDidDismiss={()=>this.props.onClick}
+                onDidDismiss={()=>this.props.toggleAlert()}
                 header={'Adicionar jogador'}
                 inputs={[
                     {

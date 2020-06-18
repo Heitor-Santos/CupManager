@@ -1,5 +1,5 @@
 import React from 'react'
-import { IonSlides, IonSlide, IonPage, IonContent } from '@ionic/react';
+import { IonSlides, IonSlide, IonPage, IonContent, IonLoading } from '@ionic/react';
 import Toolbar from '../../components/ToolBar'
 import Header from './Header'
 import TeamCard from './TeamCard'
@@ -9,7 +9,8 @@ import { getCup, postMatch, getMatch, getPlayer, getPlayers, putMatch, postPlaye
 const slideOpts = {
     initialSlide: 0,
     speed: 400,
-    autoHeight: true
+    autoHeight: false
+
 };
 interface infoPlayer {
     "name": string,
@@ -22,6 +23,7 @@ interface infoPlayer {
 interface State {
     infoMatch: MatchData
     infoPlayers: Array<Array<infoPlayer>>
+    busy: boolean
 }
 interface Props {
     match: {
@@ -48,15 +50,16 @@ class Match extends React.Component<Props, State> {
         super(props)
         this.state = {
             infoMatch: {
-                teamA: ['Heitor', 'Gilmar', 'Elisson', 'Tiago'], //lista de nomes de jogadores do time A
-                teamB: ['Ladislau', 'Robert', 'Clara', 'Késsia'], //lista de nomes de jogadores do time B
-                matchState: "NOT-BEGUN", //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
+                teamA:[], //['Heitor', 'Gilmar', 'Elisson', 'Tiago'], //lista de nomes de jogadores do time A
+                teamB:[], //['Ladislau', 'Robert', 'Clara', 'Késsia'], //lista de nomes de jogadores do time B
+                matchState: "NOT-BEGUN",//"NOT-BEGUN", //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
                 matchName: this.props.match.params.matchName,
                 matchTime: undefined,
                 gols: [0, 0],
                 currGoleiros: [0, 0]
             },
             infoPlayers: [[], []], //lista de informações sobre os jogadores
+            busy: true
         }
         this.cupName = this.props.match.params.cupName;
         this.matchName = this.props.match.params.matchName;
@@ -75,7 +78,9 @@ class Match extends React.Component<Props, State> {
             this.setState({ infoMatch: match, infoPlayers: infoPlayers })
             console.log(infoPlayers)
         }
-    }
+        console.log("AA")
+        this.setState({ busy: false  });
+    }  
     async matchStart() {
         let infoMatch = this.state.infoMatch
         infoMatch.matchState = "BEGUN"
@@ -152,9 +157,10 @@ class Match extends React.Component<Props, State> {
         console.log(players)
         //console.log(this.state.matchTime)
         return (
-            <IonPage>
-                <IonContent>
+            <IonPage style={{height:'100%'}}>
+                <IonContent style={{height:'100%'}}>
                 <div style={{}}>
+                <IonLoading message='Carregando partida...' duration={0} isOpen={this.state.busy}/>
                 <Toolbar title={"Partida " + this.state.infoMatch.matchName} />
                 <Header matchTime={this.state.infoMatch.matchTime} gols={this.state.infoMatch.gols} />
                 <IonSlides options={slideOpts}>

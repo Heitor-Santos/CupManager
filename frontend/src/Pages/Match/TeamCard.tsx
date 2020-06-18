@@ -6,6 +6,8 @@ import {
 import Alert from './Alert'
 import { add } from 'ionicons/icons'
 import PlayersList from './PlayersList'
+import "./Match.css"
+//import '../../Tabs/Tab 1/Tab1.css'
 interface Player{
     name: string,
     assist: number,
@@ -47,17 +49,18 @@ class TeamCard extends React.Component<Props,State> {
                         </IonFabButton>
                     </IonFab> : null
                 }
-                <IonCard style={{ width: '50vh' }}>
+                <IonCard>
                     <IonCardHeader color="primary">
                         <IonCardTitle>{this.props.team}</IonCardTitle>
                     </IonCardHeader>
-                    <IonCardContent>
+                    <IonCardContent style={{height:'50vh'}}>
                         <PlayersList players={this.props.players}
                         removePlayer={(e:any)=>this.props.removePlayer(e)}
                         changePlayer={(e:any,a:any)=>this.props.changePlayer(e,a)} />
                     </IonCardContent>
                 </IonCard>
-                <Alert showAlert={this.state.showAlert} addPlayer={(e:any)=>this.props.addPlayer(e)} />
+                <Alert showAlert={this.state.showAlert} toggleAlert={()=>this.toggleShowAlert()} 
+                addPlayer={(e:any)=>this.props.addPlayer(e)} />
             </div>
         )
     }

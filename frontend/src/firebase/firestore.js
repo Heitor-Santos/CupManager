@@ -61,11 +61,11 @@ export async function getCup(cupName) {
     .then(cup => {
       if (!cup.exists) console.log(`${cup} não existe`)
       else {
-        console.log(cup.data()) 
+        console.log(cup.data())
         result = true
       }
     })
-    return result
+  return result
 }
 
 export async function postMatch(cupName, matchName, matchData) {
@@ -103,14 +103,14 @@ export async function postPlayer(cupName, playerName, matchName) {
     }).then((succ) => { resp = `success` })
       .catch((err) => { resp = `error ${err}` })
     await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats')
-    .doc(matchName).set({
+      .doc(matchName).set({
         "name": playerName,
         "isGoleiro": false,
         "assist": 0,
         "golsFavor": 0,
         "golsContra": 0,
         "golsTomados": 0
-    }).then((succ) => { resp = `success` })
+      }).then((succ) => { resp = `success` })
       .catch((err) => { resp = `error ${err}` })
   }
   console.log(resp)
@@ -119,8 +119,13 @@ export async function postPlayer(cupName, playerName, matchName) {
 export async function putPlayer(cupName, playerName, matchName, playerData) {
   let resp = '';
   await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats').doc(matchName).set({
-    playerData
-  }).then((succ) => { resp = `success` })
+    "name": playerData.name,
+    "isGoleiro": playerData.isGoleiro,
+    "assist": playerData.assist,
+    "golsFavor": playerData.golsFavor,
+    "golsContra": playerData.golsContra,
+    "golsTomados": playerData.golsTomados
+}).then((succ) => { resp = `success` })
     .catch((err) => { resp = `error ${err}` })
   return resp
 }
@@ -157,7 +162,7 @@ export async function getMatches(keyCup) {
   const list = []
   if (keyCup != "" && keyCup != undefined) {
     keyCup = keyCup.replace("/", "")
-    await db.collection("/cups/"+keyCup+"/matches").get()
+    await db.collection("/cups/" + keyCup + "/matches").get()
       .then(snapshot => {
         snapshot.forEach(doc => {
           const { currGoleiros, gols, matchName, matchState, matchTime, teamA, teamB } = doc.data()
@@ -181,7 +186,7 @@ export async function deleteMatche(idMatch, keyCup) {
   keyCup = keyCup.replace("/", "")
   idMatch = idMatch.toString()
   console.log(keyCup + " " + idMatch)
-  await db.collection("/cups/"+keyCup+"/matches").doc(idMatch).delete().then(function () {
+  await db.collection("/cups/" + keyCup + "/matches").doc(idMatch).delete().then(function () {
     console.log("Partida apagada!")
   }).catch(function (error) {
     console.log("Error nessa porra: ", error)
