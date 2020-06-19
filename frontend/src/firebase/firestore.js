@@ -152,9 +152,11 @@ export async function getPlayers(cupName, matchName, listPlayers) {
     console.log(listPlayers)
     for (let player of listPlayers) {
       let infoPlayer = await getPlayer(cupName, player, matchName)
+      console.log(infoPlayer)
       if (infoPlayer != undefined) resp.push(infoPlayer)
     }
   }
+  console.log(resp)
   return resp;
 }
 

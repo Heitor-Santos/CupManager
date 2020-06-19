@@ -1,11 +1,13 @@
 import React from 'react'
-import { IonSlides, IonSlide, IonPage, IonContent, IonLoading } from '@ionic/react';
+import {IonFabButton, IonIcon, IonSlides, IonSlide, IonPage, IonContent, IonLoading } from '@ionic/react';
+import {alarmOutline} from 'ionicons/icons';
 import Toolbar from '../../components/ToolBar'
 import Header from './Header'
 import TeamCard from './TeamCard'
 import ClockOptions from './ClockOptions'
+
 import Statics from './Statics'
-import { getCup, postMatch, getMatch, getPlayer, getPlayers, putMatch, postPlayer, putPlayer } from '../../firebase/firestore'
+import {postMatch, getMatch, getPlayers, putMatch, postPlayer, putPlayer } from '../../firebase/firestore'
 const slideOpts = {
     initialSlide: 0,
     speed: 400,
@@ -23,7 +25,8 @@ interface infoPlayer {
 interface State {
     infoMatch: MatchData
     infoPlayers: Array<Array<infoPlayer>>
-    busy: boolean
+    busy: boolean,
+    showActionSheet: boolean,
 }
 interface Props {
     match: {
@@ -50,8 +53,8 @@ class Match extends React.Component<Props, State> {
         super(props)
         this.state = {
             infoMatch: {
-                teamA:[], //['Heitor', 'Gilmar', 'Elisson', 'Tiago'], //lista de nomes de jogadores do time A
-                teamB:[], //['Ladislau', 'Robert', 'Clara', 'Késsia'], //lista de nomes de jogadores do time B
+                teamA: [], //['Heitor', 'Gilmar', 'Elisson', 'Tiago'], //lista de nomes de jogadores do time A
+                teamB: [], //['Ladislau', 'Robert', 'Clara', 'Késsia'], //lista de nomes de jogadores do time B
                 matchState: "NOT-BEGUN",//"NOT-BEGUN", //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
                 matchName: this.props.match.params.matchName,
                 matchTime: undefined,
@@ -59,50 +62,50 @@ class Match extends React.Component<Props, State> {
                 currGoleiros: [0, 0]
             },
             infoPlayers: [[], []], //lista de informações sobre os jogadores
-            busy: true
+            busy: true,
+            showActionSheet: false
         }
         this.cupName = this.props.match.params.cupName;
         this.matchName = this.props.match.params.matchName;
     }
     async componentDidMount() {
-        console.log("???")
         let AllInfoPlayers = []
         let match = await getMatch(this.cupName, this.matchName) as MatchData | undefined
-        console.log(match)
         if (typeof match != 'undefined') {
             AllInfoPlayers.push(await getPlayers(this.cupName, this.matchName, match.teamA))
-            console.log(AllInfoPlayers)
             AllInfoPlayers.push(await getPlayers(this.cupName, this.matchName, match.teamB))
-            console.log(AllInfoPlayers)
             const infoPlayers = AllInfoPlayers
             this.setState({ infoMatch: match, infoPlayers: infoPlayers })
-            console.log(infoPlayers)
         }
-        console.log("AA")
-        this.setState({ busy: false  });
-    }  
+        this.setState({ busy: false });
+    }
     async matchStart() {
         let infoMatch = this.state.infoMatch
         infoMatch.matchState = "BEGUN"
         postMatch(this.cupName, this.matchName, infoMatch)
-        this.state.infoMatch.teamA.map(async (player) => { let resp = await postPlayer(this.cupName, player,this.matchName) as string; })
-        this.state.infoMatch.teamB.map(async (player) => { let resp = await postPlayer(this.cupName, player,this.matchName) as string })
-        let infoPlayers =[]
-        infoPlayers.push(await getPlayers(this.cupName, this.matchName, this.state.infoMatch.teamA))
-        infoPlayers.push(await getPlayers(this.cupName, this.matchName, this.state.infoMatch.teamB))
-        this.setState({infoMatch,infoPlayers})
+        let teams = [this.state.infoMatch.teamA, this.state.infoMatch.teamB]
+        let infoPlayers: Array<Array<infoPlayer>> = [[], []]
+        for (let i = 0; i < teams.length; i++) {
+            for (let player of teams[i]) {
+                let resp = await postPlayer(this.cupName, player, this.matchName) as string
+                infoPlayers[i].push({
+                    "name": player,
+                    "isGoleiro": false,
+                    "assist": 0,
+                    "golsFavor": 0,
+                    "golsContra": 0,
+                    "golsTomados": 0
+                })
+            }
+        }
+        this.setState({ infoMatch, infoPlayers })
     }
     async whenIsOver() {
         let infoMatch = this.state.infoMatch
         infoMatch.matchState = "FINISHED"
-        this.setState({infoMatch})
-        let editMatch = await putMatch(this.cupName,this.matchName,this.state.infoMatch)
+        this.setState({ infoMatch })
+        let editMatch = await putMatch(this.cupName, this.matchName, this.state.infoMatch)
     }
-    /**
-     * 
-     * @param {índice do time no qual vc quer add um jogador} currTeam 
-     * @param {nome do jogador a ser adicionado} playerName 
-     */
     addPlayer(currTeam: "teamA" | "teamB", playerName: string) {
         let infoMatch = this.state.infoMatch
         infoMatch[currTeam].push(playerName)
@@ -149,42 +152,49 @@ class Match extends React.Component<Props, State> {
         infoMatch[currTeam].splice(indexPlayer, 1)
         this.setState({ infoMatch })
     }
+    toggleActionSheet(){
+        this.setState({ showActionSheet: !this.state.showActionSheet  });
+    }
     render() {
         const matchState = this.state.infoMatch.matchState
         const teams = [this.state.infoMatch.teamA, this.state.infoMatch.teamB]
         //decide se vai mandar só a lista de nome ou as info tbm
         const players = matchState == "NOT-BEGUN" ? teams : this.state.infoPlayers
-        console.log(players)
-        //console.log(this.state.matchTime)
         return (
-            <IonPage style={{height:'100%'}}>
-                <IonContent style={{height:'100%'}}>
-                <div style={{}}>
-                <IonLoading message='Carregando partida...' duration={0} isOpen={this.state.busy}/>
-                <Toolbar title={"Partida " + this.state.infoMatch.matchName} />
-                <Header matchTime={this.state.infoMatch.matchTime} gols={this.state.infoMatch.gols} />
-                <IonSlides options={slideOpts}>
-                    <IonSlide>
-                        <TeamCard team="Time A" players={players[0]}
-                            addPlayer={(e: any) => this.addPlayer("teamA", e)}
-                            changePlayer={(e: any, a: any) => this.changePlayer(0, e, a)}
-                            removePlayer={(e: any) => this.removePlayer("teamA", e)}
-                            matchState={this.state.infoMatch.matchState} />
-                    </IonSlide>
-                    <IonSlide>
-                        <TeamCard team="Time B" players={players[1]}
-                            addPlayer={(e: any) => this.addPlayer("teamB", e)}
-                            changePlayer={(e: any, a: any) => this.changePlayer(1, e, a)}
-                            removePlayer={(e: any) => this.removePlayer("teamB", e)}
-                            matchState={this.state.infoMatch.matchState} />
-                    </IonSlide>
-                    <IonSlide>
-                        <Statics infoPlayers={this.state.infoPlayers} />
-                    </IonSlide>
-                </IonSlides>
-                <ClockOptions setState={(e: any) => this.setState(e)} onStart={() => this.matchStart()}
-                    onOver={()=>this.whenIsOver()} infoMatch={this.state.infoMatch} />
-                </div>
+            <IonPage>
+                <IonContent>
+                    <div style={{}}>
+                        <IonLoading message='Carregando partida...' duration={0} isOpen={this.state.busy} />
+                        <Toolbar title={"Partida " + this.state.infoMatch.matchName} />
+                        <Header gols={this.state.infoMatch.gols} onStart={() => this.matchStart()}
+                            onOver={() => this.whenIsOver()} infoMatch={this.state.infoMatch} 
+                            showActionSheet={this.state.showActionSheet}
+                            toggleActionSheet={()=>this.toggleActionSheet()}/>
+                        <IonSlides options={slideOpts}>
+                            <IonSlide>
+                                <TeamCard team="Time A" players={players[0]}
+                                    addPlayer={(e: any) => this.addPlayer("teamA", e)}
+                                    changePlayer={(e: any, a: any) => this.changePlayer(0, e, a)}
+                                    removePlayer={(e: any) => this.removePlayer("teamA", e)}
+                                    matchState={this.state.infoMatch.matchState} />
+                            </IonSlide>
+                            <IonSlide>
+                                <TeamCard team="Time B" players={players[1]}
+                                    addPlayer={(e: any) => this.addPlayer("teamB", e)}
+                                    changePlayer={(e: any, a: any) => this.changePlayer(1, e, a)}
+                                    removePlayer={(e: any) => this.removePlayer("teamB", e)}
+                                    matchState={this.state.infoMatch.matchState} />
+                            </IonSlide>
+                            <IonSlide>
+                                <Statics infoPlayers={this.state.infoPlayers} />
+                            </IonSlide>
+                        </IonSlides>
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <IonFabButton onClick={() => this.setState({ showActionSheet: true })}>
+                                <IonIcon icon={alarmOutline} ></IonIcon>
+                            </IonFabButton>
+                        </div>
+                    </div>
                 </IonContent>
             </IonPage>
         )

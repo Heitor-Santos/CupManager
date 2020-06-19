@@ -48,7 +48,7 @@ function Actions(props: ActionsProps) {
         const funcHelp =  props.changePlayer;
         alertHelp = <IonAlert
             isOpen={props.isOpen}
-            onDidDismiss={() => props.setState({ showPopover: false })}
+            onDidDismiss={() => (console.log("grr"))}
             header={props.name}
             inputs={props.isGoleiro?inputsIsGoleiro:inputsNotIsGoleiro}
             buttons={[{

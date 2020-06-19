@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { IonLabel, IonBadge, IonItem, IonList } from '@ionic/react';
 import PlayerOptions from './PlayerOptions'
+const uniqid = require('uniqid');
 interface Player {
     name: string,
     assist: number,
@@ -18,7 +19,7 @@ interface Props {
 function PlayersList(props: Props) {
     const team = props.players
     let players = team.map((player, index) => 
-        <PlayerOptions player={player} removePlayer={(e:any)=>props.removePlayer(e)} index={index} changePlayer={(e: any, a: any) => props.changePlayer(e, a)} />
+        <PlayerOptions key={uniqid()} player={player} removePlayer={(e:any)=>props.removePlayer(e)} index={index} changePlayer={(e: any, a: any) => props.changePlayer(e, a)} />
     )
     return (<IonList>{players}</IonList>)
 }

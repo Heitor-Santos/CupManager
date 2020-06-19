@@ -1,6 +1,6 @@
 import React from 'react';
-import { IonActionSheet, IonFabButton, IonIcon, IonDatetime } from '@ionic/react';
-import { playCircleOutline, alarmOutline, refreshCircleOutline, stopCircleOutline, pauseCircleOutline, calendar } from 'ionicons/icons';
+import { IonActionSheet, IonDatetime } from '@ionic/react';
+import { playCircleOutline, refreshCircleOutline, stopCircleOutline, pauseCircleOutline, calendar } from 'ionicons/icons';
 import Clock from '../../util/Clock'
 const secondButtonInfo = [{
   "text": "Rolar a bola",
@@ -14,6 +14,8 @@ interface IProps {
   setState: Function,
   onStart: Function,
   onOver: Function,
+  showActionSheet: boolean,
+  toggleActionSheet: Function,
   infoMatch: {
     teamA: Array<string>,
     teamB: Array<string>,
@@ -45,10 +47,7 @@ class ClockOptions extends React.Component<IProps, IState>{
   handleChange(evt: any) {
     const time = new Date(evt.target.value)
     this.matchTime = time.toLocaleTimeString([], { minute: '2-digit', second: '2-digit', hour12: false })
-    let infoMatch = this.props.infoMatch;
-    infoMatch.matchTime = this.matchTime
-    this.props.setState({ infoMatch })
-    //console.log("sad")
+    this.props.setState({ matchTime:this.matchTime })
   }
   createClock() {
     //console.log("criei")
@@ -61,14 +60,10 @@ class ClockOptions extends React.Component<IProps, IState>{
     }
     this.cron.start()
     let repetecoID = setInterval(() => {
-      let infoMatch = this.props.infoMatch;
-      infoMatch.matchTime = this.cron.expecOutput
-      this.props.setState({ infoMatch })
+      this.props.setState({ matchTime: this.cron.expecOutput })
       //if (!this.state.running) clearInterval(repetecoID)
       if (this.cron.isOver()) {
-        let infoMatch = this.props.infoMatch;
-        infoMatch.matchTime = "00:00"
-        this.props.setState({ infoMatch })
+        this.props.setState({ matchTime : "00:00" })
         this.props.onOver()
         clearInterval(repetecoID)
       }
@@ -87,6 +82,7 @@ class ClockOptions extends React.Component<IProps, IState>{
     if (this.state.running) {
       this.cron.stop()
       this.setState({ running: false, secondButton: 0 })
+      this.props.onOver()
     }
   }
   onReset() {
@@ -98,14 +94,9 @@ class ClockOptions extends React.Component<IProps, IState>{
     const tida = document.getElementById("tida")
     return (
       <div>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <IonFabButton onClick={() => this.setState({ showActionSheet: true })}>
-            <IonIcon icon={alarmOutline} ></IonIcon>
-          </IonFabButton>
-        </div>
         <IonActionSheet
-          isOpen={this.state.showActionSheet}
-          onDidDismiss={() => this.setState({ showActionSheet: false })}
+          isOpen={this.props.showActionSheet}
+          onDidDismiss={() => this.props.toggleActionSheet()}
           cssClass='my-custom-class'
           buttons={[{
             text: 'Tempo da partida',
@@ -126,7 +117,8 @@ class ClockOptions extends React.Component<IProps, IState>{
             handler: () => this.onStop()
           }]} />
         <IonDatetime pickerFormat="mm:ss" id="tida" displayFormat=" "
-          onIonChange={(e) => this.handleChange(e)} cancelText="Cancelar" doneText="OK" />
+          onIonChange={(e) => this.handleChange(e)} cancelText="Cancelar" doneText="OK" 
+          style={{height:'0px', paddingBottom:'0vh', marginTop:'0px'}}/>
       </div>
     );
   }

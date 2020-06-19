@@ -25,7 +25,8 @@
     "react-dom": "^16.13.0",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
-    "typescript": "3.8.3"
+    "typescript": "3.8.3",
+    "uniqid": "^5.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
