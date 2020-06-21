@@ -31,8 +31,8 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-import aboutUs from '../Pages/about/aboutUs';
-import aboutApp from '../Pages/about/aboutApp';
+import AboutUs from '../Pages/about/AboutUs';
+import AboutApp from '../Pages/about/AboutApp';
 
 
 function TabParent(props) {
@@ -45,8 +45,8 @@ function TabParent(props) {
                         <Route path="/tab2" component={Tab2} exact={true} />
                         <Route path="/tab3" component={Tab3} exact={true}/>
                         <Route path="/:cupName/:matchName" component={Match} exact={true}/>
-                        <Route path="/aboutUs" component={aboutUs} exact={true}/>
-                        <Route path="/aboutApp" component={aboutApp} exact={true}/>
+                        <Route path="/aboutUs" component={AboutUs} exact={true}/>
+                        <Route path="/aboutApp" component={AboutApp} exact={true}/>
                         <Route path="/card" component={ListIsEmpty} exact={true}/>
                         <Route path="/" render={() => <Redirect to="/tab1" />} exact={true} />
                     </IonRouterOutlet>

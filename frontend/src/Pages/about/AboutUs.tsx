@@ -5,7 +5,7 @@ import antonio from "../../media/antonio.jpg"
 import heitor from "../../media/heitor.jpeg"
 
 
-const aboutUs: React.FC = () => {
+const AboutUs: React.FC = () => {
 
     let infoDevs = [
         {
@@ -58,4 +58,4 @@ const aboutUs: React.FC = () => {
     )
 }
 
-export default aboutUs
+export default AboutUs
