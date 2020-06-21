@@ -56,7 +56,8 @@ class TeamCard extends React.Component<Props,State> {
                     <IonCardContent style={{height:'50vh'}}>
                         <PlayersList players={this.props.players}
                         removePlayer={(e:any)=>this.props.removePlayer(e)}
-                        changePlayer={(e:any,a:any)=>this.props.changePlayer(e,a)} />
+                        changePlayer={(e:any,a:any)=>this.props.changePlayer(e,a)} 
+                        matchState={this.props.matchState}/>
                     </IonCardContent>
                 </IonCard>
                 <Alert showAlert={this.state.showAlert} toggleAlert={()=>this.toggleShowAlert()} 

@@ -1,13 +1,11 @@
 import React from 'react'
-import {IonFabButton, IonIcon, IonSlides, IonSlide, IonPage, IonContent, IonLoading } from '@ionic/react';
-import {alarmOutline} from 'ionicons/icons';
+import { IonFabButton, IonIcon, IonSlides, IonSlide, IonPage, IonContent, IonLoading } from '@ionic/react';
+import { alarmOutline } from 'ionicons/icons';
 import Toolbar from '../../components/ToolBar'
 import Header from './Header'
 import TeamCard from './TeamCard'
-import ClockOptions from './ClockOptions'
-
 import Statics from './Statics'
-import {postMatch, getMatch, getPlayers, putMatch, postPlayer, putPlayer } from '../../firebase/firestore'
+import { postMatch, getMatch, getPlayers, putMatch, postPlayer, putPlayer } from '../../firebase/firestore'
 const slideOpts = {
     initialSlide: 0,
     speed: 400,
@@ -57,7 +55,7 @@ class Match extends React.Component<Props, State> {
                 teamB: [], //['Ladislau', 'Robert', 'Clara', 'Késsia'], //lista de nomes de jogadores do time B
                 matchState: "NOT-BEGUN",//"NOT-BEGUN", //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
                 matchName: this.props.match.params.matchName,
-                matchTime: undefined,
+                matchTime: '00:00',
                 gols: [0, 0],
                 currGoleiros: [0, 0]
             },
@@ -152,8 +150,8 @@ class Match extends React.Component<Props, State> {
         infoMatch[currTeam].splice(indexPlayer, 1)
         this.setState({ infoMatch })
     }
-    toggleActionSheet(){
-        this.setState({ showActionSheet: !this.state.showActionSheet  });
+    toggleActionSheet() {
+        this.setState({ showActionSheet: !this.state.showActionSheet });
     }
     render() {
         const matchState = this.state.infoMatch.matchState
@@ -167,9 +165,9 @@ class Match extends React.Component<Props, State> {
                         <IonLoading message='Carregando partida...' duration={0} isOpen={this.state.busy} />
                         <Toolbar title={"Partida " + this.state.infoMatch.matchName} />
                         <Header gols={this.state.infoMatch.gols} onStart={() => this.matchStart()}
-                            onOver={() => this.whenIsOver()} infoMatch={this.state.infoMatch} 
+                            onOver={() => this.whenIsOver()} infoMatch={this.state.infoMatch}
                             showActionSheet={this.state.showActionSheet}
-                            toggleActionSheet={()=>this.toggleActionSheet()}/>
+                            toggleActionSheet={() => this.toggleActionSheet()} />
                         <IonSlides options={slideOpts}>
                             <IonSlide>
                                 <TeamCard team="Time A" players={players[0]}
@@ -190,9 +188,10 @@ class Match extends React.Component<Props, State> {
                             </IonSlide>
                         </IonSlides>
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <IonFabButton onClick={() => this.setState({ showActionSheet: true })}>
-                                <IonIcon icon={alarmOutline} ></IonIcon>
-                            </IonFabButton>
+                            {this.state.infoMatch.matchState == 'FINISHED' ? null :
+                                <IonFabButton onClick={() => this.setState({ showActionSheet: true })}>
+                                    <IonIcon icon={alarmOutline} ></IonIcon>
+                                </IonFabButton>}
                         </div>
                     </div>
                 </IonContent>

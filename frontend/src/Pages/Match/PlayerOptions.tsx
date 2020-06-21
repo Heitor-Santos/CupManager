@@ -13,7 +13,8 @@ export interface Props {
     } | string,
     index: number,
     changePlayer: Function,
-    removePlayer: Function
+    removePlayer: Function,
+    matchState:string
 }
 
 export interface State {
@@ -79,8 +80,8 @@ class PlayerOptions extends React.Component<Props, State> {
         //console.log(this.state.showPopover)
         return (
             <div>
-                {typeof (player) !== 'string' ?
-                    <IonItem onClick={() => this.toggleShowPopover()}>
+                {typeof (player) !== 'string'?
+                    <IonItem onClick={this.props.matchState=='BEGUN'?() => this.toggleShowPopover():undefined}>
                         <IonLabel>{player.name}</IonLabel>
                         <Actions name={player.name} isGoleiro={player.isGoleiro}
                             isOpen={this.state.showPopover} setState={(e: any) => this.setState(e)}

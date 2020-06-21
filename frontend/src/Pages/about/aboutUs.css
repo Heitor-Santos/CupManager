@@ -1,5 +1,13 @@
 .avatar {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     border-radius: 300px;
+}
+.description{
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 10px;
+    color:white;
+    background-color:var(--ion-color-primary);
+    margin-bottom: 10vh;
 }

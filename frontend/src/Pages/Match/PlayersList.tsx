@@ -13,13 +13,16 @@ interface Player {
 interface Props {
     players: Array<Player | string>,
     changePlayer: Function,
-    removePlayer: Function
+    removePlayer: Function,
+    matchState:string
 }
 
 function PlayersList(props: Props) {
     const team = props.players
     let players = team.map((player, index) => 
-        <PlayerOptions key={uniqid()} player={player} removePlayer={(e:any)=>props.removePlayer(e)} index={index} changePlayer={(e: any, a: any) => props.changePlayer(e, a)} />
+        <PlayerOptions key={uniqid()} player={player} removePlayer={(e:any)=>props.removePlayer(e)} 
+        index={index} changePlayer={(e: any, a: any) => props.changePlayer(e, a)} 
+        matchState={props.matchState}/>
     )
     return (<IonList>{players}</IonList>)
 }
