@@ -1,0 +1,13 @@
+.chipContent {
+    width: 100%;
+    text-align: center;
+}
+
+.titleCard {
+    padding-top: 10px;
+    padding-left: 10px;
+}
+.col {
+    padding-top: 0% !important;
+    padding-bottom: 0% !important;
+}
