@@ -6,7 +6,6 @@ import {
 import Alert from './Alert'
 import { add } from 'ionicons/icons'
 import PlayersList from './PlayersList'
-//import '../../Tabs/Tab 1/Tab1.css'
 interface Player{
     name: string,
     assist: number,

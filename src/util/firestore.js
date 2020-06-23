@@ -94,14 +94,11 @@ export async function putMatch(cupName, matchName, matchData) {
     .catch((err) => { resp = `error ${err}` })
   return resp;
 }
+
 export async function postPlayer(cupName, playerName, matchName) {
   let resp = 'already-exists';
   let player = await getPlayer(cupName, playerName, matchName)
   if (player == undefined) {
-    await db.collection('cups').doc(cupName).collection('players').doc(playerName).set({
-      name: playerName,//ALTERAR PARA COLOCAR  A SUBCOLEÇÃO DE PARTIDAS
-    }).then((succ) => { resp = `success` })
-      .catch((err) => { resp = `error ${err}` })
     await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats')
       .doc(matchName).set({
         "name": playerName,
@@ -116,6 +113,43 @@ export async function postPlayer(cupName, playerName, matchName) {
   console.log(resp)
   return resp;
 }
+
+export async function putDataStat(cupName, infoPlayers) {
+  console.log(infoPlayers)
+  for (let i = 0; i < infoPlayers.length; i++) {
+    for (let player of infoPlayers[i]) {
+        let name = player.name
+        console.log("Entrou Aqui: "+name)
+        let assistInfo = player.assist
+        let golsFavorInfo = player.golsFavor
+        let golsContraInfo = player.golsContra
+        let golsTomadosInfo = player.golsTomados
+        await db.collection('/cups/' + cupName + "/players/").doc(name).get().then(async doc =>{
+          const res = doc.data()
+          if (res == undefined) {
+            await db.collection('cups').doc(cupName).collection('players').doc(name).set({
+              "assist": assistInfo,
+              "golsFavor": golsFavorInfo,
+              "golsTomados": golsTomadosInfo,
+              "golsContra": golsContraInfo,
+              "present": 1
+            })
+          } else {
+            let {assist, golsFavor, golsTomados, golsContra, present} = res
+            await db.collection('cups').doc(cupName).collection('players').doc(name).set({
+              "assist": assist + assistInfo,
+              "golsFavor": golsFavor + golsFavorInfo,
+              "golsTomados": golsTomados + golsTomadosInfo,
+              "golsContra": golsContra + golsContraInfo,
+              "present": present
+            })
+          }
+        })
+    }
+  }
+   
+}
+
 export async function putPlayer(cupName, playerName, matchName, playerData) {
   let resp = '';
   await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats').doc(matchName).set({
@@ -129,6 +163,8 @@ export async function putPlayer(cupName, playerName, matchName, playerData) {
     .catch((err) => { resp = `error ${err}` })
   return resp
 }
+
+
 export async function getPlayer(cupName, playerName, matchName) {
   let resp = undefined;
   if (matchName != undefined) {
@@ -180,29 +216,67 @@ export async function getMatches(keyCup) {
         })
       })
   }
-  console.log(list)
+  list.sort((a, b) => parseInt(a.matchName) < parseInt(b.matchName) ? -1 : parseInt(a.matchName)  > parseInt(b.matchName) ? 1 : 0)
   return list
 }
+
+export async function getPlayersState(keyCup) {
+  let playerStat = []
+  await db.collection("/cups/" + keyCup + "/players/").get().then(snapshot=> {
+    snapshot.forEach(async doc => {
+      console.log("Entrando no playerStat: " + doc.id)
+      const data = doc.data()
+      console.log(doc.id + ": ")
+      console.log(doc.data())
+      playerStat.push(await getPlayerStat(data,doc.id))
+    })
+  })
+  return playerStat
+}
+
+export async function getPlayerStat(data, docId) {
+  let stat = {
+    "name": docId
+  };
+  const {assist, golsContra, golsFavor, golsTomados, present} = data;
+  stat["assist"] = assist
+  stat["golsContra"] = golsContra
+  stat["golsFavor"] = golsFavor
+  stat["golsTomados"] = golsTomados
+  stat["present"] = present
+  return stat
+}
+
 
 export async function deleteMatche(idMatch, keyCup) {
   keyCup = keyCup.replace("/", "")
   idMatch = idMatch.toString()
   console.log(keyCup + " " + idMatch)
+  await db.collection("/cups/" + keyCup + "/matches").doc(idMatch).get().then(async doc=>{
+    const {teamA, teamB} = doc.data()
+    const players = [...teamA,...teamB]
+    for (let player of players) {
+      await deleteStats(keyCup, player, idMatch)
+    }
+  })
   await db.collection("/cups/" + keyCup + "/matches").doc(idMatch).delete().then(async function () {
     console.log("Partida apagada!")
-    await db.collection("/cups/" + keyCup + "/players/").get().then(snapshot=> {
-      snapshot.forEach(async doc => {
-        await deleteStats(keyCup, doc.id, idMatch)
-      })
-    })
   }).catch(function (error) {
     console.log("Error nessa porra: ", error)
   })
 }
 
+
 export async function deleteStats (keyCup, docId, idMatch) {
   await db.collection("/cups/" + keyCup + "/players/" + docId + "/stats/").doc(idMatch).delete().then(()=>{
     console.log("Est apagada")
   })
+  await db.collection("/cups/" + keyCup + "/players/").doc(docId).set({
+    "name": docId,
+    "assist": 0,
+    "golsFavor": 0,
+    "golsContra": 0,
+    "golsTomados": 0,
+    "present": 0
+  })
 }
-

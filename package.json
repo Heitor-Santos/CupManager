@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "2.1.0",
+    "@ionic/lab": "3.1.7",
     "react-scripts": "3.4.1"
   },
   "description": "Aplicativo para gerenciamento de campeonatos de peladas/babas"

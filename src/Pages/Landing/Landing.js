@@ -1,5 +1,5 @@
 import React from 'react';
-import { IonSearchbar, IonContent, IonButton, IonImg, IonToast} from '@ionic/react';
+import { IonSearchbar, IonContent, IonButton, IonImg, IonToast, IonPage} from '@ionic/react';
 import ToolBar from '../../components/ToolBar'
 import HandleStorage from '../../util/handleStorage'
 import { Redirect } from 'react-router';
@@ -68,7 +68,10 @@ class Landing extends React.Component {
         </IonButton>
         </IonContent>
         return (
-           res
+            <IonPage>
+                {res}
+            </IonPage>
+           
         )
     }
 }

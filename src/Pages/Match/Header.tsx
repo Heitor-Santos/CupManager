@@ -40,7 +40,7 @@ class Header extends React.Component<Props, State>{
                     </IonRow>
                 </IonGrid>
                 <ClockOptions setState={(e: any) => this.setState(e)} onStart={() => this.props.onStart()}
-                    onOver={() => this.props.onOver} infoMatch={this.props.infoMatch}
+                    onOver={() => this.props.onOver()} infoMatch={this.props.infoMatch}
                     toggleActionSheet={() => this.props.toggleActionSheet()}
                     showActionSheet={this.props.showActionSheet} />
             </div>)

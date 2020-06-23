@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { IonPage, IonContent, IonIcon, IonHeader, IonFab, IonFabButton, IonLabel, IonList, IonLoading, IonSegment, IonSegmentButton, IonCard, } from '@ionic/react'
+import { IonPage, IonContent, IonIcon, IonHeader, IonFab, IonFabButton, IonLabel, IonList, IonLoading, IonSegment, IonSegmentButton, IonCard, IonRefresher, IonRefresherContent, } from '@ionic/react'
 import { add } from 'ionicons/icons'
-import {loginUser,getMatches,postCup} from "../../util/firestore";
+import {loginUser,getMatches,postCup, getPlayersState} from "../../util/firestore";
 import "./Cup.css"
 import Card from './Card';
 import HandleStorage from '../../util/handleStorage';
 import ToolBar from '../../components/ToolBar';
+import Est from './Est';
 
 const Cup: React.FC = () => {
       
   // loja que armazena ultimos dados  
   const store = new HandleStorage()
-  
   const checkLastCup = async (store: HandleStorage) => {
     const cupLast = await store.getLastCup()
     if(cupLast != cup && cupLast != null) {
@@ -25,6 +25,7 @@ const Cup: React.FC = () => {
   const [ busy, setBusy ] = useState<boolean>(true);
   const [ cup, setCup ] = useState("");
   const [list, setList] = useState< any []>([])
+  const [players, setPlayers] = useState<any []>([])
   const[ulr,setUrl] = useState<string>("")
   const [segmentValue, setSegmentValue] = useState("list")
   
@@ -33,7 +34,7 @@ const Cup: React.FC = () => {
     if (firstPage && !busy) {
         return listPartidas
     } else if (!firstPage) {
-        return <p>estatistica foda</p>
+        return listEst
     }
   }
   
@@ -66,6 +67,8 @@ const Cup: React.FC = () => {
     console.log("Pegando lista de partidas --> " + keyCup)
     const res = await getMatches(keyCup)
     if (res != null) {
+      const resEst = await getPlayersState(keyCup);
+      setPlayers(resEst)
       let pointer;
        if (res.length == 0) {
          pointer = 1
@@ -79,13 +82,14 @@ const Cup: React.FC = () => {
     return false
   }
 
-  const setSegment = (value: any) => {
+  const setSegment = async (value: any) => {
     if (value != undefined) {
       setSegmentValue(value)
     }
   }
 
   const listPartidas = <Card list={list} keyCup={cup} getUpdate={getUpdate} />
+  const listEst = <Est list={players} keyCup = {cup} getUpdate={getUpdate} />
 
     return (
       <IonPage>
