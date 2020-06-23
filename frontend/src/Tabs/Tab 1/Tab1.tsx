@@ -67,9 +67,9 @@ const Tab1: React.FC = () => {
     console.log("Pegando lista de partidas --> " + keyCup)
     const res = await getMatches(keyCup)
     if (res != null) {
-      let pointer;
       const resEst = await getPlayersState(keyCup);
       setPlayers(resEst)
+      let pointer;
        if (res.length == 0) {
          pointer = 1
        } else {
@@ -84,7 +84,6 @@ const Tab1: React.FC = () => {
 
   const setSegment = async (value: any) => {
     if (value != undefined) {
-      console.log(value)
       setSegmentValue(value)
     }
   }

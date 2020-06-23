@@ -81,7 +81,7 @@ class PlayerOptions extends React.Component<Props, State> {
         return (
             <div>
                 {typeof (player) !== 'string'?
-                    <IonItem onClick={this.props.matchState=='BEGUN'?() => this.toggleShowPopover():undefined}>
+                    <IonItem onClick={this.props.matchState=='BEGUN' ? () => this.toggleShowPopover():undefined}>
                         <IonLabel>{player.name}</IonLabel>
                         <Actions name={player.name} isGoleiro={player.isGoleiro}
                             isOpen={this.state.showPopover} setState={(e: any) => this.setState(e)}

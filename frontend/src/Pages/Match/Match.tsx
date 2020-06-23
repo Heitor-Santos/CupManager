@@ -5,7 +5,7 @@ import Toolbar from '../../components/ToolBar'
 import Header from './Header'
 import TeamCard from './TeamCard'
 import Statics from './Statics'
-import { postMatch, getMatch, getPlayers, putMatch, postPlayer, putPlayer } from '../../firebase/firestore'
+import { postMatch, getMatch, getPlayers, putMatch, postPlayer, putPlayer, putDataStat } from '../../firebase/firestore'
 const slideOpts = {
     initialSlide: 0,
     speed: 400,
@@ -25,6 +25,7 @@ interface State {
     infoPlayers: Array<Array<infoPlayer>>
     busy: boolean,
     showActionSheet: boolean,
+    busyStat: boolean
 }
 interface Props {
     match: {
@@ -50,6 +51,7 @@ class Match extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.state = {
+            busyStat: false,
             infoMatch: {
                 teamA: [], //['Heitor', 'Gilmar', 'Elisson', 'Tiago'], //lista de nomes de jogadores do time A
                 teamB: [], //['Ladislau', 'Robert', 'Clara', 'Késsia'], //lista de nomes de jogadores do time B
@@ -61,7 +63,7 @@ class Match extends React.Component<Props, State> {
             },
             infoPlayers: [[], []], //lista de informações sobre os jogadores
             busy: true,
-            showActionSheet: false
+            showActionSheet: false,
         }
         this.cupName = this.props.match.params.cupName;
         this.matchName = this.props.match.params.matchName;
@@ -102,8 +104,17 @@ class Match extends React.Component<Props, State> {
         let infoMatch = this.state.infoMatch
         infoMatch.matchState = "FINISHED"
         this.setState({ infoMatch })
+        let infoPlayers = this.state.infoPlayers
+        if (!this.state.busyStat) {
+            console.log("Entrou aqui")
+            this.setState({busyStat: true})
+            await putDataStat(this.cupName, infoPlayers).then(()=> {
+                this.setState({busyStat: false})
+            })
+        }
         let editMatch = await putMatch(this.cupName, this.matchName, this.state.infoMatch)
     }
+    
     addPlayer(currTeam: "teamA" | "teamB", playerName: string) {
         let infoMatch = this.state.infoMatch
         infoMatch[currTeam].push(playerName)
@@ -141,6 +152,7 @@ class Match extends React.Component<Props, State> {
         let editMatch = await putMatch(this.cupName, this.matchName, this.state.infoMatch)
         for (let i = 0; i < playersToChange.length; i++) {
             for (let player of playersToChange[i]) {
+                console.log(this.state.infoMatch.matchState)
                 let editPlayer = await putPlayer(this.cupName, infoPlayers[i][player].name, this.matchName, infoPlayers[i][player])
             }
         }
