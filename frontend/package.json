@@ -1,6 +1,6 @@
 {
-  "name": "photo-gallery",
-  "version": "0.0.1",
+  "name": "cup-manager",
+  "version": "1.1.2",
   "private": true,
   "dependencies": {
     "@capacitor/core": "2.1.0",
@@ -54,5 +54,5 @@
     "@capacitor/cli": "2.1.0",
     "react-scripts": "3.4.1"
   },
-  "description": "An Ionic project"
+  "description": "Aplicativo para gerenciamento de campeonatos de peladas/babas"
 }

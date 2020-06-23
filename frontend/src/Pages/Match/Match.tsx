@@ -5,14 +5,9 @@ import Toolbar from '../../components/ToolBar'
 import Header from './Header'
 import TeamCard from './TeamCard'
 import Statics from './Statics'
-import { postMatch, getMatch, getPlayers, putMatch, postPlayer, putPlayer } from '../../firebase/firestore'
-const slideOpts = {
-    initialSlide: 0,
-    speed: 400,
-    autoHeight: false
-
-};
-interface infoPlayer {
+import { postMatch, getMatch, getPlayers, putMatch, postPlayer, putPlayer } from '../../util/firestore'
+const slideOpts = { initialSlide: 0, speed: 400, autoHeight: false };//opções de setup pro slide
+interface infoPlayer { 
     "name": string,
     "isGoleiro": boolean,
     "assist": number,
@@ -51,11 +46,11 @@ class Match extends React.Component<Props, State> {
         super(props)
         this.state = {
             infoMatch: {
-                teamA: [], //['Heitor', 'Gilmar', 'Elisson', 'Tiago'], //lista de nomes de jogadores do time A
-                teamB: [], //['Ladislau', 'Robert', 'Clara', 'Késsia'], //lista de nomes de jogadores do time B
+                teamA: [],//lista de nomes de jogadores do time A
+                teamB: [],//lista de nomes de jogadores do time B
                 matchState: "NOT-BEGUN",//"NOT-BEGUN", //estado atual da partida, NOT-BEGUN, BEGUN OU FINISHED
                 matchName: this.props.match.params.matchName,
-                matchTime: '00:00',
+                matchTime: '00:00',//faz diferença nenhuma o machTime, mas ia dar trabalho tirar
                 gols: [0, 0],
                 currGoleiros: [0, 0]
             },
@@ -66,7 +61,7 @@ class Match extends React.Component<Props, State> {
         this.cupName = this.props.match.params.cupName;
         this.matchName = this.props.match.params.matchName;
     }
-    async componentDidMount() {
+    async componentDidMount() {//Pega os dados da partida e dos jogadores no bd
         let AllInfoPlayers = []
         let match = await getMatch(this.cupName, this.matchName) as MatchData | undefined
         if (typeof match != 'undefined') {
@@ -77,7 +72,7 @@ class Match extends React.Component<Props, State> {
         }
         this.setState({ busy: false });
     }
-    async matchStart() {
+    async matchStart() { //salva no bd a partida e todos os jogadores
         let infoMatch = this.state.infoMatch
         infoMatch.matchState = "BEGUN"
         postMatch(this.cupName, this.matchName, infoMatch)
@@ -98,59 +93,59 @@ class Match extends React.Component<Props, State> {
         }
         this.setState({ infoMatch, infoPlayers })
     }
-    async whenIsOver() {
+    async whenIsOver() {//muda o estado da partida pra finished quando a partida termina
         let infoMatch = this.state.infoMatch
         infoMatch.matchState = "FINISHED"
         this.setState({ infoMatch })
         let editMatch = await putMatch(this.cupName, this.matchName, this.state.infoMatch)
     }
-    addPlayer(currTeam: "teamA" | "teamB", playerName: string) {
+    addPlayer(currTeam: "teamA" | "teamB", playerName: string) {//adiciona um novo jogador a um time
         let infoMatch = this.state.infoMatch
         infoMatch[currTeam].push(playerName)
         this.setState({ infoMatch })
     }
-    async changePlayer(currTeam: 0 | 1, indexPlayer: number, opt: keyof infoPlayer) {
+    async changePlayer(currTeam: 0 | 1, indexPlayer: number, opt: keyof infoPlayer) {//altera alguma info de um jogador
         let infoPlayers = this.state.infoPlayers
         let currGoleiros = this.state.infoMatch.currGoleiros;
         let gols = this.state.infoMatch.gols
         let playersToChange: Array<Array<number>> = [[], []]
         if (opt == "isGoleiro") {
-            infoPlayers[currTeam][currGoleiros[currTeam]][opt] = false
+            infoPlayers[currTeam][currGoleiros[currTeam]][opt] = false//deseta o antigo goleiro do time
             playersToChange[currTeam].push(currGoleiros[currTeam])
-            infoPlayers[currTeam][indexPlayer][opt] = true
-            currGoleiros[currTeam] = indexPlayer
+            infoPlayers[currTeam][indexPlayer][opt] = true//seta o novo goleiro do time
+            currGoleiros[currTeam] = indexPlayer//atualiza os índices dos goleiros
         }
         else {
             infoPlayers[currTeam][indexPlayer][opt]++
             playersToChange[currTeam].push(indexPlayer)
             if (opt == "golsFavor") {
-                infoPlayers[currTeam == 0 ? 1 : 0][currGoleiros[currTeam == 0 ? 1 : 0]]['golsTomados']++
+                infoPlayers[currTeam == 0 ? 1 : 0][currGoleiros[currTeam == 0 ? 1 : 0]]['golsTomados']++//aumenta o # de gols tomados do goleiro do outro time
                 playersToChange[currTeam == 0 ? 1 : 0].push(currGoleiros[currTeam == 0 ? 1 : 0])
-                gols[currTeam]++
+                gols[currTeam]++//aumenta  o # de gols do atual time
             }
             if (opt == "golsContra") {
-                infoPlayers[currTeam][currGoleiros[currTeam]]['golsTomados']++
+                infoPlayers[currTeam][currGoleiros[currTeam]]['golsTomados']++//aumenta o # de gols tomados do goleiro do atual time
                 playersToChange[currTeam].push(currGoleiros[currTeam])
-                gols[currTeam == 0 ? 1 : 0]++
+                gols[currTeam == 0 ? 1 : 0]++ //aumenta  o # de gols do outro time
             }
         }
         let infoMatch = this.state.infoMatch
         infoMatch.currGoleiros = currGoleiros;
         infoMatch.gols = gols
         this.setState({ infoPlayers, infoMatch })
-        let editMatch = await putMatch(this.cupName, this.matchName, this.state.infoMatch)
-        for (let i = 0; i < playersToChange.length; i++) {
+        let editMatch = await putMatch(this.cupName, this.matchName, this.state.infoMatch)//altera a partida no bd
+        for (let i = 0; i < playersToChange.length; i++) {//altera no bd os jogadores
             for (let player of playersToChange[i]) {
                 let editPlayer = await putPlayer(this.cupName, infoPlayers[i][player].name, this.matchName, infoPlayers[i][player])
             }
         }
     }
-    removePlayer(currTeam: "teamA" | "teamB", indexPlayer: number) {
+    removePlayer(currTeam: "teamA" | "teamB", indexPlayer: number) {//remove um jogador de um time
         let infoMatch = this.state.infoMatch
         infoMatch[currTeam].splice(indexPlayer, 1)
         this.setState({ infoMatch })
     }
-    toggleActionSheet() {
+    toggleActionSheet() {//decide se aparece ou não o as com as info do tempo
         this.setState({ showActionSheet: !this.state.showActionSheet });
     }
     render() {

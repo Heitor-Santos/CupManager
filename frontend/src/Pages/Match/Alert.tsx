@@ -16,8 +16,7 @@ class Alert extends React.Component<Props,State> {
             showAlert: true
         }
     }
-    render() {
-        //console.log(this.state.showAlert)
+    render() {// caixa com a opção de add jogador
         return (
             <IonAlert
                 isOpen={this.props.showAlert}
@@ -37,6 +36,7 @@ class Alert extends React.Component<Props,State> {
                     {
                         text: 'Ok',
                         handler: (alertData) => this.props.addPlayer(alertData.playerName)
+                        //manda como parâmetro pro addPlayer o nome escrito no input
                     }
                 ]}
             />

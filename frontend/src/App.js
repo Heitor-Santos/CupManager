@@ -19,7 +19,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import React from 'react';
-import TabParent from './Tabs/TabParent'
+import TabParent from './TabParent'
 import Landing from './Pages/Landing/Landing'
 import HandleStorage from './util/handleStorage'
 /* Core CSS required for Ionic components to work properly */

@@ -11,11 +11,11 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { home, library, search} from 'ionicons/icons';
-import Tab1 from './Tab 1/Tab1';
-import Tab2 from './Tab 2/Tab2';
-import Tab3 from './Tab 3/Tab3';
-import Match from '../Pages/Match/Match'
-import ListIsEmpty from './Tab 3/listIsEmpty'
+import Cup from './Pages/Cup/Cup';
+import Landing from './Pages/Landing/Landing'
+import Recents from './Pages/Recents/Recents';
+import Match from './Pages/Match/Match'
+import ListIsEmpty from './Pages/Recents/listIsEmpty'
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
@@ -31,8 +31,8 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-import AboutUs from '../Pages/about/AboutUs';
-import AboutApp from '../Pages/about/AboutApp';
+import AboutUs from './Pages/About/AboutUs';
+import AboutApp from './Pages/About/AboutApp';
 
 
 function TabParent(props) {
@@ -41,9 +41,9 @@ function TabParent(props) {
             <IonReactRouter>
                 <IonTabs>
                     <IonRouterOutlet>
-                        <Route path="/tab1" component={Tab1} exact={true} />
-                        <Route path="/tab2" component={Tab2} exact={true} />
-                        <Route path="/tab3" component={Tab3} exact={true}/>
+                        <Route path="/tab1" component={Cup} exact={true} />
+                        <Route path="/tab2" component={Landing} exact={true} />
+                        <Route path="/tab3" component={Recents} exact={true}/>
                         <Route path="/:cupName/:matchName" component={Match} exact={true}/>
                         <Route path="/aboutUs" component={AboutUs} exact={true}/>
                         <Route path="/aboutApp" component={AboutApp} exact={true}/>

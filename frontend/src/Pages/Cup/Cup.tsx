@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { IonPage, IonContent, IonIcon, IonHeader, IonFab, IonFabButton, IonLabel, IonList, IonLoading, IonSegment, IonSegmentButton, IonCard, } from '@ionic/react'
 import { add } from 'ionicons/icons'
-import {loginUser,getMatches,postCup} from "../../firebase/firestore";
-import "./Tab1.css"
+import {loginUser,getMatches,postCup} from "../../util/firestore";
+import "./Cup.css"
 import Card from './Card';
 import HandleStorage from '../../util/handleStorage';
 import ToolBar from '../../components/ToolBar';
 
-const Tab1: React.FC = () => {
+const Cup: React.FC = () => {
       
   // loja que armazena ultimos dados  
   const store = new HandleStorage()
@@ -119,4 +119,4 @@ const Tab1: React.FC = () => {
       </IonPage>
     );
   };
-export default Tab1
+export default Cup

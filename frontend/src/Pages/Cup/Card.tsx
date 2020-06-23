@@ -1,8 +1,8 @@
 import React, { useState, useEffect, Props } from 'react'
 import { IonItem, IonButton, IonLabel, IonList, IonItemSliding, IonItemOption, IonItemOptions, IonIcon, IonAlert, IonLoading, IonFab, IonFabButton, IonText, } from '@ionic/react'
-import "./Tab1.css"
+import "./Cup.css"
 import { trash, chevronBackOutline} from 'ionicons/icons'
-import { deleteMatche } from '../../firebase/firestore'
+import { deleteMatche } from '../../util/firestore'
 
 interface ListPartida {
   list: any[],

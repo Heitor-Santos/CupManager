@@ -54,7 +54,7 @@ class Landing extends React.Component {
         duration={2000}
         position = "middle"
         />
-        <ToolBar title={this.props.title} />
+        <ToolBar title={this.props.title==undefined?'CupManager':this.props.title} />
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '5vh', marginBottom: '5vh' }}>
             <IonImg src={require('../../media/tournament.png')}></IonImg>
         </div>

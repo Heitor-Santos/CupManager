@@ -3,7 +3,7 @@ import { IonPage, IonContent} from '@ionic/react'
 import ToolBar from '../../components/ToolBar'
 import CupList from './CupList'
 
-function Tab3(props: any){
+function Recents(props: any){
     return(
         <IonPage>
             <ToolBar title="Campeonatos Recentes"/>
@@ -13,4 +13,4 @@ function Tab3(props: any){
         </IonPage>
     )
 }
-export default Tab3;
+export default Recents;

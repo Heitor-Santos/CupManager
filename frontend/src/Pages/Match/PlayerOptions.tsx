@@ -30,7 +30,7 @@ interface ActionsProps {
 }
 function Actions(props: ActionsProps) {
     let alertHelp=<p>:p</p>
-    if (props.removePlayer !== undefined) {
+    if (props.removePlayer !== undefined) {//A partida ainda não começou e aparece a opção de remover jogador
         const funcHelp = props.removePlayer;
         alertHelp = <IonAlert
             isOpen={props.isOpen}
@@ -46,6 +46,7 @@ function Actions(props: ActionsProps) {
                 }]}/>
     }
     else if(props.changePlayer !== undefined) {
+        //a partida já começou e tem as opções de mudar as info do jogador
         const funcHelp =  props.changePlayer;
         alertHelp = <IonAlert
             isOpen={props.isOpen}
@@ -77,11 +78,11 @@ class PlayerOptions extends React.Component<Props, State> {
     }
     render() {
         const player = this.props.player
-        //console.log(this.state.showPopover)
         return (
             <div>
-                {typeof (player) !== 'string'?
+                {typeof (player) !== 'string'?//ou seja, tem as info do jogador
                     <IonItem onClick={this.props.matchState=='BEGUN'?() => this.toggleShowPopover():undefined}>
+                        {/**Só aparece opções se a partida ainda não tiver terminado */}
                         <IonLabel>{player.name}</IonLabel>
                         <Actions name={player.name} isGoleiro={player.isGoleiro}
                             isOpen={this.state.showPopover} setState={(e: any) => this.setState(e)}
@@ -92,6 +93,7 @@ class PlayerOptions extends React.Component<Props, State> {
                     </IonItem>
                     :
                     <IonItem onClick={() => this.toggleShowPopover()}>
+                        {/**Se a partida ainda não tiver começado, só vai aparecer a opção de remover */}
                         <IonLabel>{player}</IonLabel>
                         <Actions name={player}
                             isOpen={this.state.showPopover} setState={(e: any) => this.setState(e)}
