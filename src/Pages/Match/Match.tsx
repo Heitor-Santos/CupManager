@@ -80,6 +80,7 @@ class Match extends React.Component<Props, State> {
         this.setState({ busy: false });
     }
     async matchStart() {
+        this.setState({busy: true})
         let infoMatch = this.state.infoMatch
         infoMatch.matchState = "BEGUN"
         postMatch(this.cupName, this.matchName, infoMatch)
@@ -98,7 +99,7 @@ class Match extends React.Component<Props, State> {
                 })
             }
         }
-        this.setState({ infoMatch, infoPlayers })
+        this.setState({ busy: false, infoMatch, infoPlayers })
     }
     async whenIsOver() {
         let infoMatch = this.state.infoMatch
@@ -107,9 +108,9 @@ class Match extends React.Component<Props, State> {
         let infoPlayers = this.state.infoPlayers
         if (!this.state.busyStat) {
             console.log("Entrou aqui")
-            this.setState({busyStat: true})
+            this.setState({busy:true, busyStat: true})
             await putDataStat(this.cupName, infoPlayers).then(()=> {
-                this.setState({busyStat: false})
+                this.setState({busy: false, busyStat: false})
             })
         }
         let editMatch = await putMatch(this.cupName, this.matchName, this.state.infoMatch)

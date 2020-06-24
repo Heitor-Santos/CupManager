@@ -20,7 +20,8 @@ function ToolBar(props: { title: React.ReactNode; }) {
                     onDidDismiss={e => setShowPopover({open: false, event: undefined})}
                 >
                     <IonList>
-                        <IonItem routerLink="/aboutUs" routerDirection = "forward">
+                        <IonItem routerLink="/aboutUs" routerDirection = "forward"
+                        onClick={e => setShowPopover({open: false, event: undefined})}>
                             <IonButton
                             expand = "block" fill = "clear" size = "default" 
                             >
@@ -28,7 +29,7 @@ function ToolBar(props: { title: React.ReactNode; }) {
                         </IonItem>
                         <IonItem>
                         <IonButton routerLink = "/aboutApp" routerDirection = "forward"
-                         expand = "block" fill = "clear" size = "default" >
+                         expand = "block" fill = "clear" size = "default" onClick={e => setShowPopover({open: false, event: undefined})}>
                              <p>Sobre aplicativo</p>
                         </IonButton>
                         </IonItem>
