@@ -1,0 +1,7 @@
+{
+  "name": "CupManager",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
