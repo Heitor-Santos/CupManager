@@ -109,15 +109,9 @@ class Match extends React.Component<Props, State> {
         let infoPlayers = this.state.infoPlayers
         if (!this.state.busyStat) {
             console.log("Entrou aqui")
-<<<<<<< HEAD:frontend/src/Pages/Match/Match.tsx
-            this.setState({busyStat: true})
-            await putDataStat(this.cupName, infoPlayers).then(()=> {
-                this.setState({busyStat: false})
-=======
             this.setState({busy:true, busyStat: true})
             await putDataStat(this.cupName, infoPlayers).then(()=> {
                 this.setState({busy: false, busyStat: false})
->>>>>>> experimental:src/Pages/Match/Match.tsx
             })
         }
         let editMatch = await putMatch(this.cupName, this.matchName, this.state.infoMatch)
