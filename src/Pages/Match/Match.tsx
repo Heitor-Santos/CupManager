@@ -6,6 +6,7 @@ import Header from './Header'
 import TeamCard from './TeamCard'
 import Statics from './Statics'
 import { postMatch, getMatch, getPlayers, putMatch, postPlayer, putPlayer, putDataStat } from '../../util/firestore'
+import './Match.css'
 
 const slideOpts = {
     initialSlide: 0,

@@ -141,7 +141,7 @@ export async function putDataStat(cupName, infoPlayers) {
               "golsFavor": golsFavor + golsFavorInfo,
               "golsTomados": golsTomados + golsTomadosInfo,
               "golsContra": golsContra + golsContraInfo,
-              "present": present
+              "present": present + 1
             })
           }
         })

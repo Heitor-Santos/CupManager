@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { IonItem,  IonLabel, IonList, IonIcon, IonRow, IonCol, IonChip, IonGrid, IonCard, IonCardTitle, IonCardContent, } from '@ionic/react'
 import "./Est.css"
-import { football, man, body, sad} from 'ionicons/icons'
+import { football, man, body, sad, location} from 'ionicons/icons'
 import { deleteMatche } from '../../util/firestore'
 
 interface ListPartida {
@@ -42,10 +42,14 @@ const Est: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
             res = cardList.sort((a, b) => a.golsTomados > b.golsTomados ? -1 : a.golsTomados < b.golsTomados ? 1 : 0)
             setContent(res)
             break
+        case "golsContra":
+          res = cardList.sort((a, b) => a.golsContra > b.golsContra ? -1 : a.golsContra < b.golsContra ? 1 : 0)  
+          setContent(res)
+          break
         default:
-            res = cardList.sort((a, b) => a.golsContra > b.golsContra ? -1 : a.golsContra < b.golsContra ? 1 : 0)
-            setContent(res)
-            break
+          res = cardList.sort((a, b) => a.present > b.present ? -1 : a.present < b.present ? 1 : 0)  
+          setContent(res)
+          break            
     }
   }
 
@@ -70,6 +74,10 @@ const Est: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
                     <IonRow>
                         <IonIcon color = "danger" icon = {sad}></IonIcon>
                         <p>: {elem.golsContra} gols contra</p>
+                    </IonRow>
+                    <IonRow>
+                        <IonIcon color = "primary" icon = {location}></IonIcon>
+                        <p>: {elem.present} Presenças</p>
                     </IonRow>
                 </IonCol>
             </IonCardContent>    
@@ -103,6 +111,10 @@ const Est: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
                 <IonChip color = "danger" onClick={()=> handClickChip("golsContra")}>
                     <IonIcon icon={sad} color="dark" />
                         <IonLabel>Gols Contra</IonLabel>
+                </IonChip>
+                <IonChip color = "primary" onClick={()=> handClickChip("presenca")}>
+                    <IonIcon icon={location} color="dark" />
+                        <IonLabel>Partidas Jogadas</IonLabel>
                 </IonChip>
             </div> 
           </IonRow>
