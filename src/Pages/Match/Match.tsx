@@ -9,8 +9,7 @@ import { postMatch, getMatch, getPlayers, putMatch, postPlayer, putPlayer, putDa
 const slideOpts = {
     initialSlide: 0,
     speed: 400,
-    autoHeight: false
-
+    autoHeight: false,
 };
 interface infoPlayer {
     "name": string,
@@ -181,7 +180,7 @@ class Match extends React.Component<Props, State> {
                             onOver={() => this.whenIsOver()} infoMatch={this.state.infoMatch}
                             showActionSheet={this.state.showActionSheet}
                             toggleActionSheet={() => this.toggleActionSheet()} />
-                        <IonSlides options={slideOpts}>
+                        <IonSlides options={slideOpts} pager={true}>
                             <IonSlide>
                                 <TeamCard team="Time A" players={players[0]}
                                     addPlayer={(e: any) => this.addPlayer("teamA", e)}

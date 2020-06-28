@@ -82,7 +82,7 @@ const Est: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
   
 
   const List = listEmpty? 
-  <IonItem><IonLabel>Sem jogador!</IonLabel></IonItem> : mapList
+  <IonItem><IonLabel>Sem jogador!Lembre-se que os dados das partidas são adicionados ao campeonato ao final da partida.</IonLabel></IonItem> : mapList
   
     return(
       <IonGrid>

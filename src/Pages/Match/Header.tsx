@@ -1,6 +1,7 @@
 import React from 'react'
 import { IonGrid, IonRow, IonCol } from '@ionic/react'
 import ClockOptions from './ClockOptions'
+import './Header.css'
 interface Props {
     gols: Array<number>,
     onStart: Function,
@@ -34,9 +35,9 @@ class Header extends React.Component<Props, State>{
             <div>
                 <IonGrid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom:'0px' }}>
                     <IonRow style={{ width: '50vh', marginBottom:'0px' }}>
-                        <IonCol style={{ borderRadius: '2px', color: 'white', backgroundColor: 'blue', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom:'0px' }}><h3>{gols[0]} X {gols[1]}</h3></IonCol>
+                        <IonCol className='score'><h3>{gols[0]} X {gols[1]}</h3></IonCol>
                         <IonCol></IonCol>
-                        <IonCol style={{ borderRadius: '2px', color: 'blue', borderStyle: 'solid', borderWidth: '2px', display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom:'0px' }}><h3>{this.state.matchTime}</h3></IonCol>
+                        <IonCol className='time'><h3>{this.state.matchTime}</h3></IonCol>
                     </IonRow>
                 </IonGrid>
                 <ClockOptions setState={(e: any) => this.setState(e)} onStart={() => this.props.onStart()}
