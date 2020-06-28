@@ -20,5 +20,11 @@ Dentro da pasta raiz do repositório, execute:
 
     npm start
 
+### Preparando para produção
+Dentro da pasta raiz do repositório, execute:
+    ionic build
+    ionic cap add android
+    ionic cap open android
+    
 ### Acesso ao APK
 Se tiver interesse em ter acesso ao APK, você pode obtê-lo [aqui](https://drive.google.com/file/d/17gMrO1bcxQBLkAL1MShX0JSyP3YbFWLU/view?usp=sharing)
