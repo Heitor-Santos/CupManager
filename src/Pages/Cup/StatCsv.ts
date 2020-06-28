@@ -16,7 +16,7 @@ export async function writeCsvFile (list:any, keyCup: String) {
       Filesystem.getUri({
           directory: FilesystemDirectory.Documents,
           path: fileName
-      }).then((getUriResult) => {
+      }).then((getUriResult) => {                                                                                           
           const path = getUriResult.uri;
           FileOpener.open(path,"text/csv")
           .then(() => console.log('File is opened'))
