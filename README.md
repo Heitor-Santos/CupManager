@@ -22,6 +22,7 @@ Dentro da pasta raiz do repositório, execute:
 
 ### Preparando para produção
 Dentro da pasta raiz do repositório, execute:
+
     ionic build
     ionic cap add android
     ionic cap open android
