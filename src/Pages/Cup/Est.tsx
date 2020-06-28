@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { IonItem,  IonLabel, IonList, IonIcon, IonRow, IonCol, IonChip, IonGrid, IonCard, IonCardTitle, IonCardContent, IonButton, } from '@ionic/react'
 import "./Est.css"
-import { football, man, body, sad, location, key} from 'ionicons/icons'
+import { football, man, body, sad, location, key, handLeft} from 'ionicons/icons'
 import { writeCsvFile } from './StatCsv';
 
 
@@ -46,10 +46,14 @@ const Est: React.FC<ListPartida> = ({list,keyCup}) => {
           res = cardList.sort((a, b) => a.golsContra > b.golsContra ? -1 : a.golsContra < b.golsContra ? 1 : 0)  
           setContent(res)
           break
-        default:
-          res = cardList.sort((a, b) => a.present > b.present ? -1 : a.present < b.present ? 1 : 0)  
+        case "presentLinha":
+          res = cardList.sort((a, b) => a.presentLinha > b.presentLinha ? -1 : a.presentLinha < b.presentLinha ? 1 : 0)  
           setContent(res)
-          break            
+          break
+        default:
+          res = cardList.sort((a, b) => a.presentGoleiro > b.presentGoleiro ? -1 : a.presentGoleiro < b.presentGoleiro ? 1 : 0)  
+          setContent(res)
+          break   
     }
   }
 
@@ -73,7 +77,11 @@ const Est: React.FC<ListPartida> = ({list,keyCup}) => {
                     </IonRow>
                     <IonRow>
                         <IonIcon color = "primary" icon = {location}></IonIcon>
-                        <p>: {elem.present} jogos</p>
+                        <p>: {elem.presentLinha} jogos linha</p>
+                    </IonRow>
+                    <IonRow>
+                        <IonIcon color = "tertiary" icon = {handLeft}></IonIcon>
+                        <p>: {elem.presentGoleiro} jogos goleiro</p>
                     </IonRow>
                     <IonRow>
                         <IonIcon color = "danger" icon = {sad}></IonIcon>
@@ -99,7 +107,7 @@ const Est: React.FC<ListPartida> = ({list,keyCup}) => {
       <IonGrid>
           <IonRow>
             <div className = "chipContent"> 
-                <IonButton onClick={()=> handleClick()} expand = "full" color = "secondary">Exportar para CSV</IonButton>
+                <IonButton onClick={()=> handleClick()} expand = "block" color = "warning">Exportar para CSV</IonButton>
                 <IonChip color= "success" onClick={()=> handClickChip("golsFeito")}>
                     <IonIcon icon={football} color = "dark"/>
                         <IonLabel>Gols Feito</IonLabel>
@@ -116,9 +124,13 @@ const Est: React.FC<ListPartida> = ({list,keyCup}) => {
                     <IonIcon icon={sad} color="dark" />
                         <IonLabel>Gols Contra</IonLabel>
                 </IonChip>
-                <IonChip color = "primary" onClick={()=> handClickChip("presenca")}>
+                <IonChip color = "primary" onClick={()=> handClickChip("presentLinha")}>
                     <IonIcon icon={location} color="dark" />
-                        <IonLabel>Partidas Jogadas</IonLabel>
+                        <IonLabel>Partidas Linha</IonLabel>
+                </IonChip>
+                <IonChip color = "primary" onClick={()=> handClickChip("presentGoleiro")}>
+                    <IonIcon icon={handLeft} color="dark" />
+                        <IonLabel>Partidas Gol</IonLabel>
                 </IonChip>
             </div> 
           </IonRow>

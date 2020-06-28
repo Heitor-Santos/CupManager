@@ -22,13 +22,11 @@ const cupCollection = db.collection(userCollection)
 export async function loginUser() {
   const isUserLogin = await getUserLogin()
   var res = []
-  var aux = 1
   if (!isUserLogin) {
     await firebase.auth().signInAnonymously().catch(function (error) {
       const _error = error.message
       console.log(_error)
       res.push({ 'Error': _error })
-      aux = 0
     });
     var user = firebase.auth().currentUser
     console.log('UID --> ' + user.uid)
@@ -124,6 +122,7 @@ export async function putDataStat(cupName, infoPlayers) {
         let golsFavorInfo = player.golsFavor
         let golsContraInfo = player.golsContra
         let golsTomadosInfo = player.golsTomados
+        let isGoleiro = player.isGoleiro
         await db.collection('/cups/' + cupName + "/players/").doc(name).get().then(async doc =>{
           const res = doc.data()
           if (res == undefined) {
@@ -132,16 +131,18 @@ export async function putDataStat(cupName, infoPlayers) {
               "golsFavor": golsFavorInfo,
               "golsTomados": golsTomadosInfo,
               "golsContra": golsContraInfo,
-              "present": 1
+              "presentLinha": isGoleiro ? 0 : 1,
+              "presentGoleiro": isGoleiro? 1: 0,
             })
           } else {
-            let {assist, golsFavor, golsTomados, golsContra, present} = res
+            let {assist, golsFavor, golsTomados, golsContra, presentLinha, presentGoleiro} = res
             await db.collection('cups').doc(cupName).collection('players').doc(name).set({
               "assist": assist + assistInfo,
               "golsFavor": golsFavor + golsFavorInfo,
               "golsTomados": golsTomados + golsTomadosInfo,
               "golsContra": golsContra + golsContraInfo,
-              "present": present + 1
+              "presentLinha": (isGoleiro ? 0 : 1) + presentLinha,
+              "presentGoleiro": (isGoleiro? 1: 0) + presentGoleiro,
             })
           }
         })
@@ -238,12 +239,13 @@ export async function getPlayerStat(data, docId) {
   let stat = {
     "name": docId
   };
-  const {assist, golsContra, golsFavor, golsTomados, present} = data;
+  const {assist, golsContra, golsFavor, golsTomados, presentLinha, presentGoleiro} = data;
   stat["assist"] = assist
   stat["golsContra"] = golsContra
   stat["golsFavor"] = golsFavor
   stat["golsTomados"] = golsTomados
-  stat["present"] = present
+  stat["presentLinha"] = presentLinha
+  stat["presentGoleiro"] = presentGoleiro
   return stat
 }
 
@@ -277,6 +279,7 @@ export async function deleteStats (keyCup, docId, idMatch) {
     "golsFavor": 0,
     "golsContra": 0,
     "golsTomados": 0,
-    "present": 0
+    "presentLinha": 0,
+    "presentGoleiro": 0
   })
 }

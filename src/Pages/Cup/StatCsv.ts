@@ -6,6 +6,7 @@ const { Filesystem } = Plugins;
 export async function writeCsvFile (list:any, keyCup: String) {
     const fileName = keyCup+".csv"
     const data = convertToCSV(list)
+    console.log(data)
     const savedFile = await Filesystem.writeFile({
       path: fileName,
       data: data,
