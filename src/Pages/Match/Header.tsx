@@ -28,6 +28,7 @@ class Header extends React.Component<Props, State>{
             matchTime: '00:00'
         }
     }
+    
     render() {
         const gols = this.props.gols==undefined?[0,0]:this.props.gols
         //primeira coluna mostra o placar, a segunda mostra o horário
