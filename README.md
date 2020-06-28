@@ -1,5 +1,5 @@
 # CupManager
-![GitHub package.json version](https://img.shields.io/badge/version-1.1.2-brightgreen)
+![GitHub package.json version](https://img.shields.io/badge/version-1.0.0-brightgreen)
 
 O CupManager é um app para gerenciamento de campeonatos de futebol amador.
 
