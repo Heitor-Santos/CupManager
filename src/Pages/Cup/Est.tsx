@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { IonItem,  IonLabel, IonList, IonIcon, IonRow, IonCol, IonChip, IonGrid, IonCard, IonCardTitle, IonCardContent, } from '@ionic/react'
+import { IonItem,  IonLabel, IonList, IonIcon, IonRow, IonCol, IonChip, IonGrid, IonCard, IonCardTitle, IonCardContent, IonButton, } from '@ionic/react'
 import "./Est.css"
-import { football, man, body, sad, location} from 'ionicons/icons'
-import { deleteMatche } from '../../util/firestore'
+import { football, man, body, sad, location, key} from 'ionicons/icons'
+import { writeCsvFile } from './StatCsv';
+
 
 interface ListPartida {
   list: any[],
-  keyCup: string,
-  getUpdate: (keyCup: any) => Promise<boolean>
+  keyCup: string
 }
 
-const Est: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
-
+const Est: React.FC<ListPartida> = ({list,keyCup}) => {
+  
   const [listEmpty, setEmpty] = useState<boolean>(false);
   const [cardList, setcardList] = useState<any[]>([])
   const [mapList, setMapList] = useState<JSX.Element[]>([])
@@ -72,12 +72,12 @@ const Est: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
                         <p>: {elem.assist} assistências </p>
                     </IonRow>
                     <IonRow>
-                        <IonIcon color = "danger" icon = {sad}></IonIcon>
-                        <p>: {elem.golsContra} gols contra</p>
+                        <IonIcon color = "primary" icon = {location}></IonIcon>
+                        <p>: {elem.present} jogos</p>
                     </IonRow>
                     <IonRow>
-                        <IonIcon color = "primary" icon = {location}></IonIcon>
-                        <p>: {elem.present} Presenças</p>
+                        <IonIcon color = "danger" icon = {sad}></IonIcon>
+                        <p>: {elem.golsContra} gols contra</p>
                     </IonRow>
                 </IonCol>
             </IonCardContent>    
@@ -86,8 +86,11 @@ const Est: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
     setMapList(res)
   }
 
-
-  
+  const handleClick = async () => {
+    await writeCsvFile(list,keyCup).then(()=>{
+      console.log("Feito o download")
+    })
+  }
 
   const List = listEmpty? 
   <IonItem><IonLabel>Sem jogador!Lembre-se que os dados das partidas são adicionados ao campeonato ao final da partida.</IonLabel></IonItem> : mapList
@@ -96,6 +99,7 @@ const Est: React.FC<ListPartida> = ({list,keyCup,getUpdate}) => {
       <IonGrid>
           <IonRow>
             <div className = "chipContent"> 
+                <IonButton onClick={()=> handleClick()} expand = "full" color = "secondary">Exportar para CSV</IonButton>
                 <IonChip color= "success" onClick={()=> handClickChip("golsFeito")}>
                     <IonIcon icon={football} color = "dark"/>
                         <IonLabel>Gols Feito</IonLabel>

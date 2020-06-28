@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { IonPage, IonContent, IonIcon, IonHeader, IonFab, IonFabButton, IonLabel, IonList, IonLoading, IonSegment, IonSegmentButton, IonCard, IonRefresher, IonRefresherContent, } from '@ionic/react'
+import { IonPage, IonContent, IonIcon, IonHeader, IonFab, IonFabButton, IonLabel, IonList, IonLoading, IonSegment, IonSegmentButton, IonCard } from '@ionic/react'
 import { add } from 'ionicons/icons'
 import {loginUser,getMatches,postCup, getPlayersState} from "../../util/firestore";
 import "./Cup.css"
@@ -89,7 +89,7 @@ const Cup: React.FC = () => {
   }
 
   const listPartidas = <Card list={list} keyCup={cup} getUpdate={getUpdate} />
-  const listEst = <Est list={players} keyCup = {cup} getUpdate={getUpdate} />
+  const listEst = <Est list={players} keyCup = {cup}/>
 
     return (
       <IonPage>
