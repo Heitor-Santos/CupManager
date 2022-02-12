@@ -9,7 +9,9 @@ export interface Props {
         golsContra: number,
         golsFavor: number,
         golsTomados: number,
-        isGoleiro:boolean
+        isGoleiro:boolean,
+        cartaoVermelho: number,
+        cartaoAmarelo: number
     } | string,
     index: number,
     changePlayer: Function,
@@ -86,9 +88,11 @@ class PlayerOptions extends React.Component<Props, State> {
                         <Actions name={player.name} isGoleiro={player.isGoleiro}
                             isOpen={this.state.showPopover} setState={(e: any) => this.setState(e)}
                             changePlayer={(e: any) => this.props.changePlayer(this.props.index, e)}/>
-                        <IonBadge color="danger">{player.golsContra}</IonBadge>
-                        <IonBadge color="warning">{player.assist}</IonBadge>
                         <IonBadge color="success">{player.golsFavor}</IonBadge>
+                        <IonBadge color="secondary">{player.assist}</IonBadge>
+                        <IonBadge color="dark">{player.golsContra}</IonBadge>
+                        <IonBadge color="danger">{player.cartaoVermelho}</IonBadge>
+                        <IonBadge color="warning">{player.cartaoAmarelo}</IonBadge>
                     </IonItem>
                     :
                     <IonItem onClick={() => this.toggleShowPopover()}>

@@ -7,3 +7,7 @@
     background: rgb(133, 125, 125);
     opacity: 1;
 }
+
+#cardTeams {
+    overflow-y: auto;
+}

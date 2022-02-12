@@ -7,6 +7,7 @@ import Card from './Card';
 import HandleStorage from '../../util/handleStorage';
 import ToolBar from '../../components/ToolBar';
 import Est from './Est';
+import Teams from './Teams';
 
 const Cup: React.FC = () => {
       
@@ -21,20 +22,23 @@ const Cup: React.FC = () => {
   checkLastCup(store)
   
   // variaveis controladores de estado da TAB
-  const [ firstPage, setPage ] = useState(true);
+  const [ firstPage, setPage ] = useState(0);
   const [ busy, setBusy ] = useState<boolean>(true);
   const [ cup, setCup ] = useState("");
   const [list, setList] = useState< any []>([])
   const [players, setPlayers] = useState<any []>([])
-  const[ulr,setUrl] = useState<string>("")
+  const [ulr,setUrl] = useState<string>("")
   const [segmentValue, setSegmentValue] = useState("list")
+  const [popover, setPopOver] = useState(false);
   
   // variaveis de conteudo
   const cardContent = () => { // qual conteudo vai ser disponivel
-    if (firstPage && !busy) {
+    if (!firstPage && !busy) {
         return listPartidas
-    } else if (!firstPage) {
+    } else if (firstPage === 1) {
         return listEst
+    } else {
+      return listTeam
     }
   }
   
@@ -90,6 +94,8 @@ const Cup: React.FC = () => {
 
   const listPartidas = <Card list={list} keyCup={cup} getUpdate={getUpdate} />
   const listEst = <Est list={players} keyCup = {cup}/>
+  const listTeam = <Teams list={players} keyCup = {cup} popover = {popover} 
+    handlePopoverDismiss = {() => setPopOver(false)} />
 
     return (
       <IonPage>
@@ -100,26 +106,38 @@ const Cup: React.FC = () => {
         </IonHeader>
           <IonContent className = "bg">
           <IonSegment color = "tertiary" value = {segmentValue} onIonChange={e => setSegment(e.detail.value)}>
-            <IonSegmentButton value = "list"  onClick={() => setPage(true)}>
-              <IonLabel>Lista Partidas</IonLabel>
+            <IonSegmentButton value = "list"  onClick={() => setPage(0)}>
+              <IonLabel>Partidas</IonLabel>
             </IonSegmentButton>
-            <IonSegmentButton value = "estastics" onClick={() => setPage(false)}>
-              <IonLabel>Estatísticas Gerais</IonLabel>
+            <IonSegmentButton value = "estastics" onClick={() => setPage(1)}>
+              <IonLabel>Jogadores</IonLabel>
+            </IonSegmentButton>
+            <IonSegmentButton value = "teams" onClick={() => setPage(2)}>
+              <IonLabel>Times</IonLabel>
             </IonSegmentButton>
           </IonSegment>
             <IonCard className = "listMatch">
               <IonContent>
-                <IonFab vertical = "bottom" horizontal = "center" slot = "fixed">
-                  <IonFabButton href = {ulr}  color = "tertiary" size="small">
-                      <IonIcon icon = {add}></IonIcon>
-                    </IonFabButton>
-                </IonFab>
+                { !firstPage && 
+                  <IonFab vertical = "bottom" horizontal = "center" slot = "fixed">
+                    <IonFabButton href = {ulr}  color = "tertiary" size="small">
+                        <IonIcon icon = {add}></IonIcon>
+                      </IonFabButton>
+                  </IonFab> 
+                }
+                { firstPage === 2 && 
+                  <IonFab vertical = "bottom" horizontal = "center" slot = "fixed">
+                    <IonFabButton onClick={() => setPopOver(true)} color = "secondary" size="small">
+                        <IonIcon icon = {add}></IonIcon>
+                      </IonFabButton>
+                  </IonFab> 
+                }
               <IonList inset={true}>
                 {cardContent()}
               </IonList>
               </IonContent>
             </IonCard>
-            </IonContent>
+          </IonContent>
       </IonPage>
     );
   };

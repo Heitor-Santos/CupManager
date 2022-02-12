@@ -12,17 +12,30 @@ export let inputsIsGoleiro = [
         value: 'golsFavor'
     },
     {
+        name: 'assist',
+        type: 'radio',
+        label: 'Fez assistência',
+        value: 'assist'
+    },
+    {
         name: 'golContra',
         type: 'radio',
         label: 'Marcou gol contra',
         value: 'golsContra'
     },
     {
-        name: 'assist',
+        name: 'cartaoVermelho',
         type: 'radio',
-        label: 'Fez assistência',
-        value: 'assist'
-    }] as AlertInput[]
+        label: 'Vermelhou',
+        value: 'cartaoVermelho'
+    },
+    {
+        name: 'cartaoAmarelo',
+        type: 'radio',
+        label: 'Amarelou',
+        value: 'cartaoAmarelo'
+    }
+    ] as AlertInput[]
     
 /**
 * Array de inputs para quando o jogador atual não é um goleiro, as opções de inputs são:
@@ -36,20 +49,33 @@ export let inputsNotIsGoleiro = [
         value: 'golsFavor'
     },
     {
-        name: 'golContra',
-        type: 'radio',
-        label: 'Marcou gol contra',
-        value: 'golsContra'
-    },
-    {
         name: 'assist',
         type: 'radio',
         label: 'Fez assistência',
         value: 'assist'
     },
     {
+        name: 'golContra',
+        type: 'radio',
+        label: 'Marcou gol contra',
+        value: 'golsContra'
+    },
+    {
         name: 'goleiro',
         type: 'radio',
         label: 'Marcar como goleiro',
         value: 'isGoleiro'
-    }] as AlertInput[]
+    },
+    {
+        name: 'cartaoVermelho',
+        type: 'radio',
+        label: 'Vermelhou',
+        value: 'cartaoVermelho'
+    },
+    {
+        name: 'cartaoAmarelo',
+        type: 'radio',
+        label: 'Amarelou',
+        value: 'cartaoAmarelo'
+    }
+    ] as AlertInput[]

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { IonItem,  IonLabel, IonList, IonIcon, IonRow, IonCol, IonChip, IonGrid, IonCard, IonCardTitle, IonCardContent, IonButton, } from '@ionic/react'
 import "./Est.css"
-import { football, man, body, sad, location, key, handLeft} from 'ionicons/icons'
+import { football, man, body, sadOutline, location, key, handLeft, skullOutline, skull} from 'ionicons/icons'
 import { writeCsvFile } from './StatCsv';
 
 
@@ -50,6 +50,14 @@ const Est: React.FC<ListPartida> = ({list,keyCup}) => {
           res = cardList.sort((a, b) => a.presentLinha > b.presentLinha ? -1 : a.presentLinha < b.presentLinha ? 1 : 0)  
           setContent(res)
           break
+        case "cartaoAmarelo":
+          res = cardList.sort((a, b) => a.cartaoAmarelo > b.cartaoAmarelo ? -1 : a.cartaoAmarelo < b.cartaoAmarelo ? 1 : 0)  
+          setContent(res)
+          break
+        case "cartaoVermelho":
+          res = cardList.sort((a, b) => a.cartaoVermelho > b.cartaoVermelho ? -1 : a.cartaoVermelho < b.cartaoVermelho ? 1 : 0)  
+          setContent(res)
+          break
         default:
           res = cardList.sort((a, b) => a.presentGoleiro > b.presentGoleiro ? -1 : a.presentGoleiro < b.presentGoleiro ? 1 : 0)  
           setContent(res)
@@ -84,8 +92,16 @@ const Est: React.FC<ListPartida> = ({list,keyCup}) => {
                         <p>: {elem.presentGoleiro} jogos goleiro</p>
                     </IonRow>
                     <IonRow>
-                        <IonIcon color = "danger" icon = {sad}></IonIcon>
+                        <IonIcon color = "dark" icon = {sadOutline}></IonIcon>
                         <p>: {elem.golsContra} gols contra</p>
+                    </IonRow>
+                    <IonRow>
+                        <IonIcon color = "warning" icon = {skullOutline} ></IonIcon>
+                        <p>: {elem.golsContra} Amarelo </p>
+                    </IonRow>
+                    <IonRow>
+                        <IonIcon color = "danger" icon = {skullOutline} ></IonIcon>
+                        <p>: {elem.golsContra} Vermelho </p>
                     </IonRow>
                 </IonCol>
             </IonCardContent>    
@@ -121,7 +137,7 @@ const Est: React.FC<ListPartida> = ({list,keyCup}) => {
                         <IonLabel>Assistência</IonLabel>
                 </IonChip>
                 <IonChip color = "danger" onClick={()=> handClickChip("golsContra")}>
-                    <IonIcon icon={sad} color="dark" />
+                    <IonIcon icon={sadOutline} color="light" />
                         <IonLabel>Gols Contra</IonLabel>
                 </IonChip>
                 <IonChip color = "primary" onClick={()=> handClickChip("presentLinha")}>
@@ -131,6 +147,14 @@ const Est: React.FC<ListPartida> = ({list,keyCup}) => {
                 <IonChip color = "primary" onClick={()=> handClickChip("presentGoleiro")}>
                     <IonIcon icon={handLeft} color="dark" />
                         <IonLabel>Partidas Gol</IonLabel>
+                </IonChip>
+                <IonChip color = "warning" onClick={()=> handClickChip("cartaoAmarelo")}>
+                    <IonIcon icon={skull} color="dark" />
+                        <IonLabel>Amarelo</IonLabel>
+                </IonChip>
+                <IonChip color = "danger" onClick={()=> handClickChip("cartaoVermelho")}>
+                    <IonIcon icon={skullOutline} color="dark" />
+                        <IonLabel>Vermelho</IonLabel>
                 </IonChip>
             </div> 
           </IonRow>

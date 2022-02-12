@@ -93,10 +93,68 @@ export async function putMatch(cupName, matchName, matchData) {
   return resp;
 }
 
-export async function postPlayer(cupName, playerName, matchName) {
+export async function createTeam(cupName, teamName, players) {
+  let resp = 3;
+  console.log({cupName, teamName, players})
+  await db.collection('cups').doc(cupName).collection('teams').doc(teamName).get()
+    .then(async (team) => {
+
+      if (!(team.exists && JSON.stringify(team.data()) !== '{}')) {
+
+        for (let player of players) {
+          const hasPlayer = await getPlayer(cupName, player, undefined);
+
+          if (hasPlayer) return 1;
+        }
+
+        for (let player of players) {
+          const res = await postPlayer(cupName, player, undefined, 1, teamName);
+          console.log(player);
+          if (res !== "success") return 1;
+        }
+
+        await db.collection('cups').doc(cupName).collection('teams').doc(teamName).set({
+          "name": teamName,
+          "players": players
+        }).then((succ) => { resp = 3 })
+        .catch((err) => {console.log("foi aqui?"); resp = 0 })
+
+      }
+
+      else return 0;
+    })
+    .catch((err) => {console.log(err); resp = 0 })
+
+  return resp
+}
+
+
+
+export async function postPlayer(cupName, playerName, matchName, type, teamName) {
   let resp = 'already-exists';
-  let player = await getPlayer(cupName, playerName, matchName)
-  if (player == undefined) {
+  let player = await getPlayer(cupName, playerName, matchName);
+
+  if (type) {
+    console.log(player);
+    if (player == undefined) {
+      await db.collection('cups').doc(cupName).collection('players').doc(playerName).set({
+        "name": playerName,
+        "assist": 0,
+        "golsFavor": 0,
+        "golsTomados": 0,
+        "golsContra": 0,
+        "presentLinha": 0,
+        "presentGoleiro": 0,
+        "team": teamName,
+        "cartaoVermelho": 0,
+        "cartaoAmarelo": 0
+      }).then((succ) => { resp = `success` })
+      .catch((err) => { resp = `error ${err}` })
+    } else {
+      return 'error';
+    }
+  } else {
+    
     await db.collection('cups').doc(cupName).collection('players').doc(playerName).collection('stats')
       .doc(matchName).set({
         "name": playerName,
@@ -104,9 +162,12 @@ export async function postPlayer(cupName, playerName, matchName) {
         "assist": 0,
         "golsFavor": 0,
         "golsContra": 0,
-        "golsTomados": 0
+        "golsTomados": 0,
+        "cartaoVermelho": 0,
+        "cartaoAmarelo": 0
       }).then((succ) => { resp = `success` })
       .catch((err) => { resp = `error ${err}` })
+    
   }
   console.log(resp)
   return resp;
@@ -123,6 +184,8 @@ export async function putDataStat(cupName, infoPlayers) {
         let golsContraInfo = player.golsContra
         let golsTomadosInfo = player.golsTomados
         let isGoleiro = player.isGoleiro
+        let cartaoAmarelo = player.cartaoAmarelo
+        let cartaoVermelho = player.cartaoVermelho
         await db.collection('/cups/' + cupName + "/players/").doc(name).get().then(async doc =>{
           const res = doc.data()
           if (res == undefined) {
@@ -133,6 +196,8 @@ export async function putDataStat(cupName, infoPlayers) {
               "golsContra": golsContraInfo,
               "presentLinha": isGoleiro ? 0 : 1,
               "presentGoleiro": isGoleiro? 1: 0,
+              "cartaoVermelho": cartaoAmarelo,
+              "cartaoAmarelo": cartaoVermelho
             })
           } else {
             let {assist, golsFavor, golsTomados, golsContra, presentLinha, presentGoleiro} = res
@@ -143,6 +208,8 @@ export async function putDataStat(cupName, infoPlayers) {
               "golsContra": golsContra + golsContraInfo,
               "presentLinha": (isGoleiro ? 0 : 1) + presentLinha,
               "presentGoleiro": (isGoleiro? 1: 0) + presentGoleiro,
+              "cartaoVermelho": cartaoAmarelo,
+              "cartaoAmarelo": cartaoVermelho
             })
           }
         })
@@ -159,7 +226,9 @@ export async function putPlayer(cupName, playerName, matchName, playerData) {
     "assist": playerData.assist,
     "golsFavor": playerData.golsFavor,
     "golsContra": playerData.golsContra,
-    "golsTomados": playerData.golsTomados
+    "golsTomados": playerData.golsTomados,
+    "cartaoVermelho": playerData.cartaoAmarelo,
+    "cartaoAmarelo": playerData.cartaoVermelho
 }).then((succ) => { resp = `success` })
     .catch((err) => { resp = `error ${err}` })
   return resp
@@ -239,13 +308,15 @@ export async function getPlayerStat(data, docId) {
   let stat = {
     "name": docId
   };
-  const {assist, golsContra, golsFavor, golsTomados, presentLinha, presentGoleiro} = data;
+  const {assist, golsContra, golsFavor, golsTomados, presentLinha, presentGoleiro, cartaoAmarelo, cartaoVermelho} = data;
   stat["assist"] = assist
   stat["golsContra"] = golsContra
   stat["golsFavor"] = golsFavor
   stat["golsTomados"] = golsTomados
   stat["presentLinha"] = presentLinha
   stat["presentGoleiro"] = presentGoleiro
+  stat["cartaoAmarelo"] = cartaoAmarelo
+  stat["cartapVermelho"] = cartaoVermelho
   return stat
 }
 
@@ -280,6 +351,27 @@ export async function deleteStats (keyCup, docId, idMatch) {
     "golsContra": 0,
     "golsTomados": 0,
     "presentLinha": 0,
-    "presentGoleiro": 0
+    "presentGoleiro": 0,
+    "cartaoAmarelo": 0,
+    "cartaoVermlho": 0
   })
+}
+
+export async function getTeams(keyCup) {
+  const list = []
+  if (keyCup != "" && keyCup != undefined) {
+    keyCup = keyCup.replace("/", "")
+    await db.collection("/cups/" + keyCup + "/teams").get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          const { name, players} = doc.data()
+          list.push({
+            name,
+            players
+          })
+        })
+      })
+  }
+  list.sort((a, b) => parseInt(a.name) < parseInt(b.name) ? -1 : parseInt(a.name)  > parseInt(b.name) ? 1 : 0)
+  return list
 }

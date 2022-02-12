@@ -19,7 +19,9 @@ interface infoPlayer {
     "assist": number,
     "golsFavor": number,
     "golsContra": number,
-    "golsTomados": number
+    "golsTomados": number,
+    "cartaoVermelho": number,
+    "cartaoAmarelo": number
 }
 interface State {
     infoMatch: MatchData
@@ -44,6 +46,8 @@ interface MatchData {
     matchTime: undefined | string,
     gols: Array<number>,
     currGoleiros: Array<number>
+    teamAName: string,
+    teamBName: string
 }
 
 class Match extends React.Component<Props, State> {
@@ -60,7 +64,9 @@ class Match extends React.Component<Props, State> {
                 matchName: this.props.match.params.matchName,
                 matchTime: '00:00',
                 gols: [0, 0],
-                currGoleiros: [0, 0]
+                currGoleiros: [0, 0],
+                teamAName: "Time A",
+                teamBName: "Time B"
             },
             infoPlayers: [[], []], //lista de informações sobre os jogadores
             busy: true,
@@ -89,14 +95,16 @@ class Match extends React.Component<Props, State> {
         let infoPlayers: Array<Array<infoPlayer>> = [[], []]
         for (let i = 0; i < teams.length; i++) {
             for (let player of teams[i]) {
-                let resp = await postPlayer(this.cupName, player, this.matchName) as string
+                let resp = await postPlayer(this.cupName, player, this.matchName, 0, undefined) as string
                 infoPlayers[i].push({
                     "name": player,
                     "isGoleiro": false,
                     "assist": 0,
                     "golsFavor": 0,
                     "golsContra": 0,
-                    "golsTomados": 0
+                    "golsTomados": 0,
+                    "cartaoVermelho": 0,
+                    "cartaoAmarelo": 0
                 })
             }
         }
@@ -122,6 +130,7 @@ class Match extends React.Component<Props, State> {
         infoMatch[currTeam].push(playerName)
         this.setState({ infoMatch })
     }
+
     async changePlayer(currTeam: 0 | 1, indexPlayer: number, opt: keyof infoPlayer) {
         let infoPlayers = this.state.infoPlayers
         let currGoleiros = this.state.infoMatch.currGoleiros;

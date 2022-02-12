@@ -8,7 +8,9 @@ interface Player {
     golsContra: number,
     golsFavor: number,
     golsTomados: number,
-    isGoleiro: boolean
+    isGoleiro: boolean,
+    cartaoVermelho: number,
+        cartaoAmarelo: number
 }
 interface Props {
     players: Array<Player | string>,
